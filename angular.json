@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "SoftwareIIFrontend": {
+    "FrontendSoftwareII": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/software-iifrontend",
+            "outputPath": "dist/frontend-software-ii",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -23,7 +23,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src/assets",
+                "output": "/assets/"
               }
             ],
             "styles": [
@@ -32,12 +33,7 @@
             ],
             "scripts": [
               "node_modules/materialize-css/dist/js/materialize.js"
-            ],
-            "server": "src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "server.ts"
-            }
+            ]
           },
           "configurations": {
             "production": {
@@ -67,10 +63,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "SoftwareIIFrontend:build:production"
+              "buildTarget": "FrontendSoftwareII:build:production"
             },
             "development": {
-              "buildTarget": "SoftwareIIFrontend:build:development"
+              "buildTarget": "FrontendSoftwareII:build:development"
             }
           },
           "defaultConfiguration": "development"
