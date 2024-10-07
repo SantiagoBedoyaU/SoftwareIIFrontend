@@ -1,0 +1,78 @@
+<body class="background-image">
+    <div class="form-container">
+        <h3 class="card-title center-align black-text title">Salud y Vida</h3>
+
+        <form [formGroup]="fGroup" class="contenedor">
+            <div class="row">
+                <div class="">
+                    <div class="card grey lighten-4 z-depth-4">
+                        <div class="card-content form_signin">
+                            <h5 class="center-align">Iniciar sesión</h5>
+
+                            <div class="card-panel indigo lighten-5 list">
+                                <a class="dropdown-trigger" href="#" data-target="dropdown1" id="document-type">
+                                    <i class="material-icons">arrow_drop_down</i>
+                                    <span>{{ selectedType || 'Tipo de documento' }}</span>
+                                </a>
+
+                                <ul id="dropdown1" class="dropdown-content">
+                                    <li><a href="#" class="black-text"
+                                            (click)="selectDocumentType($event, 'Cédula de ciudadanía (CC)')">Cédula de
+                                            ciudadanía (CC)</a></li>
+                                    <li><a href="#" class="black-text"
+                                            (click)="selectDocumentType($event, 'Tarjeta de identidad (TI)')">Tarjeta de
+                                            identidad (TI)</a></li>
+                                    <li><a href="#" class="black-text"
+                                            (click)="selectDocumentType($event, 'Pasaporte (TP)')">Pasaporte (TP)</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="card-panel indigo lighten-5">
+                                <div class="input-field">
+                                    <input formControlName="document_number" id="dni" type="text" class="validate">
+                                    <label for="dni">Número de documento</label>
+                                </div>
+                                <div class="show-errors"
+                                    *ngIf="GetFormGroup['document_number'].errors && (GetFormGroup['document_number'].dirty || GetFormGroup['document_number'].touched)">
+                                    <strong>Este campo es obligatorio y debe contener solo números</strong>
+                                </div>
+                            </div>
+
+                            <div class="card-panel indigo lighten-5">
+                                <div class="input-field">
+                                    <input formControlName="password" id="password" type="password" class="validate">
+                                    <label for="password">Contraseña</label>
+                                    <span toggle="#password" class="material-icons toggle-password"
+                                        style="cursor: pointer; position: absolute; right: 10px; top: 10px;"
+                                        (click)="togglePasswordVisibility()">visibility_off</span>
+                                </div>
+                                <div class="show-errors"
+                                    *ngIf="GetFormGroup['password'].errors && (GetFormGroup['password'].dirty || GetFormGroup['password'].touched)">
+                                    <strong>Este campo es obligatorio</strong>
+                                </div>
+                            </div>
+
+                            <div class="end_form">
+                                <div class="row">
+                                    <div class="col s12">
+                                        <a href="#" class="grey-text text-darken-1">¿Haz olvidado tu contraseña?</a>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <button (click)="SignIn()" class="btn waves-effect waves-light blue darken-3"
+                                        type="submit" name="action">
+                                        Iniciar sesión
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</body>

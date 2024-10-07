@@ -1,0 +1,86 @@
+body {
+    padding: 40px;
+    background-image: url('/assets/images/background.jpg');
+    background-color: rgba(255, 255, 255, 0.5); 
+    background-blend-mode: overlay; 
+}
+
+.form-container {
+  max-width: 500px;
+  padding: 15px 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.contenedor {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.title {
+  font-weight: bold;
+}
+
+h5,
+h3 {
+  margin-bottom: 30px;
+}
+
+.form_signin {
+  padding: 30px;
+}
+
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    color: #9e9e9e; 
+}
+
+.dropdown-trigger i.material-icons {
+    margin-right: 8px; 
+    display: flex;
+    align-items: center;
+}
+
+.end {
+  display: flex;
+  flex-direction: column;
+}
+
+.end_form {
+  display: flex;
+  flex-direction: row;
+  margin-top: 50px;
+}
+
+.card-panel {
+  padding: 2px 7px;
+}
+
+.list{
+    padding: 20px;
+}
+
+/* Cambiar el color de la línea inferior solamente cuando se hace clic (focus) */
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-bottom: 2px solid #1565c0 !important; 
+  box-shadow: none; 
+}
+
+/* Cambiar el color del texto dentro del campo solamente cuando se hace clic */
+input[type="text"]:focus,
+input[type="password"]:focus {
+  color: black !important; 
+}
+
+/* Cambiar el color de la etiqueta cuando el campo está en foco (clic) */
+input[type="text"]:focus + label,
+input[type="password"]:focus + label {
+  color: #1565c0 !important; 
+}
+
+.show-errors{
+  color: red;
+}
