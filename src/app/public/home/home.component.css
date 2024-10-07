@@ -1,37 +1,43 @@
 .aside-padding {
-    padding: 70px;
-  }
-  
-  .bold-text {
-    font-weight: bold;
-  }
-  
-  .row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-  }
-  
-  .card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-  
-  .card-content {
-    flex-grow: 1;
-  }
-  
-  .card-action {
-    text-align: center;
-  }
-  
-  .buttom-margin {
-    margin-bottom: 20px;
-  }
+  padding: 70px;
+}
 
-  .carousel-item img {
-    width: 100%;   
-    height: 100%;  
-    object-fit: cover; 
+.bold-text {
+  font-weight: bold;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-content {
+  flex-grow: 1;
+}
+
+.card-action {
+  text-align: center;
+}
+
+.buttom-margin {
+  margin-bottom: 20px;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-image img {
+  width: 100%; 
+  height: 250px; 
+  object-fit: cover; 
 }
