@@ -8,6 +8,10 @@ export const routes: Routes = [
         component: HomeComponent
       },
       {
+        path: "security",
+        loadChildren: () => import('./modules/security/security.module').then(m => m.SecurityModule)
+      },
+      {
         path:"",
         pathMatch: "full",
         redirectTo: "/home"
