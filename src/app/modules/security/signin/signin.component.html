@@ -56,7 +56,8 @@
                             <div class="end_form">
                                 <div class="row">
                                     <div class="col s12">
-                                        <a href="#" class="grey-text text-darken-1">¿Haz olvidado tu contraseña?</a>
+                                        <a href="/security/recoverPassword" class="grey-text text-darken-1">¿Haz
+                                            olvidado tu contraseña?</a>
                                     </div>
                                 </div>
 
@@ -74,5 +75,31 @@
             </div>
         </form>
 
+    </div>
+
+    <!-- Modal Error -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <i class="large material-icons red-text center-align">error</i>
+            <p>El número de documento o la contraseña es incorrecta.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn waves-effect waves-light red darken-2" style="margin-right: 10px;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal warning -->
+    <div id="warningModal" class="modal">
+        <div class="modal-content">
+            <i class="large material-icons yellow-text center-align">warning</i>
+            <p>Datos incompletos</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn waves-effect waves-light white black-text" style="margin-right: 10px;">
+                Cerrar
+            </button>
+        </div>
     </div>
 </body>

@@ -96,4 +96,13 @@ export class SecurityService {
     }
     return menu;
   }
+
+  /**
+   * Request to recover the password 
+   * @param dni 
+   * @returns 
+   */
+  recoverPassword(dni: string): Observable<any> {
+    return this.http.post(`${this.urlBase}recover-password`, {dni});
+  }
 }
