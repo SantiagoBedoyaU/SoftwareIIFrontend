@@ -22,9 +22,9 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "/assets/"
+                "glob": "_redirects",
+                "input": "src",
+                "output": "/"
               }
             ],
             "styles": [
@@ -96,5 +96,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

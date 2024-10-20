@@ -67,6 +67,9 @@ export class SigninComponent implements AfterViewInit {
         coverTrigger: false
       });
     }
+
+    const elemsModal = document.querySelectorAll('.modal');
+    M.Modal.init(elemsModal);
   }
 
   // Select the document type
@@ -79,7 +82,8 @@ export class SigninComponent implements AfterViewInit {
   // Submit the form
   SignIn() {
     if (this.fGroup.invalid) {
-      alert('Datos incompletos');
+      const modal = M.Modal.getInstance(document.getElementById('warningModal')!);
+      modal.open();
     } else {
       let document_number = this.GetFormGroup['document_number'].value;
       let password = this.GetFormGroup['password'].value;
@@ -95,7 +99,8 @@ export class SigninComponent implements AfterViewInit {
         },
         error: (error) => {
           console.log(error);
-          alert('Credenciales incorrectas');
+          const modal = M.Modal.getInstance(document.getElementById('errorModal')!);
+          modal.open();
         }
       });
     }

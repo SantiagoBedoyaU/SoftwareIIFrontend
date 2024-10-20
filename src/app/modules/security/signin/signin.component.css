@@ -84,3 +84,18 @@ input[type="password"]:focus + label {
 .show-errors{
   color: red;
 }
+
+/* modal size settings */
+.modal {
+  width: 20% !important;              
+  border-radius: 12px;    
+}
+
+.modal-content { 
+  text-align: center;
+}
+
+.modal-footer {
+  text-align: center;
+  margin-bottom: 30px;
+}
