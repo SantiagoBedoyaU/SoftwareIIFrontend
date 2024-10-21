@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UserModel } from '../modelos/user.model';
 import { HttpClient } from '@angular/common/http';
 import { ConfigurationRoutesBackend } from '../config/configuration.routes.backend';
 import { UserValidateModel } from '../modelos/user.validate.model';
@@ -88,10 +87,10 @@ export class SecurityService {
    * 
    * @returns list of menu items
    */
-  GetItemsSideMenu(): ItemMenuModel[]{
+  GetItemsSideMenu(): ItemMenuModel[] {
     let menuStr = localStorage.getItem("side-menu");
     let menu: ItemMenuModel[] = [];
-    if(menuStr){
+    if (menuStr) {
       menu = JSON.parse(menuStr);
     }
     return menu;
@@ -103,6 +102,21 @@ export class SecurityService {
    * @returns 
    */
   recoverPassword(dni: string): Observable<any> {
-    return this.http.post(`${this.urlBase}recover-password`, {dni});
+    return this.http.post(`${this.urlBase}recover-password`, { dni });
+  }
+
+
+  /**
+   * Reset the password
+   * @param token 
+   * @param password 
+   * @returns 
+   */
+  resetPassword(token: string, password: string): Observable<any> {
+    return this.http.post(`${this.urlBase}reset-password`, {
+      access_token: token,
+      password: password
+    }
+    );
   }
 }
