@@ -1,4 +1,4 @@
-export class UserModel{
+export class UserModel {
     _id?: string;
     TypeDNI?: string;
     DNI?: string;
@@ -7,4 +7,8 @@ export class UserModel{
     Email?: string;
     Password?: string;
     Role?: string;
-}
+  
+    constructor(init?: Partial<UserModel>) {
+      Object.assign(this, init); // Asigna los valores opcionalmente.
+    }
+  }

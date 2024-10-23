@@ -22,9 +22,10 @@ export class LogoutComponent {
   }
 
   logout() {
-    this.securityService.RemoveLoggedUserData();
-    this.securityService.UpdateUserBehavior(new UserValidateModel()); 
-this.router.navigate(['']);
+    this.securityService.RemoveLoggedUserData(); // Elimina los datos.
+    this.router.navigate(['']).then(() => {
+      window.location.reload(); // Fuerza la recarga tras navegar.
+    });
   }
 
 }

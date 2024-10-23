@@ -17,7 +17,7 @@
     </div>
 </nav>
 
-<!-- Sidenav -->
+<!-- Sidebar -->
 <ul id="slide-out" class="sidenav right">
     <li>
         <div class="user-view">
@@ -25,20 +25,14 @@
                 <img src="assets/images/background-user.jpg">
             </div>
             <a href="#user"><img class="circle" src="assets/images/user.jpg"></a>
-            <a href="#name"><span class="black-text name">Usuario</span></a>
-            <a href="#email"><span class="black-text email">email</span></a>
+            <a href="#name"><span class="white-text name">{{ user?.FirstName }}</span></a>
+            <a href="#email"><span class="white-text email">{{ user?.Email }}</span></a>
         </div>
     </li>
-    <li><a class="subheader">Opcion1</a></li>
-    <li>
-        <div class="divider"></div>
-    </li>
-    <li><a class="subheader">Opcion2</a></li>
-    <li>
-        <div class="divider"></div>
-    </li>
-    <li><a class="subheader">Opcion3</a></li>
-    <li>
-        <div class="divider"></div>
+    <li *ngFor="let item of menuItems">
+        <a [routerLink]="item.route">
+            <i class="material-icons">{{ item.icon }}</i>
+            {{ item.name }}
+        </a>
     </li>
 </ul>

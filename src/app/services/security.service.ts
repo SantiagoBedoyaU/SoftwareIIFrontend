@@ -1,18 +1,34 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, Subject, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigurationRoutesBackend } from '../config/configuration.routes.backend';
 import { UserValidateModel } from '../modelos/user.validate.model';
 import { ItemMenuModel } from '../modelos/item.menu.model';
+import { MENU_ROLES, MenuItem } from '../config/configuration.sidebar';
+import { UserModel } from '../modelos/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SecurityService {
+  private logoutEvent = new Subject<void>(); 
+  menuItems = new BehaviorSubject<MenuItem[]>([]);
   urlBase: string = ConfigurationRoutesBackend.urlBackend;
 
   constructor(private http: HttpClient) {
     this.SessionValidate();
+  }
+
+  /**
+   * Get the user data
+   * @returns 
+   */
+  GetUserData(): Observable<any> {
+    const token = this.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log('Headers enviados:', headers); 
+  
+    return this.http.get(`${this.urlBase}users/me`, { headers });
   }
 
   /**
@@ -25,7 +41,17 @@ export class SecurityService {
     return this.http.post<{ access_token: string }>(`${this.urlBase}sign-in`, {
       DNI: document_number,
       Password: password
-    });
+    }).pipe(
+      tap(response => {
+        console.log('Respuesta de inicio de sesión:', response); 
+        
+        // Almacena el token y luego valida la sesión
+        this.StoreToken(response.access_token); 
+  
+        // Espera brevemente antes de validar la sesión para asegurar propagación
+        setTimeout(() => this.SessionValidate(), 50); 
+      })
+    );
   }
 
   /**
@@ -42,16 +68,21 @@ export class SecurityService {
    * @returns string | null
    */
   GetToken(): string | null {
-    return localStorage.getItem('token');  // Obtiene el token JWT
+    return localStorage.getItem('token'); // Obtiene el token del almacenamiento local.
   }
 
-  /**
-   * Remove token
-   */
+  // Observable que los componentes escucharán.
+  getLogoutEvent() {
+    return this.logoutEvent.asObservable();
+  }
+
   RemoveLoggedUserData() {
-    console.log('removiendo token');
+    console.log('Removiendo token y cerrando sesión');
     localStorage.removeItem('token');
-    this.UpdateUserBehavior(new UserValidateModel());
+    this.UpdateUserBehavior(new UserValidateModel()); // Limpia el estado del usuario.
+    this.menuItems.next([]); // Limpia los ítems del menú.
+
+    this.logoutEvent.next(); // Emite el evento de cierre de sesión.
   }
 
   /** User session management */
@@ -62,15 +93,36 @@ export class SecurityService {
   }
 
   SessionValidate() {
-    let token = this.GetToken();
-    console.log('Verificando token en SessionValidate:', token); // Agregar esto para depurar
+    const token = this.GetToken();
+  
     if (token) {
-      // Si el token está presente, actualiza el estado de la sesión
-      this.UpdateUserBehavior({
-        user: undefined,  // No tienes datos de usuario por ahora
-        token: token
+      this.GetUserData().subscribe(userData => {
+        const validatedUser = new UserValidateModel({
+          user: new UserModel(userData), // Almacena los datos correctamente.
+          token: token
+        });
+  
+        this.UpdateUserBehavior(validatedUser);
+        this.UpdateMenu(userData.Role ? +userData.Role : 0);
       });
+    } else {
+      this.UpdateUserBehavior(new UserValidateModel());
     }
+  }
+
+  /**
+   * Actualiza el menú según el rol del usuario.
+   */
+  UpdateMenu(roleId: number) {
+    const items = MENU_ROLES[roleId] || []; // Selecciona ítems del menú por rol
+    this.menuItems.next(items); // Actualiza los ítems del menú
+  }
+
+  /**
+   * Obtiene el observable de los ítems del menú.
+   */
+  GetMenuItems(): Observable<MenuItem[]> {
+    return this.menuItems.asObservable();
   }
 
   /**
@@ -79,8 +131,8 @@ export class SecurityService {
    * @returns 
    */
   UpdateUserBehavior(data: UserValidateModel) {
-    console.log('actualizando datos de usuario', data);
-    return this.validatedUser.next(data);
+    console.log('Actualizando datos de usuario:', data);
+    this.validatedUser.next(data); // Actualiza el BehaviorSubject con los nuevos datos.
   }
 
   /**
