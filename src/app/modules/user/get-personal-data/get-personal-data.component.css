@@ -1,0 +1,94 @@
+/* Fondo y alineación centrada */
+body {
+  padding: 70px;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/assets/images/image3.jpg");
+  background-color: rgba(255, 255, 255, 0.5);
+  background-blend-mode: overlay;
+  background-size: cover;
+}
+
+/* Contenedor del formulario */
+.form-container {
+  width: 60%;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del título */
+.title {
+  margin-bottom: 10px;
+  text-align: left;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Formulario compacto */
+.form_signin {
+  padding: 15px;
+}
+
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+  width: 48%; /* Asegura que cada columna ocupe un 48% del espacio */
+}
+
+.label-text {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #424242;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+.data-field {
+  font-size: 1rem;
+  color: black;
+  background-color: #f5f5f5;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+/* Contenedor del botón */
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* Estilo del botón */
+.btn-agregar {
+  background-color: #1565c0; /* Color azul */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 25px; /* Bordes redondeados */
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-agregar:hover {
+  background-color: #0d47a1; /* Azul más oscuro al pasar el ratón */
+}
+
+.btn-agregar:disabled {
+  background-color: #b0bec5;
+  cursor: not-allowed;
+}
