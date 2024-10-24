@@ -11,7 +11,7 @@ import { UserModel } from '../modelos/user.model';
   providedIn: 'root'
 })
 export class SecurityService {
-  private logoutEvent = new Subject<void>(); 
+  private logoutEvent = new Subject<void>();
   menuItems = new BehaviorSubject<MenuItem[]>([]);
   urlBase: string = ConfigurationRoutesBackend.urlBackend;
 
@@ -26,8 +26,8 @@ export class SecurityService {
   GetUserData(): Observable<any> {
     const token = this.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    console.log('Headers enviados:', headers); 
-  
+    console.log('Headers enviados:', headers);
+
     return this.http.get(`${this.urlBase}users/me`, { headers });
   }
 
@@ -43,13 +43,13 @@ export class SecurityService {
       Password: password
     }).pipe(
       tap(response => {
-        console.log('Respuesta de inicio de sesión:', response); 
-        
+        console.log('Respuesta de inicio de sesión:', response);
+
         // Almacena el token y luego valida la sesión
-        this.StoreToken(response.access_token); 
-  
+        this.StoreToken(response.access_token);
+
         // Espera brevemente antes de validar la sesión para asegurar propagación
-        setTimeout(() => this.SessionValidate(), 50); 
+        setTimeout(() => this.SessionValidate(), 50);
       })
     );
   }
@@ -94,14 +94,14 @@ export class SecurityService {
 
   SessionValidate() {
     const token = this.GetToken();
-  
+
     if (token) {
       this.GetUserData().subscribe(userData => {
         const validatedUser = new UserValidateModel({
           user: new UserModel(userData), // Almacena los datos correctamente.
           token: token
         });
-  
+
         this.UpdateUserBehavior(validatedUser);
         this.UpdateMenu(userData.Role ? +userData.Role : 0);
       });
