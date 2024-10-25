@@ -12,7 +12,7 @@ import { UserModel } from '../modelos/user.model';
 })
 export class SecurityService {
   private logoutEvent = new Subject<void>();
-  menuItems = new BehaviorSubject<MenuItem[]>([]);
+  private menuItems = new BehaviorSubject<MenuItem[]>([]);
   urlBase: string = ConfigurationRoutesBackend.urlBackend;
 
   constructor(private http: HttpClient) {
@@ -94,28 +94,41 @@ export class SecurityService {
 
   SessionValidate() {
     const token = this.GetToken();
-
+  
     if (token) {
-      this.GetUserData().subscribe(userData => {
-        const validatedUser = new UserValidateModel({
-          user: new UserModel(userData), // Almacena los datos correctamente.
-          token: token
-        });
-
-        this.UpdateUserBehavior(validatedUser);
-        this.UpdateMenu(userData.Role ? +userData.Role : 0);
-      });
+      this.GetUserData().subscribe(
+        userData => {
+          console.log('Respuesta de la API /users/me:', userData);
+  
+          const validatedUser = new UserValidateModel({
+            user: new UserModel(userData), // Almacena los datos correctamente.
+            token: token
+          });
+  
+          this.UpdateUserBehavior(validatedUser);
+  
+          // Accede a la propiedad 'role' en minúscula
+          const role = userData.role !== undefined ? +userData.role : 0;
+          console.log('Rol del usuario:', role); // Depuración
+          this.UpdateMenu(role);
+        },
+        error => {
+          console.error('Error al obtener los datos del usuario:', error);
+          this.UpdateUserBehavior(new UserValidateModel()); // Limpia en caso de error
+        }
+      );
     } else {
-      this.UpdateUserBehavior(new UserValidateModel());
+      this.UpdateUserBehavior(new UserValidateModel()); // No hay token, limpia los datos
     }
-  }
+  }  
 
   /**
    * Actualiza el menú según el rol del usuario.
    */
   UpdateMenu(roleId: number) {
-    const items = MENU_ROLES[roleId] || []; // Selecciona ítems del menú por rol
-    this.menuItems.next(items); // Actualiza los ítems del menú
+    const items = MENU_ROLES[roleId] || []; 
+    console.log('Actualizando menú:', items);
+    this.menuItems.next(items); 
   }
 
   /**
@@ -135,18 +148,6 @@ export class SecurityService {
     this.validatedUser.next(data); // Actualiza el BehaviorSubject con los nuevos datos.
   }
 
-  /**
-   * 
-   * @returns list of menu items
-   */
-  GetItemsSideMenu(): ItemMenuModel[] {
-    let menuStr = localStorage.getItem("side-menu");
-    let menu: ItemMenuModel[] = [];
-    if (menuStr) {
-      menu = JSON.parse(menuStr);
-    }
-    return menu;
-  }
 
   /**
    * Request to recover the password 

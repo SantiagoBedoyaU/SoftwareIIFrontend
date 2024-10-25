@@ -18,6 +18,17 @@
 
                     <div class="row data-row">
                         <div class="col s6 data-item">
+                            <label class="label-text">Dirección:</label>
+                            <input type="address" formControlName="address" class="data-field" />
+                        </div>
+                        <div class="col s6 data-item">
+                            <label class="label-text">Teléfono:</label>
+                            <input type="phone" formControlName="phone" class="data-field" />
+                        </div>
+                    </div>
+
+                    <div class="row data-row">
+                        <div class="col s6 data-item">
                             <label class="label-text">Correo electrónico:</label>
                             <input type="email" formControlName="email" class="data-field" />
                         </div>
@@ -28,7 +39,7 @@
                     </div>
 
                     <div class="row button-container">
-                        <button class="btn-agregar" type="submit" [disabled]="fGroup.invalid">
+                        <button class="btn-agregar" type="submit">
                             Aceptar
                         </button>
                     </div>

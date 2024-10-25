@@ -38,6 +38,8 @@ export class GetPersonalDataComponent {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       dni: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
+      address: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],
     });
   }
 
@@ -58,6 +60,8 @@ export class GetPersonalDataComponent {
             lastName: userData.last_name,
             email: userData.email,
             dni: userData.dni,
+            address: userData.address,
+            phone: userData.phone
           });
         }
       },

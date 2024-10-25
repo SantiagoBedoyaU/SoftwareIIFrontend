@@ -7,6 +7,8 @@ export class UserModel {
     Email?: string;
     Password?: string;
     Role?: string;
+    Phone?: string;
+    Address?: string;
   
     constructor(init?: Partial<UserModel>) {
       Object.assign(this, init); // Asigna los valores opcionalmente.

@@ -42,7 +42,9 @@ export class PatchPersonalDataComponent implements AfterViewInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]], // Solo lectura
+      dni: ['', [Validators.required, Validators.pattern('^[0-9]*$')]], 
+      address: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
     });
   }
 
@@ -56,6 +58,8 @@ export class PatchPersonalDataComponent implements AfterViewInit {
             lastName: userData.last_name,
             email: userData.email,
             dni: userData.dni, 
+            address: userData.address,
+            phone: userData.phone
           });
         }
       },
@@ -71,6 +75,8 @@ export class PatchPersonalDataComponent implements AfterViewInit {
         first_name: this.fGroup.get('firstName')?.value,
         last_name: this.fGroup.get('lastName')?.value,
         email: this.fGroup.get('email')?.value,
+        address: this.fGroup.get('address')?.value,
+        phone: this.fGroup.get('phone')?.value,
       };
 
       this.userService.UpdateUserData(updatedData).subscribe({

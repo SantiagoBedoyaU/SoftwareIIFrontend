@@ -18,6 +18,17 @@
 
                     <div class="row data-row">
                         <div class="col s6 data-item">
+                            <label class="label-text">Dirección</label>
+                            <span class="data-field">{{ fGroup.get('address')?.value }}</span>
+                        </div>
+                        <div class="col s6 data-item">
+                            <label class="label-text">Teléfono</label>
+                            <span class="data-field">{{ fGroup.get('phone')?.value }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row data-row">
+                        <div class="col s6 data-item">
                             <label class="label-text">Correo electrónico:</label>
                             <span class="data-field">{{ fGroup.get('email')?.value }}</span>
                         </div>
@@ -28,8 +39,7 @@
                     </div>
 
                     <div class="row button-container">
-                        <button routerLink="/user/patch-personal-data" class="btn-agregar" type="submit"
-                            [disabled]="fGroup.invalid">
+                        <button routerLink="/user/patch-personal-data" class="btn-agregar" type="submit">
                             Actualizar
                         </button>
                     </div>
