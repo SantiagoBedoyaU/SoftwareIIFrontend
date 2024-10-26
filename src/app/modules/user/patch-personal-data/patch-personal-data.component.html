@@ -1,0 +1,88 @@
+<body class="background-image">
+    <div class="form-container">
+        <h4 class="card-title title">Mis datos personales</h4>
+
+        <form [formGroup]="fGroup" class="contenedor" (ngSubmit)="UpdatePersonalData()">
+            <div class="card grey lighten-4 z-depth-4">
+                <div class="card-content form_signin">
+                    <div class="row data-row">
+                        <div class="col s6 data-item">
+                            <label class="label-text">Nombres:</label>
+                            <input type="text" formControlName="firstName" class="data-field" />
+                        </div>
+                        <div class="col s6 data-item">
+                            <label class="label-text">Apellidos:</label>
+                            <input type="text" formControlName="lastName" class="data-field" />
+                        </div>
+                    </div>
+
+                    <div class="row data-row">
+                        <div class="col s6 data-item">
+                            <label class="label-text">Dirección:</label>
+                            <input type="address" formControlName="address" class="data-field" />
+                        </div>
+                        <div class="col s6 data-item">
+                            <label class="label-text">Teléfono:</label>
+                            <input type="phone" formControlName="phone" class="data-field" />
+                        </div>
+                    </div>
+
+                    <div class="row data-row">
+                        <div class="col s6 data-item">
+                            <label class="label-text">Correo electrónico:</label>
+                            <input type="email" formControlName="email" class="data-field" />
+                        </div>
+                        <div class="col s6 data-item">
+                            <label class="label-text">Número de Documento:</label>
+                            <span class="data-field">{{ fGroup.get('dni')?.value }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row button-container">
+                        <button class="btn-agregar" type="submit">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal exit -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <i class="large material-icons info">check_circle</i>
+            <p>Datos actualizados correctamente</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn waves-effect waves-light white black-text" (click)="redirectToGetData()" >Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal error -->
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <i class="large material-icons red-text">error</i>
+            <p>Hubo un error al actualizar los datos, intenta de nuevo</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn waves-effect waves-light white black-text" style="margin-right: 10px;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal data-invalid -->
+    <div id="warningModal" class="modal">
+        <div class="modal-content">
+            <i class="large material-icons yellow-text center-align">warning</i>
+            <p>Por favor, completa los campos correctamente</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn waves-effect waves-light white black-text" style="margin-right: 10px;">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+</body>

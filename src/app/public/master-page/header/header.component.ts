@@ -58,6 +58,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
     this.subscription.add(
       this.securityService.GetMenuItems().subscribe(items => {
+        console.log('Items del menu recibidos:', items);
         this.menuItems = items;
         this.cdr.detectChanges(); // Actualiza la vista cuando cambian los ítems.
       })

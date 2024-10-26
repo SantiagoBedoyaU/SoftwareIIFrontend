@@ -12,6 +12,10 @@ export const routes: Routes = [
         loadChildren: () => import('./modules/security/security.module').then(m => m.SecurityModule)
       },
       {
+        path: "user",
+        loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule)
+      },
+      {
         path:"",
         pathMatch: "full",
         redirectTo: "/home"
