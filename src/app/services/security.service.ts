@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, Subject, tap, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigurationRoutesBackend } from '../config/configuration.routes.backend';
 import { UserValidateModel } from '../modelos/user.validate.model';
@@ -169,7 +169,49 @@ export class SecurityService {
     return this.http.post(`${this.urlBase}reset-password`, {
       access_token: token,
       password: password
-    }
+    });
+  }
+
+  /**
+   * Register a new user
+   * @param userData 
+   * @returns 
+   */
+  registerUser(userData: any): Observable<any> {
+    const token = this.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.urlBase}users/`, userData, { headers });
+  }
+
+
+  /**
+   * Get the list of users
+   * @returns 
+   */
+  uploadUsersFromCSV(formData: FormData): Observable<any> {
+    const token = this.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.urlBase}users/load-by-csv`, formData, { headers });
+  }
+
+
+  /**
+   * Get the list of users
+   * @returns 
+   */
+  getUserByDNI(dni: string): Observable<any> {
+    const token = this.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.urlBase}users/${dni}`, { headers }).pipe(
+      catchError((error) => {
+        if (error.status === 404) {
+          // Usuario no encontrado
+          return of(null); 
+        } else {
+          return throwError(() => error);
+        }
+      })
     );
+
   }
 }
