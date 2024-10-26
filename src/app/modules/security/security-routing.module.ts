@@ -4,6 +4,7 @@ import { SigninComponent } from './signin/signin.component';
 import { LogoutComponent } from './logout/logout.component';
 import { RecoverPasswordComponent } from './recover-password/recover-password.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { PatientDoctorRegistrationComponent } from './patient-doctor-registration/patient-doctor-registration.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: "password-reset",
     component: PasswordResetComponent
+  },
+  {
+    path: "patientDoctorRegistration",
+    component: PatientDoctorRegistrationComponent
   }
 ];
 
