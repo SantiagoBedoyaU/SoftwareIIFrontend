@@ -110,7 +110,7 @@ export class PasswordChangeComponent implements AfterViewInit{
 
   // Redirect to login
   redirectToLogin() {
-    this.router.navigate(['/security/password-change']);
+    this.router.navigate(['/security/logout']);
   }
 
   // Getter for form controls
