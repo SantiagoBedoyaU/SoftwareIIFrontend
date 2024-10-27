@@ -173,6 +173,18 @@ export class SecurityService {
   }
 
   /**
+   * Password change
+   * @param newPassword 
+   * @returns password change
+   */
+  changePassword(newPassword: string): Observable<any> {
+    const token = this.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.urlBase}users/reset-password`, 
+      { new_password: newPassword }, { headers });
+  }
+
+  /**
    * Register a new user
    * @param userData 
    * @returns 
