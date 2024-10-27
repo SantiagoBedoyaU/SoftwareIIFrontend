@@ -6,6 +6,7 @@ import { RecoverPasswordComponent } from './recover-password/recover-password.co
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { PatientDoctorRegistrationComponent } from './patient-doctor-registration/patient-doctor-registration.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
+import { AdminRegistrationComponent } from './admin-registration/admin-registration.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: "password-change",
     component: PasswordChangeComponent
+  },
+  {
+    path: "adminRegistration", 
+    component: AdminRegistrationComponent
   }
 ];
 
