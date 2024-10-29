@@ -1,0 +1,93 @@
+<body class="background-image">
+    <div class="container-centered">
+        <h4 class="card-title title">Asignar Rol</h4>
+
+        <form [formGroup]="fGroup" class="container">
+            <div class="card grey lighten-4 z-depth-4">
+                <div class="card-content form_signin">
+                    <div class="row">
+
+                        <div class="input-field col s6 input-container">
+                            <label for="dni">Introduzca el número de identificación</label>
+                            <input formControlName="dni" id="dni" type="text" class="validate large-input" required />
+                            <div *ngIf="fGroup.get('dni')?.invalid && fGroup.get('dni')?.touched" class="error-message">
+                                Introduzca un número de identificación válido.
+                            </div>
+                        </div>
+                        <div class="input-field col s6 button-container">
+                            <button (click)="onSearchUser()" class="btn-search" type="button">
+                                Buscar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="foundUser">
+                        <div class="col s12">
+                            <p>Información del usuario encontrada:</p>
+                            <p><strong>Nombre:</strong> {{ foundUser.first_name }} {{ foundUser.last_name }}</p>
+                            <p><strong>Email:</strong> {{ foundUser.email }}</p>
+                            <p><strong>Rol actual:</strong> {{ getRoleName(foundUser.role) }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="foundUser">
+                        <div class="input-field col s6">
+                            <select formControlName="newRole" id="newRole" class="browser-default">
+                                <option value="" disabled selected>Seleccione un rol</option>
+                                <option value="0">Administrador</option>
+                                <option value="1">Doctor</option>
+                                <option value="2">Paciente</option>
+                            </select>
+                            <div *ngIf="fGroup.get('newRole')?.invalid && fGroup.get('newRole')?.touched"
+                                class="error-message">
+                                Seleccione una rol.
+                            </div>
+                        </div>
+                        <div class="input-field col s6 button-container">
+                            <button (click)="onAssignRole()" class="btn-assign" type="button">
+                                Asignar rol
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal de carga -->
+    <div id="loadingModal" class="modal">
+        <div class="modal-content">
+            <h5>Cargando</h5>
+            <p>Asignando rol... Por favor, espere.</p>
+        </div>
+    </div>
+
+    <!-- Modal para usuario no encontrado -->
+    <div id="userNotFoundModal" class="modal">
+        <div class="modal-content">
+            <h5>Usuario no encontrado</h5>
+            <p>El número de identificación no coincide con ningún usuario. Verifique el DNI e inténtelo de nuevo.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-close-modal btn-search" type="button"
+                onclick="M.Modal.getInstance(document.getElementById('userNotFoundModal')).close()">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para rol asignado correctamente-->
+    <div id="roleAssignedModal" class="modal">
+        <div class="modal-content">
+            <h5>Rol asignado con éxito</h5>
+            <p>El rol de usuario se ha actualizado correctamente.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-close-modal btn-search" type="button"
+                onclick="M.Modal.getInstance(document.getElementById('roleAssignedModal')).close()">
+                Cerrar
+            </button>
+        </div>
+    </div>
+
+</body>

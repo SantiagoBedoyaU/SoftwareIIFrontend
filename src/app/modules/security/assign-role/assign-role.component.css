@@ -1,0 +1,142 @@
+/* Fondo y alineación centrada */
+body {
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/assets/images/image3.jpg");
+  background-color: rgba(255, 255, 255, 0.5);
+  background-blend-mode: overlay;
+  background-size: cover;
+}
+
+/* Contenedor del formulario */
+.container-centered {
+  width: 600px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo del título */
+.title {
+  margin-bottom: 20px;
+  text-align: left;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #000;
+  background-color: transparent;
+  padding-left: 0;
+}
+
+/* Estilo del formulario */
+.form_signin {
+  padding: 15px;
+}
+
+.input-field {
+  margin-bottom: 20px;
+}
+
+.input-container {
+  position: relative;
+  margin-top: 30px;
+}
+
+.input-container label {
+  position: absolute;
+  top: -12px;
+  left: 10px;
+  padding: 0 5px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #616161;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Estilo del campo de entrada */
+.large-input {
+  padding: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Contenedor del botón */
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+/* Estilo del botón buscar */
+.btn-search {
+  background-color: #1565c0;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-search:hover {
+  background-color: #0d47a1;
+}
+
+.btn-search:disabled {
+  background-color: #b0bec5;
+  cursor: not-allowed;
+}
+
+.btn-assign {
+  background-color: #1565c0;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-assign:hover {
+  background-color: #0d47a1;
+}
+
+.btn-assign:disabled {
+  background-color: #b0bec5;
+  cursor: not-allowed;
+}
+
+/* Estilos para el modal */
+.modal {
+  max-width: 300px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.modal-content {
+  text-align: center;
+  padding: 20px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  border-top: none;
+}
+
+/* Mensajes de error en los campos */
+.error-message {
+  height: 15px;
+  font-size: 10px;
+  color: #d32f2f;
+}

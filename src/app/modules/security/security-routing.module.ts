@@ -7,6 +7,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { PatientDoctorRegistrationComponent } from './patient-doctor-registration/patient-doctor-registration.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
 import { AdminRegistrationComponent } from './admin-registration/admin-registration.component';
+import { AssignRoleComponent } from './assign-role/assign-role.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
   {
     path: "adminRegistration", 
     component: AdminRegistrationComponent
+  },
+  {
+    path: "assignRole",
+    component: AssignRoleComponent
   }
 ];
 
