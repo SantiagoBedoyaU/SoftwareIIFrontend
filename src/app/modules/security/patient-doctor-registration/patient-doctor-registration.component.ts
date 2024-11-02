@@ -118,26 +118,29 @@ export class PatientDoctorRegistrationComponent implements OnInit {
     }
   }
 
-  onUploadCSV(): void {
+  async onUploadCSV(): Promise<void> {
     if (!this.selectedFile) {
       alert('Por favor, selecciona un archivo CSV.');
       return;
     }
-
+    
     const formData = new FormData();
     formData.append('file', this.selectedFile);
-
-    this.securityService.uploadUsersFromCSV(formData).subscribe({
-      next: () => {
-        this.showModal('csvUploadSuccessModal');
-        this.selectedFile = null;
-      },
-      error: () => {
-        this.showModal('validationErrorModal', 'Error al cargar usuarios desde CSV.');
+  
+    try {
+      await this.securityService.uploadUsersFromCSV(formData).toPromise();
+      this.showModal('csvUploadSuccessModal');
+      this.selectedFile = null;
+    } catch (error) {
+      console.error('Error al cargar usuarios desde CSV:', error);
+      if ((error as any).error) {
+        console.error('Detalles del error:', (error as any).error);
       }
-    });
+      this.showModal('validationErrorModal', 'Error al cargar usuarios desde CSV.');
+    }
   }
-
+  
+  
   showModal(modalId: string, message?: string): void {
     const modalElement = document.getElementById(modalId);
     if (modalElement) {
