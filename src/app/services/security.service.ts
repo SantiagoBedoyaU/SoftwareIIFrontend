@@ -192,7 +192,7 @@ export class SecurityService {
   registerUser(userData: any): Observable<any> {
     const token = this.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.post(`${this.urlBase}users/`, userData, { headers });
+    return this.http.post(`${this.urlBase}users`, userData, { headers });
   }
 
 
