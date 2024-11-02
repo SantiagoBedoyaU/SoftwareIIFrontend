@@ -40,7 +40,6 @@ export class AddAppointmentComponent implements OnInit {
     this.fGroup = this.fb.group({
       doctorId: ['', Validators.required],
       fechaHoraInicio: ['', Validators.required],
-      fechaHoraFin: ['', Validators.required],
     });
   }
 
@@ -72,7 +71,6 @@ export class AddAppointmentComponent implements OnInit {
         }));
 
         console.log('Lista de doctores cargada:', this.doctors);
-
         this.filteredDoctors = this.doctors;
       },
       error: (error: any) => {
@@ -84,21 +82,13 @@ export class AddAppointmentComponent implements OnInit {
   onConfirmAppointment(): void {
     if (this.fGroup.valid && this.userData) {
       const startDate = moment(this.fGroup.get('fechaHoraInicio')?.value);
-      const endDate = moment(this.fGroup.get('fechaHoraFin')?.value);
       const now = moment();
 
       // Validación para evitar fechas pasadas
-      if (startDate.isBefore(now) || endDate.isBefore(startDate)) {
-        // Muestra el modal de fecha incorrecta
+      if (startDate.isBefore(now)) {
         const invalidDateModal = M.Modal.getInstance(document.getElementById('invalidDateModal')!);
         invalidDateModal.open();
-
-  
-        this.fGroup.patchValue({
-          fechaHoraInicio: '',
-          fechaHoraFin: ''
-        });
-
+        this.fGroup.patchValue({ fechaHoraInicio: '' });
         return;
       }
 
@@ -106,29 +96,16 @@ export class AddAppointmentComponent implements OnInit {
       if (startDate.day() === 0) {
         const sundayModal = M.Modal.getInstance(document.getElementById('sundayModal')!);
         sundayModal.open();
-
-
-        this.fGroup.patchValue({
-          fechaHoraInicio: '',
-          fechaHoraFin: ''
-        });
-
+        this.fGroup.patchValue({ fechaHoraInicio: '' });
         return;
       }
 
       // Validación para evitar horas fuera del rango permitido (6:00 AM a 6:00 PM)
       const startHour = startDate.hour();
-      const endHour = endDate.hour();
-
-      if (startHour < 6 || startHour >= 18 || endHour < 6 || endHour >= 18) {
+      if (startHour < 6 || startHour >= 18) {
         const timeRangeModal = M.Modal.getInstance(document.getElementById('timeRangeModal')!);
         timeRangeModal.open();
-
-        this.fGroup.patchValue({
-          fechaHoraInicio: '',
-          fechaHoraFin: ''
-        });
-
+        this.fGroup.patchValue({ fechaHoraInicio: '' });
         return;
       }
 
@@ -137,7 +114,6 @@ export class AddAppointmentComponent implements OnInit {
         doctor_id: this.fGroup.get('doctorId')?.value,
         patient_id: this.userData.dni,
         start_date: startDate.toISOString(),
-        end_date: endDate.toISOString(),
         status: 0
       };
 
@@ -146,13 +122,9 @@ export class AddAppointmentComponent implements OnInit {
       this.appointmentService.createAppointment(appointmentData).subscribe({
         next: () => {
           console.log('Cita registrada con éxito');
-
-         
           const successModal = M.Modal.getInstance(document.getElementById('successModal')!);
           successModal.open();
-
           this.fGroup.reset();
-
           this.fGroup.patchValue({ doctorId: '' });
           this.setMinDate();
         },

@@ -30,18 +30,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <!-- Seleccionar fecha y hora de fin -->
-                        <div class="input-field col s12">
-                            <label for="fechaHoraFin" class="label-no-background">Fecha y Hora de Fin</label>
-                            <input formControlName="fechaHoraFin" id="fechaHoraFin" type="datetime-local"
-                                class="validate large-input" [min]="minDate" required />
-                            <div *ngIf="fGroup.get('fechaHoraFin')?.invalid && fGroup.get('fechaHoraFin')?.touched"
-                                class="error-message">
-                                Por favor, ingrese una fecha y hora de fin válida.
-                            </div>
-                        </div>
-                    </div>
+
                     <!-- Botón de confirmar registro de cita -->
                     <div class="input-field col s12 button-container">
                         <button (click)="onConfirmAppointment()" class="btn-confirm" type="button">
