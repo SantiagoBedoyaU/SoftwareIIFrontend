@@ -218,12 +218,15 @@ export class SecurityService {
       catchError((error) => {
         if (error.status === 404) {
           // Usuario no encontrado
-          return of(null);
+          return of(null); 
+
+
         } else {
           return throwError(() => error);
         }
       })
     );
+
   }
 
 

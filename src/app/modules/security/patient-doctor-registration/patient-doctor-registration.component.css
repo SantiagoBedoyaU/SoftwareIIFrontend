@@ -80,7 +80,7 @@ body {
   
   .modal-footer {
     display: flex;
-    justify-content: center; 
+    justify-content: center; /
     border-top: none; 
   }
 
