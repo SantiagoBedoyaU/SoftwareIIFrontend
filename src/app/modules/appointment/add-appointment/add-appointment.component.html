@@ -1,0 +1,100 @@
+<body class="background-image">
+    <div class="container-centered">
+        <h4 class="card-title title">Registro de Citas</h4>
+        <form [formGroup]="fGroup" class="container">
+            <div class="card grey lighten-4 z-depth-4">
+                <div class="card-content form_signin">
+                    <div class="row">
+                        <!-- Seleccionar un doctor con menú desplegable -->
+                        <div class="input-field col s12">
+                            <label for="doctorId" class="label-no-background">Seleccione un doctor</label>
+                            <select formControlName="doctorId" id="doctorId" class="browser-default">
+                                <option value="" disabled selected>Seleccione un doctor</option>
+                                <option *ngFor="let doctor of doctors" [value]="doctor.id">{{ doctor.name }}</option>
+                            </select>
+                            <div *ngIf="fGroup.get('doctorId')?.invalid && fGroup.get('doctorId')?.touched"
+                                class="error-message">
+                                Por favor, seleccione un doctor válido.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- Seleccionar fecha y hora de inicio -->
+                        <div class="input-field col s12">
+                            <label for="fechaHoraInicio" class="label-no-background">Fecha y Hora de Inicio</label>
+                            <input formControlName="fechaHoraInicio" id="fechaHoraInicio" type="datetime-local"
+                                class="validate large-input" [min]="minDate" required />
+                            <div *ngIf="fGroup.get('fechaHoraInicio')?.invalid && fGroup.get('fechaHoraInicio')?.touched"
+                                class="error-message">
+                                Por favor, ingrese una fecha y hora de inicio válida.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón de confirmar registro de cita -->
+                    <div class="input-field col s12 button-container">
+                        <button (click)="onConfirmAppointment()" class="btn-confirm" type="button">
+                            Confirmar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal para fecha incorrecta -->
+    <div id="invalidDateModal" class="modal">
+        <div class="modal-content">
+            <h4>Fecha Incorrecta</h4>
+            <p>Las fechas deben ser superiores a la actual.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm" type="button"
+                onclick="M.Modal.getInstance(document.getElementById('invalidDateModal')).close()">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para éxito al registrar la cita -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <h4>Registro Exitoso</h4>
+            <p>La cita ha sido registrada exitosamente.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm" type="button"
+                onclick="M.Modal.getInstance(document.getElementById('successModal')).close()">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para día domingo no permitido -->
+    <div id="sundayModal" class="modal">
+        <div class="modal-content">
+            <h4>Día No Permitido</h4>
+            <p>Las citas no se pueden agendar los domingos.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm" type="button"
+                onclick="M.Modal.getInstance(document.getElementById('sundayModal')).close()">
+                Aceptar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para horario fuera del rango permitido -->
+    <div id="timeRangeModal" class="modal">
+        <div class="modal-content">
+            <h4>Horario No Permitido</h4>
+            <p>Las citas solo se pueden agendar entre las 6:00 AM y las 6:00 PM.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm" type="button"
+                onclick="M.Modal.getInstance(document.getElementById('timeRangeModal')).close()">
+                Aceptar
+            </button>
+        </div>
+    </div>
+</body>
