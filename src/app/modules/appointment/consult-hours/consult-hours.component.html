@@ -1,0 +1,64 @@
+<body class="background-image">
+    <div class="container-main">
+        <!-- Contenedor para el formulario de búsqueda -->
+        <div class="container-centered">
+            <h4 class="card-title title centered-tittle">Consultar Citas</h4>
+
+            <form [formGroup]="fGroup" class="container">
+                <div class="card grey lighten-4 z-depth-4 larger-card">
+                    <div class="card-content form_signin">
+                        <div class="row">
+                            <p>Ingrese la fecha de inicio y la fecha de fin para buscar citas en ese periodo.</p>
+                            <div class="input-field col s6 input-container">
+                                <div class="date-field-wrapper">
+                                    <input formControlName="startDate" id="startDate" type="text"
+                                        class="datepicker large-input" placeholder="Fecha Inicio" required />
+                                    <i class="material-icons date-icon">date_range</i>
+                                </div>
+                            </div>
+                            <div class="input-field col s6 input-container">
+                                <div class="date-field-wrapper">
+                                    <input formControlName="endDate" id="endDate" type="text"
+                                        class="datepicker large-input" placeholder="Fecha Fin" required />
+                                    <i class="material-icons date-icon">date_range</i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <button type="submit" (click)="searchAppointments()" class="btn-search">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Modales de Carga, Error, y Validación -->
+            <!-- (aquí irían los modales como los tienes actualmente) -->
+        </div>
+
+        <!-- Contenedor para la tabla de resultados -->
+        <div class="container-table-wrapper">
+            <div class="container-table">
+                <table class="responsive-table centered">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora fin</th>
+                            <th>Paciente</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let appt of appointments">
+                            <td>{{ appt.start_date | date: 'yyyy-MM-dd' }}</td>
+                            <td>{{ appt.start_date | date: 'HH:mm' }}</td>
+                            <td>{{ appt.end_date | date: 'HH:mm' }}</td>
+                            <td>{{ appt.patient_name }}</td>
+                            <td>{{ getStatusLabel(appt.status) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
