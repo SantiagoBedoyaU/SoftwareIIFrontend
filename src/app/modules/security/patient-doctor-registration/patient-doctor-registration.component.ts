@@ -118,12 +118,12 @@ export class PatientDoctorRegistrationComponent implements OnInit {
     }
   }
 
+
   async onUploadCSV(): Promise<void> {
     if (!this.selectedFile) {
       alert('Por favor, selecciona un archivo CSV.');
       return;
     }
-    
     const formData = new FormData();
     formData.append('file', this.selectedFile);
   
@@ -139,7 +139,6 @@ export class PatientDoctorRegistrationComponent implements OnInit {
       this.showModal('validationErrorModal', 'Error al cargar usuarios desde CSV.');
     }
   }
-  
   
   showModal(modalId: string, message?: string): void {
     const modalElement = document.getElementById(modalId);

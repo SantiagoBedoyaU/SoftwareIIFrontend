@@ -94,19 +94,19 @@ export class SecurityService {
 
   SessionValidate() {
     const token = this.GetToken();
-  
+
     if (token) {
       this.GetUserData().subscribe(
         userData => {
           console.log('Respuesta de la API /users/me:', userData);
-  
+
           const validatedUser = new UserValidateModel({
             user: new UserModel(userData), // Almacena los datos correctamente.
             token: token
           });
-  
+
           this.UpdateUserBehavior(validatedUser);
-  
+
           // Accede a la propiedad 'role' en minúscula
           const role = userData.role !== undefined ? +userData.role : 0;
           console.log('Rol del usuario:', role); // Depuración
@@ -120,15 +120,15 @@ export class SecurityService {
     } else {
       this.UpdateUserBehavior(new UserValidateModel()); // No hay token, limpia los datos
     }
-  }  
+  }
 
   /**
    * Actualiza el menú según el rol del usuario.
    */
   UpdateMenu(roleId: number) {
-    const items = MENU_ROLES[roleId] || []; 
+    const items = MENU_ROLES[roleId] || [];
     console.log('Actualizando menú:', items);
-    this.menuItems.next(items); 
+    this.menuItems.next(items);
   }
 
   /**
@@ -173,6 +173,18 @@ export class SecurityService {
   }
 
   /**
+   * Password change
+   * @param newPassword 
+   * @returns password change
+   */
+  changePassword(newPassword: string): Observable<any> {
+    const token = this.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.urlBase}users/reset-password`,
+      { new_password: newPassword }, { headers });
+  }
+
+  /**
    * Register a new user
    * @param userData 
    * @returns 
@@ -207,6 +219,8 @@ export class SecurityService {
         if (error.status === 404) {
           // Usuario no encontrado
           return of(null); 
+
+
         } else {
           return throwError(() => error);
         }
@@ -214,4 +228,19 @@ export class SecurityService {
     );
 
   }
+
+
+  /**
+ * Update the user role
+ * @param dni 
+ * @param newRole 
+ * @returns 
+ */
+  updateUserRole(dni: string, newRole: number): Observable<any> {
+    const token = this.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = { dni, new_role: newRole };
+    return this.http.patch(`${this.urlBase}users/assign-role`, body, { headers });
+  }
 }
+
