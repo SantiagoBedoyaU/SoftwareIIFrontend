@@ -13,6 +13,11 @@ export class AppointmentService {
 
   constructor(private http: HttpClient, private securityService: SecurityService) {}
 
+  /**
+   * 
+   * @param appointmentData 
+   * @returns 
+   */
   createAppointment(appointmentData: any): Observable<any> {
     const token = this.securityService.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -27,6 +32,11 @@ export class AppointmentService {
     );
   }
 
+  /**
+   * 
+   * @param appointmentData 
+   * @returns 
+   */
   getDoctors(): Observable<any[]> {
     const token = this.securityService.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -37,4 +47,20 @@ export class AppointmentService {
       })
     );
   }
+
+  /**
+   * 
+   * @param startDate 
+   * @param endDate 
+   * @param doctorID 
+   * @returns data of the appointments
+   */
+  getAppointmentsByDoctor(startDate: string, endDate: string, doctorID: string): Observable<any> {
+    const token = this.securityService.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);	
+
+    const queryParams = `?start_date=${startDate}&end_date=${endDate}&doctor_id=${doctorID}`;
+    return this.http.get(`${this.urlBase}appointments${queryParams}`, { headers });
+  }
+
 }
