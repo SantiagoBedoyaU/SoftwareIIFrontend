@@ -1,0 +1,113 @@
+<body class="background-image">
+    <div class="container-main">
+        <!-- Contenedor para el formulario de búsqueda -->
+        <div class="container-centered">
+            <h4 class="card-title title centered-tittle">Cancelar Citas</h4>
+
+            <form [formGroup]="fGroup" class="container">
+                <div class="card grey lighten-4 z-depth-4 larger-card">
+                    <div class="card-content form_signin">
+                        <div class="row">
+                            <p>Ingrese la fecha de inicio y la fecha de fin para buscar citas a cancelar en ese periodo.</p>
+                            <div class="input-field col s6 input-container">
+                                <div class="date-field-wrapper">
+                                    <input formControlName="startDate" id="startDate" type="text"
+                                        class="datepicker large-input" placeholder="Fecha Inicio" required />
+                                    <i class="material-icons date-icon">date_range</i>
+                                </div>
+                            </div>
+                            <div class="input-field col s6 input-container">
+                                <div class="date-field-wrapper">
+                                    <input formControlName="endDate" id="endDate" type="text"
+                                        class="datepicker large-input" placeholder="Fecha Fin" required />
+                                    <i class="material-icons date-icon">date_range</i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <button type="submit" (click)="searchAppointments()" class="btn-search">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Contenedor para la tabla de resultados -->
+        <div class="container-table-wrapper">
+            <div class="container-table">
+                <table class="responsive-table centered">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora fin</th>
+                            <th>Doctor</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let appt of appointments">
+                            <td>{{ appt.start_date | date: 'yyyy-MM-dd' }}</td>
+                            <td>{{ appt.start_date | date: 'HH:mm' }}</td>
+                            <td>{{ appt.end_date | date: 'HH:mm' }}</td>
+                            <td>{{ appt.doctorName }}</td>
+                            <td>
+                                <button class="btn-cancel btn-search"
+                                    (click)="onCancelAppointment(appt.id)">Cancelar</button>
+                            </td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Éxito de Cancelación -->
+    <div id="cancelSuccessModal" class="modal">
+        <div class="modal-content">
+            <h5>Éxito</h5>
+            <p>¡Cita cancelada correctamente!</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn-blue">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Error para Citas no Encontradas -->
+    <div id="noAppointmentsModal" class="modal">
+        <div class="modal-content">
+            <h5>Sin Citas</h5>
+            <p>No se encontraron citas en el rango de fechas seleccionado.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn-blue">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Cancelación -->
+    <div id="confirmCancelModal" class="modal">
+        <div class="modal-content">
+            <h5>Confirmar Cancelación</h5>
+            <p>¿Está seguro de que desea cancelar la cita?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-confirm btn-blue" (click)="confirmCancelAppointment()">Confirmar</button>
+            <button class="modal-close btn-cancel btn-blue">Cancelar</button>
+        </div>
+    </div>
+
+
+    <!-- Modal de Error para Fechas No Ingresadas -->
+    <div id="validationErrorModal" class="modal">
+        <div class="modal-content">
+            <h5>Error</h5>
+            <p>Debe ingresar las fechas de inicio y fin para buscar las citas.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close btn-blue">Cerrar</button>
+        </div>
+    </div>
+
+
+</body>
