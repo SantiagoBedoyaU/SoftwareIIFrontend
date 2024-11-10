@@ -45,7 +45,8 @@
                                     <label for="password">Contraseña</label>
                                     <span toggle="#password" class="material-icons toggle-password"
                                         style="cursor: pointer; position: absolute; right: 10px; top: 10px;"
-                                        (click)="togglePasswordVisibility()">visibility_off</span>
+                                        (click)="togglePasswordVisibility()"(keydown)="togglePasswordVisibility()"
+                                        tabindex="0">visibility_off</span>
                                 </div>
                                 <div class="show-errors"
                                     *ngIf="GetFormGroup['password'].errors && (GetFormGroup['password'].dirty || GetFormGroup['password'].touched)">

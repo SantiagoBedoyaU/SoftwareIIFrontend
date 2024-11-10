@@ -1,7 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
 
-declare var M: any;
-
 @Component({
   selector: 'app-home',
   standalone: true,

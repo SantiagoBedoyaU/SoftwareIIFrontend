@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SecurityService } from '../../../services/security.service';
 import { Router } from '@angular/router';
 import M from 'materialize-css';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-patient-doctor-registration',
@@ -71,14 +72,14 @@ export class PatientDoctorRegistrationComponent implements OnInit {
                 this.showModal('userRegisteredModal');
                 this.ClearForm();
               },
-              error: (error: any) => {
+              error: (error: HttpErrorResponse) => {
                 console.error('Error al registrar usuario:', error);
                 this.showModal('validationErrorModal', 'Error al registrar el usuario.');
               }
             });
           }
         },
-        error: (error: any) => {
+        error: (error: HttpErrorResponse) => {
           console.error('Error al verificar si el usuario existe:', error);
           this.showModal('validationErrorModal', 'Error al verificar si el usuario existe.');
         }
@@ -104,17 +105,18 @@ export class PatientDoctorRegistrationComponent implements OnInit {
         this.ClearForm();
         this.router.navigate(['/security/patientDoctorRegistration']);
       },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
         console.error('Error al registrar usuario:', error);
         this.showModal('validationErrorModal', 'Error al registrar el usuario.');
       }
     });
   }
 
-  onFileSelected(event: any): void {
-    this.selectedFile = event.target.files[0];
-    if (this.selectedFile) {
-      this.fGroup.markAsDirty(); 
+  onFileSelected(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement?.files?.length) {
+      this.selectedFile = inputElement.files[0];
+      this.fGroup.markAsDirty();
     }
   }
 
@@ -131,14 +133,23 @@ export class PatientDoctorRegistrationComponent implements OnInit {
       await this.securityService.uploadUsersFromCSV(formData).toPromise();
       this.showModal('csvUploadSuccessModal');
       this.selectedFile = null;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error al cargar usuarios desde CSV:', error);
-      if ((error as any).error) {
-        console.error('Detalles del error:', (error as any).error);
+      
+      // Comprobación de tipo más segura antes de acceder a la propiedad 'error'
+      if (this.isErrorWithDetail(error)) {
+        console.error('Detalles del error:', error.error);
       }
+      
       this.showModal('validationErrorModal', 'Error al cargar usuarios desde CSV.');
     }
   }
+
+
+// Definir un guardia de tipo que verifica si el error tiene la propiedad 'error'
+isErrorWithDetail(error: unknown): error is { error: string } {
+  return typeof error === 'object' && error !== null && 'error' in error;
+}
   
   showModal(modalId: string, message?: string): void {
     const modalElement = document.getElementById(modalId);

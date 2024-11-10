@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import { Router } from '@angular/router';
-
-declare var M: any;
 
 @Component({
   selector: 'app-patch-personal-data',
@@ -16,7 +14,7 @@ declare var M: any;
   templateUrl: './patch-personal-data.component.html',
   styleUrl: './patch-personal-data.component.css'
 })
-export class PatchPersonalDataComponent implements AfterViewInit {
+export class PatchPersonalDataComponent implements AfterViewInit, OnInit {
   fGroup: FormGroup = new FormGroup({});
 
   constructor(
@@ -80,11 +78,11 @@ export class PatchPersonalDataComponent implements AfterViewInit {
       };
 
       this.userService.UpdateUserData(updatedData).subscribe({
-        next: (response) => {
+        next: () => {
           const modal = M.Modal.getInstance(document.getElementById('modal1')!);
           modal.open();
         },
-        error: (err) => {
+        error: () => {
           const modal = M.Modal.getInstance(document.getElementById('modal2')!);
           modal.open();
         }

@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SecurityService } from '../../../services/security.service';
-
-declare var M: any;
 
 @Component({
   selector: 'app-password-change',
@@ -16,12 +14,12 @@ declare var M: any;
   templateUrl: './password-change.component.html',
   styleUrl: './password-change.component.css'
 })
-export class PasswordChangeComponent implements AfterViewInit{
+export class PasswordChangeComponent implements AfterViewInit, OnInit{
 
 
-  isPasswordVisible: boolean = false;
-  isPasswordVisible2: boolean = false;
-  isPasswordVisible3: boolean = false;
+  isPasswordVisible = false;
+  isPasswordVisible2 = false;
+  isPasswordVisible3 = false;
 
   fGroup: FormGroup = new FormGroup({});
 

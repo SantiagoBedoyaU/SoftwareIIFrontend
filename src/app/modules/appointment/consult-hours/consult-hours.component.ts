@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppointmentService } from '../../../services/appointment.service';
 import { SecurityService } from '../../../services/security.service';
+import { Appointment } from '../../../modelos/appointment.model';
 
 @Component({
   selector: 'app-consult-hours',
@@ -14,10 +15,10 @@ import { SecurityService } from '../../../services/security.service';
   templateUrl: './consult-hours.component.html',
   styleUrl: './consult-hours.component.css'
 })
-export class ConsultHoursComponent {
+export class ConsultHoursComponent implements OnInit {
   fGroup: FormGroup = new FormGroup({});
-  appointments: any[] = [];
-  doctorID: string = '';
+  appointments: Appointment [] = [];
+  doctorID = '';
 
   constructor(
     private fb: FormBuilder,
@@ -93,7 +94,7 @@ export class ConsultHoursComponent {
   loadDoctorId(): void {
     this.securityService.GetUserData().subscribe({
       next: (userData) => {
-        this.doctorID = userData.dni;
+        this.doctorID = userData.dni ?? '';
         console.log('Doctor ID:', this.doctorID);
       },
       error: (err) =>
@@ -123,7 +124,7 @@ export class ConsultHoursComponent {
             this.showModal('errorModal', 'No se encontraron citas en las fechas seleccionadas.');
           } else {
             this.appointments.forEach((appt, index) => {
-              this.securityService.getUserByDNI(appt.patient_id).subscribe({
+              this.securityService.getUserByDNI(appt.patient_id ?? "").subscribe({
                 next: (userData) => {
                   if (userData) {
                     this.appointments[index].patient_name = `${userData.first_name} ${userData.last_name}`;

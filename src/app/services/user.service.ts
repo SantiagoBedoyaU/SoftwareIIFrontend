@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import { ConfigurationRoutesBackend } from '../config/configuration.routes.backend';
+import { urlBackend } from '../config/configuration.routes.backend';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SecurityService } from './security.service';
 import { Observable } from 'rxjs';
+import { UserModel } from '../modelos/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  urlBase: string = ConfigurationRoutesBackend.urlBackend;
+  urlBase: string = urlBackend;
 
   constructor(
     private http: HttpClient,
@@ -19,7 +20,7 @@ export class UserService {
    * Method to get the user data
    * @returns Observable with the user data
    */
-  GetUserData(): Observable<any> {
+  GetUserData(): Observable<UserModel> {
     return this.securityService.GetUserData();
   }
 
@@ -28,7 +29,7 @@ export class UserService {
    * @param data User data to update
    * @returns Observable with the response
    */
-  UpdateUserData(data: any) {
+  UpdateUserData(data: UserModel): Observable<UserModel> {
     const token = this.securityService.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.patch(`${this.urlBase}users/me`, data, { headers });

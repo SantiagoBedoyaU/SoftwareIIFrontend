@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppointmentService } from '../../../services/appointment.service';
 import { SecurityService } from '../../../services/security.service';
+import { Appointment } from '../../../modelos/appointment.model';
 
 @Component({
   selector: 'app-cancel-appointment',
@@ -11,11 +12,11 @@ import { SecurityService } from '../../../services/security.service';
   templateUrl: './cancel-appointment.component.html',
   styleUrl: './cancel-appointment.component.css'
 })
-export class CancelAppointmentComponent {
+export class CancelAppointmentComponent implements OnInit{
   fGroup: FormGroup = new FormGroup({});
-  appointments: any[] = [];
-  patientID: string = '';
-  selectedAppointmentId: string = ''; // Propiedad para almacenar el ID de la cita seleccionada
+  appointments: Appointment[] = [];
+  patientID = '';
+  selectedAppointmentId = ''; // Propiedad para almacenar el ID de la cita seleccionada
 
   constructor(
     private fb: FormBuilder,
@@ -86,7 +87,7 @@ export class CancelAppointmentComponent {
   loadPatientID(): void {
     this.securityService.GetUserData().subscribe({
       next: (userData) => {
-        this.patientID = userData.dni;
+        this.patientID = userData.dni ?? '';
       },
       error: (err) => console.error('Error al cargar el ID del paciente:', err)
     });
@@ -109,16 +110,16 @@ export class CancelAppointmentComponent {
 
           // Para cada cita, obtener el nombre del doctor a partir del DNI utilizando SecurityService
           this.appointments.forEach((appointment, index) => {
-            this.securityService.getUserByDNI(appointment.doctor_id).subscribe({
+            this.securityService.getUserByDNI(appointment.doctor_id ?? "").subscribe({
               next: (doctorData) => {
                 if (doctorData) {
-                  this.appointments[index].doctorName = `${doctorData.first_name} ${doctorData.last_name}`;
+                  this.appointments[index].doctor_name = `${doctorData.first_name} ${doctorData.last_name}`;
                 } else {
-                  this.appointments[index].doctorName = 'Nombre no disponible';
+                  this.appointments[index].doctor_name = 'Nombre no disponible';
                 }
               },
               error: () => {
-                this.appointments[index].doctorName = 'Nombre no disponible';
+                this.appointments[index].doctor_name = 'Nombre no disponible';
               }
             });
           });

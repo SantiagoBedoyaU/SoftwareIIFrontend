@@ -4,6 +4,8 @@ import { SecurityService } from '../../../services/security.service';
 import { Router } from '@angular/router';
 import M from 'materialize-css';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { UserModel } from '../../../modelos/user.model';
 
 @Component({
   selector: 'app-assign-role',
@@ -15,7 +17,7 @@ import { CommonModule } from '@angular/common';
 })
 export class AssignRoleComponent implements OnInit {
   fGroup: FormGroup = new FormGroup({});
-  foundUser: any = null;
+  foundUser: UserModel | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -50,7 +52,7 @@ export class AssignRoleComponent implements OnInit {
             this.fGroup.patchValue({ newRole: '' });
           }
         },
-        error: (error: any) => {
+        error: (error: HttpErrorResponse) => {
           if (error.status === 404) {
             this.showModal('userNotFoundModal');
           } else {
@@ -73,7 +75,7 @@ export class AssignRoleComponent implements OnInit {
 
       this.showModal('loadingModal', 'Asignando rol... Por favor, espere.');
 
-      this.securityService.updateUserRole(dni, newRole).subscribe({
+      this.securityService.updateUserRole(dni ?? '', newRole).subscribe({
         next: () => {
           const loadingModalInstance = M.Modal.getInstance(document.getElementById('loadingModal')!);
           if (loadingModalInstance) {
@@ -88,7 +90,7 @@ export class AssignRoleComponent implements OnInit {
 
           this.clearForm();
         },
-        error: (error: any) => {
+        error: (error: HttpErrorResponse) => {
           console.error('Error al asignar el rol:', error);
 
           const loadingModalInstance = M.Modal.getInstance(document.getElementById('loadingModal')!);

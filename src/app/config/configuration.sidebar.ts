@@ -4,7 +4,7 @@ export interface MenuItem {
     icon: string;
 }
 
-export const MENU_ROLES: { [key: number]: MenuItem[] } = {
+export const MENU_ROLES: Record<number, MenuItem[] >  = {
     0: [ // 0: Administrador
         { route: '/user/get-personal-data', name: 'Mis datos personales', icon: 'folder_shared' },
         { route: '/security/password-change', name: 'Cambiar contraseña', icon: 'vpn_key' },

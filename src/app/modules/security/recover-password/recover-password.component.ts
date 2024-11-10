@@ -1,10 +1,8 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SecurityService } from '../../../services/security.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-declare var M: any;
 
 @Component({
   selector: 'app-recover-password',
@@ -16,7 +14,7 @@ declare var M: any;
   templateUrl: './recover-password.component.html',
   styleUrl: './recover-password.component.css'
 })
-export class RecoverPasswordComponent implements AfterViewInit{
+export class RecoverPasswordComponent implements AfterViewInit, OnInit{
 
   fGroup: FormGroup = new FormGroup({});
 

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; // Importa CommonModule
 import { SecurityService } from '../../../services/security.service';
 import { Router } from '@angular/router';
 import M from 'materialize-css';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin-registration',
@@ -13,7 +14,7 @@ import M from 'materialize-css';
   styleUrls: ['./admin-registration.component.css'],
   providers: [SecurityService]
 })
-export class AdminRegistrationComponent {
+export class AdminRegistrationComponent implements OnInit{
   fGroup: FormGroup = new FormGroup({});
 
   constructor(
@@ -72,14 +73,14 @@ export class AdminRegistrationComponent {
                 this.showModal('userRegisteredModal', 'Administrador registrado correctamente.');
                 this.ClearForm(); 
               },
-              error: (error: any) => {
+              error: (error: HttpErrorResponse) => {
                 console.error('Error al registrar administrador:', error);
                 this.showModal('validationErrorModal', 'Error al registrar el administrador.');
               }
             });
           }
         },
-        error: (error: any) => {
+        error: (error: HttpErrorResponse) => {
           console.error('Error al verificar si el usuario existe:', error);
           this.showModal('validationErrorModal', 'Error al verificar si el usuario existe.');
         }
