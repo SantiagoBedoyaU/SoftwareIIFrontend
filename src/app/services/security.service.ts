@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, of, Subject, tap, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ConfigurationRoutesBackend } from '../config/configuration.routes.backend';
+import { urlBackend } from '../config/configuration.routes.backend';
 import { UserValidateModel } from '../modelos/user.validate.model';
-import { ItemMenuModel } from '../modelos/item.menu.model';
 import { MENU_ROLES, MenuItem } from '../config/configuration.sidebar';
 import { UserModel } from '../modelos/user.model';
 
@@ -13,7 +12,7 @@ import { UserModel } from '../modelos/user.model';
 export class SecurityService {
   private logoutEvent = new Subject<void>();
   private menuItems = new BehaviorSubject<MenuItem[]>([]);
-  urlBase: string = ConfigurationRoutesBackend.urlBackend;
+  urlBase: string = urlBackend;
 
   constructor(private http: HttpClient) {
     this.SessionValidate();
@@ -23,7 +22,7 @@ export class SecurityService {
    * Get the user data
    * @returns 
    */
-  GetUserData(): Observable<any> {
+  GetUserData(): Observable<UserModel> {
     const token = this.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     console.log('Headers enviados:', headers);
@@ -154,7 +153,7 @@ export class SecurityService {
    * @param dni 
    * @returns 
    */
-  recoverPassword(dni: string): Observable<any> {
+  recoverPassword(dni: string): Observable<unknown> {
     return this.http.post(`${this.urlBase}recover-password`, { dni });
   }
 
@@ -165,7 +164,7 @@ export class SecurityService {
    * @param password 
    * @returns 
    */
-  resetPassword(token: string, password: string): Observable<any> {
+  resetPassword(token: string, password: string): Observable<unknown> {
     return this.http.post(`${this.urlBase}reset-password`, {
       access_token: token,
       password: password
@@ -177,7 +176,7 @@ export class SecurityService {
    * @param newPassword 
    * @returns password change
    */
-  changePassword(newPassword: string): Observable<any> {
+  changePassword(newPassword: string): Observable<unknown> {
     const token = this.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post(`${this.urlBase}users/reset-password`,
@@ -189,7 +188,7 @@ export class SecurityService {
    * @param userData 
    * @returns 
    */
-  registerUser(userData: any): Observable<any> {
+  registerUser(userData: UserModel): Observable<UserModel> {
     const token = this.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post(`${this.urlBase}users`, userData, { headers });
@@ -200,7 +199,7 @@ export class SecurityService {
    * Get the list of users
    * @returns 
    */
-  uploadUsersFromCSV(formData: FormData): Observable<any> {
+  uploadUsersFromCSV(formData: FormData): Observable<UserModel> {
     const token = this.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post(`${this.urlBase}users/load-by-csv`, formData, { headers });
@@ -211,10 +210,10 @@ export class SecurityService {
    * Get the list of users
    * @returns 
    */
-  getUserByDNI(dni: string): Observable<any> {
+  getUserByDNI(dni: string): Observable<UserModel | null> {
     const token = this.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${this.urlBase}users/${dni}`, { headers }).pipe(
+    return this.http.get<UserModel>(`${this.urlBase}users/${dni}`, { headers }).pipe(
       catchError((error) => {
         if (error.status === 404) {
           // Usuario no encontrado
@@ -236,7 +235,7 @@ export class SecurityService {
  * @param newRole 
  * @returns 
  */
-  updateUserRole(dni: string, newRole: number): Observable<any> {
+  updateUserRole(dni: string, newRole: number): Observable<UserModel> {
     const token = this.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = { dni, new_role: newRole };

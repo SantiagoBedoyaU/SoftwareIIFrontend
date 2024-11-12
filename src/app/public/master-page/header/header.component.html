@@ -22,11 +22,11 @@
     <li>
         <div class="user-view">
             <div class="background">
-                <img src="assets/images/background-user.jpg">
+                <img src="assets/images/background-user.jpg" alt="">
             </div>
-            <a href="#user"><img class="circle" src="assets/images/user.jpg"></a>
-            <a href="#name"><span class="white-text name">{{ user?.FirstName }}</span></a>
-            <a href="#email"><span class="white-text email">{{ user?.Email }}</span></a>
+            <a href="#user"><img class="circle" src="assets/images/user.jpg" alt=""></a>
+            <a href="#name"><span class="black-text name">{{ user?.first_name}} {{ user?.last_name }}</span></a>
+            <a href="#email"><span class="black-text email">{{ user?.email }}</span></a>
         </div>
     </li>
     <li *ngFor="let item of menuItems">

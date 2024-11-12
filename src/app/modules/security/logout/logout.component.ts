@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SecurityService } from '../../../services/security.service';
 import { Router } from '@angular/router';
-import { UserValidateModel } from '../../../modelos/user.validate.model';
 
 @Component({
   selector: 'app-logout',
@@ -10,7 +9,7 @@ import { UserValidateModel } from '../../../modelos/user.validate.model';
   templateUrl: './logout.component.html',
   styleUrl: './logout.component.css'
 })
-export class LogoutComponent {
+export class LogoutComponent implements OnInit {
 
   constructor(
     private securityService: SecurityService,

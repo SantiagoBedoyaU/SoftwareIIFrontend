@@ -1,14 +1,14 @@
 export class UserModel {
-    _id?: string;
-    TypeDNI?: string;
-    DNI?: string;
-    FirstName?: string;
-    LastName?: string;
-    Email?: string;
-    Password?: string;
-    Role?: string;
-    Phone?: string;
-    Address?: string;
+    id?: string;
+    typeDNI?: string;
+    dni?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    password?: string;
+    role?: number;
+    phone?: string;
+    address?: string;
   
     constructor(init?: Partial<UserModel>) {
       Object.assign(this, init); // Asigna los valores opcionalmente.

@@ -1,13 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ChangeDetectorRef, OnInit } from '@angular/core';
 import { SecurityService } from '../../../services/security.service';
-import { ItemMenuModel } from '../../../modelos/item.menu.model';
 import { Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { MenuItem } from '../../../config/configuration.sidebar';
 import { UserModel } from '../../../modelos/user.model';
-
-declare var M: any;
 
 @Component({
   selector: 'app-header',
@@ -19,8 +16,8 @@ declare var M: any;
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements AfterViewInit, OnDestroy {
-  activesession: boolean = false;
+export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
+  activesession = false;
   menuItems: MenuItem[] = [];
   user: UserModel | null = null;  
   subscription: Subscription = new Subscription();
@@ -37,7 +34,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
         if (this.activesession && data.user) {
           this.user = data.user; // Almacena los datos del usuario.
-          const role = data.user.Role ? +data.user.Role : 0;
+          const role = data.user.role ? +data.user.role : 0;
           this.securityService.UpdateMenu(role);
         } else {
           this.menuItems = [];

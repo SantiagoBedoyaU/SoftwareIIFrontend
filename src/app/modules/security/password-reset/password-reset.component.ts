@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SecurityService } from '../../../services/security.service';
 import { ActivatedRoute, Router } from '@angular/router';
-
-declare var M: any;
 
 @Component({
   selector: 'app-password-reset',
@@ -16,12 +14,12 @@ declare var M: any;
   templateUrl: './password-reset.component.html',
   styleUrl: './password-reset.component.css'
 })
-export class PasswordResetComponent implements AfterViewInit {
+export class PasswordResetComponent implements AfterViewInit, OnInit {
 
-  isPasswordVisible: boolean = false;
-  isPasswordVisible2: boolean = false;
-  token: string = '';
-  passwordMismatch: boolean = false;
+  isPasswordVisible = false;
+  isPasswordVisible2 = false;
+  token = '';
+  passwordMismatch = false;
 
   fGroup: FormGroup = new FormGroup({});
 

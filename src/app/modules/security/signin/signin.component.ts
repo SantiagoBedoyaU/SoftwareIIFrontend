@@ -1,11 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SecurityService } from '../../../services/security.service';
-import { UserValidateModel } from '../../../modelos/user.validate.model';
 import { Router } from '@angular/router';
-
-declare var M: any;
 
 @Component({
   selector: 'app-signin',
@@ -17,12 +14,12 @@ declare var M: any;
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })
-export class SigninComponent implements AfterViewInit {
+export class SigninComponent implements AfterViewInit, OnInit {
 
   fGroup: FormGroup = new FormGroup({});
-  userId: string = '';
-  selectedType: string = '';
-  isPasswordVisible: boolean = false;
+  userId = '';
+  selectedType = '';
+  isPasswordVisible = false;
 
   constructor(
     private fb: FormBuilder,
@@ -85,8 +82,8 @@ export class SigninComponent implements AfterViewInit {
       const modal = M.Modal.getInstance(document.getElementById('warningModal')!);
       modal.open();
     } else {
-      let document_number = this.GetFormGroup['document_number'].value;
-      let password = this.GetFormGroup['password'].value;
+      const document_number = this.GetFormGroup['document_number'].value;
+      const password = this.GetFormGroup['password'].value;
   
       this.securityService.SignIn(document_number, password).subscribe({
         next: (data: { access_token: string }) => {

@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { SecurityService } from '../../../services/security.service';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
-import { catchError, first, of } from 'rxjs';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-get-personal-data',
@@ -17,7 +16,7 @@ import { catchError, first, of } from 'rxjs';
   templateUrl: './get-personal-data.component.html',
   styleUrl: './get-personal-data.component.css'
 })
-export class GetPersonalDataComponent {
+export class GetPersonalDataComponent implements OnInit {
   fGroup: FormGroup = new FormGroup({});
 
   constructor(

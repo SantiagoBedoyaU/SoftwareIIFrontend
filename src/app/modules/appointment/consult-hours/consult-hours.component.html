@@ -54,7 +54,7 @@
                             <td>{{ appt.start_date | date: 'HH:mm' }}</td>
                             <td>{{ appt.end_date | date: 'HH:mm' }}</td>
                             <td>{{ appt.patient_name }}</td>
-                            <td>{{ getStatusLabel(appt.status) }}</td>
+                            <td>{{ getStatusLabel(appt.status ?? 0) }}</td>
                         </tr>
                     </tbody>
                 </table>

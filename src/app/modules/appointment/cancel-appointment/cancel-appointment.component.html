@@ -50,10 +50,10 @@
                             <td>{{ appt.start_date | date: 'yyyy-MM-dd' }}</td>
                             <td>{{ appt.start_date | date: 'HH:mm' }}</td>
                             <td>{{ appt.end_date | date: 'HH:mm' }}</td>
-                            <td>{{ appt.doctorName }}</td>
+                            <td>{{ appt.doctor_name }}</td>
                             <td>
                                 <button class="btn-cancel btn-search"
-                                    (click)="onCancelAppointment(appt.id)">Cancelar</button>
+                                    (click)="onCancelAppointment(appt.id ?? '')">Cancelar</button>
                             </td>
 
                         </tr>

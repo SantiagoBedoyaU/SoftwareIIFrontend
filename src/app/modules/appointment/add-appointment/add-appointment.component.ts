@@ -5,6 +5,8 @@ import { SecurityService } from '../../../services/security.service';
 import M from 'materialize-css';
 import { CommonModule } from '@angular/common';
 import moment from 'moment';
+import { HttpErrorResponse } from '@angular/common/http';
+import { UserModel } from '../../../modelos/user.model';
 
 @Component({
   selector: 'app-add-appointment',
@@ -20,7 +22,7 @@ export class AddAppointmentComponent implements OnInit {
   userData: { firstName: string; lastName: string; dni: string; email: string; } | undefined;
   doctors: { id: string; name: string; }[] = [];
   filteredDoctors: { id: string; name: string; }[] = [];
-  minDate: string = '';
+  minDate = '';
 
   constructor(
     private fb: FormBuilder,
@@ -48,15 +50,15 @@ export class AddAppointmentComponent implements OnInit {
       next: (user) => {
         if (user) {
           this.userData = {
-            firstName: user.first_name,
-            lastName: user.last_name,
-            dni: user.dni,
-            email: user.email,
+            firstName: user.first_name ?? '',
+            lastName: user.last_name ?? '',
+            dni: user.dni ?? '',
+            email: user.email ?? '',
           };
           console.log('Datos del usuario cargados:', this.userData);
         }
       },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
         console.error('Error al cargar los datos del usuario:', error);
       }
     });
@@ -65,15 +67,15 @@ export class AddAppointmentComponent implements OnInit {
   loadDoctors() {
     this.appointmentService.getDoctors().subscribe({
       next: (doctors) => {
-        this.doctors = doctors.map((doc: any) => ({
-          id: doc.dni,
+        this.doctors = doctors.map((doc: UserModel) => ({
+          id: doc.dni ?? "",
           name: `${doc.first_name} ${doc.last_name}`,
         }));
 
         console.log('Lista de doctores cargada:', this.doctors);
         this.filteredDoctors = this.doctors;
       },
-      error: (error: any) => {
+      error: (error: HttpErrorResponse) => {
         console.error('Error al cargar la lista de doctores:', error);
       }
     });
@@ -128,7 +130,7 @@ export class AddAppointmentComponent implements OnInit {
           this.fGroup.patchValue({ doctorId: '' });
           this.setMinDate();
         },
-        error: (error: any) => {
+        error: (error: HttpErrorResponse) => {
           console.error('Error al registrar la cita:', error);
           if (error.error) {
             console.error('Detalles del error:', error.error);
