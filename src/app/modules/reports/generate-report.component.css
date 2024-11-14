@@ -1,0 +1,15 @@
+.report-container {
+    padding: 20px;
+    text-align: center;
+}
+
+
+.btn-generate {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #1565c0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
