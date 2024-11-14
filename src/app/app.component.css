@@ -1,0 +1,80 @@
+/* Ejemplo de media queries */
+@media (max-width: 768px) { /* Pantallas de tabletas y dispositivos móviles */
+    .container-centered {
+      width: 90%;
+      padding: 15px;
+    }
+  
+    .title {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+  
+    .large-input, .btn-confirm, .btn-assign, .btn-search {
+      width: 100%;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) { /* Pantallas de dispositivos móviles */
+    .container-centered {
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .title {
+      font-size: 1.2rem;
+      text-align: center;
+    }
+  
+    .large-input, .btn-confirm, .btn-assign, .btn-search {
+      width: 100%;
+      padding: 10px;
+      font-size: 12px;
+    }
+  
+    .button-container {
+      justify-content: center;
+    }
+  }
+  
+  /* Ejemplo de media queries */
+@media (max-width: 768px) { /* Pantallas de tabletas y dispositivos móviles */
+    .container-centered {
+      width: 90%;
+      padding: 15px;
+    }
+  
+    .title {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+  
+    .large-input, .btn-confirm, .btn-assign, .btn-search {
+      width: 100%;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) { /* Pantallas de dispositivos móviles */
+    .container-centered {
+      width: 100%;
+      padding: 10px;
+    }
+  
+    .title {
+      font-size: 1.2rem;
+      text-align: center;
+    }
+  
+    .large-input, .btn-confirm, .btn-assign, .btn-search {
+      width: 100%;
+      padding: 10px;
+      font-size: 12px;
+    }
+  
+    .button-container {
+      justify-content: center;
+    }
+  }
+  

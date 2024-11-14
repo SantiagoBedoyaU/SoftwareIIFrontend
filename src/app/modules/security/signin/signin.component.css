@@ -99,3 +99,36 @@ input[type="password"]:focus + label {
   text-align: center;
   margin-bottom: 30px;
 }
+
+/* Configuraciones responsivas */
+@media (max-width: 768px) {
+  /* Reduce el ancho del contenedor en pantallas pequeñas */
+  .form-container {
+      width: 90%;
+      padding: 10px;
+      max-width: 100%;
+  }
+
+  /* Centra el título y ajusta el tamaño */
+  .title {
+      font-size: 1.5rem;
+      text-align: center;
+  }
+
+  /* Ajusta los márgenes y padding del formulario en pantallas pequeñas */
+  .form_signin {
+      padding: 20px;
+  }
+
+  /* Coloca los elementos del footer del formulario en columna */
+  .end_form {
+      flex-direction: column;
+      margin-top: 30px;
+      align-items: center;
+  }
+
+  /* Ajusta el tamaño y margen del modal */
+  .modal {
+      width: 80% !important;
+  }
+}

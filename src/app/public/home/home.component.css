@@ -6,12 +6,14 @@
   font-weight: bold;
 }
 
+/* Configuración de la fila para distribuir elementos */
 .row {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
 }
 
+/* Ajustes para las tarjetas */
 .card {
   display: flex;
   flex-direction: column;
@@ -26,18 +28,49 @@
   text-align: center;
 }
 
+/* Margen inferior de elementos */
 .buttom-margin {
   margin-bottom: 20px;
 }
 
+/* Imágenes del carrusel */
 .carousel-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* Imagen en la tarjeta */
 .card-image img {
   width: 100%; 
   height: 250px; 
   object-fit: cover; 
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    /* Reducir el padding en pantallas pequeñas */
+    .aside-padding {
+        padding: 20px;
+    }
+
+    /* Distribuir las tarjetas en una columna en lugar de una fila */
+    .row {
+        flex-direction: column;
+    }
+
+    /* Ajustar la imagen en la tarjeta para pantallas pequeñas */
+    .card-image img {
+        height: 200px; /* Reduce la altura de la imagen */
+    }
+
+    /* Ajustar márgenes y espaciado */
+    .buttom-margin {
+        margin-bottom: 15px;
+    }
+
+    /* Ajustes adicionales para el carrusel en pantallas pequeñas */
+    .carousel-item img {
+        height: auto; /* Permite que las imágenes del carrusel se ajusten automáticamente */
+    }
 }

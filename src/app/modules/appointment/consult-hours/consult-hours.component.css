@@ -23,6 +23,16 @@ body {
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   }
+
+  /* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  .container-main {
+      flex-direction: column; /* Apila el formulario y la tabla en lugar de colocarlos en dos columnas */
+      align-items: center; /* Centra los elementos en la columna */
+      padding: 10px; /* Reduce el padding para pantallas pequeñas */
+      width: 100%; /* Ajusta el ancho para aprovechar toda la pantalla */
+  }
+}
   
   .centered-tittle {
     margin: 0 auto;
