@@ -14,7 +14,7 @@ body {
 
 /* Contenedor del formulario */
 .container-centered {
-    width: 500px;
+    max-width: 500px;
     background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 10px;
@@ -85,7 +85,9 @@ body {
   }
 
   .error-message {
-    height: 15px; 
+    max-height: 15px; 
     font-size: 10px;
     color: #d32f2f; 
   }
+
+ 

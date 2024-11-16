@@ -92,3 +92,24 @@ body {
   background-color: #b0bec5;
   cursor: not-allowed;
 }
+@media (max-width: 768px) {
+  .container-main {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .container-centered,
+  .container-table-wrapper {
+      width: 100%;
+      margin: 10px;
+  }
+}
+
+.container-table {
+  overflow-x: auto;
+  display: block;
+}
+
+:host {
+  overflow: auto;
+}

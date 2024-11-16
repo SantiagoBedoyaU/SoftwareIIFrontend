@@ -2,7 +2,7 @@
 body {
     padding: 0;
     margin: 0;
-    height: 100vh;
+    max-width: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,7 +14,7 @@ body {
   
   /* Contenedor del formulario */
   .container-centered {
-    width: 600px;
+    max-width: 600px;
     background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 10px;
@@ -31,7 +31,7 @@ body {
   
   /* Formulario compacto */
   .form_signin {
-    padding: 15px;
+    padding:0 15px;
   }
   
   .input-field {
@@ -51,7 +51,7 @@ body {
   
   /* Estilo del campo de entrada */
   .large-input {
-    padding: 15px;
+    padding:0 15px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -89,7 +89,7 @@ body {
   
   /* Mensajes de error en los campos */
   .error-message {
-    height: 15px; 
+    max-height: 15px; 
     font-size: 10px;
     color: #d32f2f; 
   }

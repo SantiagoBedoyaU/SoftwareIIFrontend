@@ -14,7 +14,7 @@ body {
 
 /* Contenedor del formulario */
 .container-centered {
-  width: 600px;
+  max-width: 600px;
   background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
   border-radius: 10px;
@@ -140,3 +140,4 @@ body {
   font-size: 10px;
   color: #d32f2f;
 }
+
