@@ -1,0 +1,146 @@
+<body class="background-image">
+  <div class="container-scrollable">
+    <div class="container-centered">
+      <h4 class="card-title title left-aligned-tittle">Registro de Historia Clínica</h4>
+      <p class="instruction-text">Por favor, busque el paciente por el DNI:</p>
+
+      <!-- Formulario de búsqueda con validación de DNI -->
+      <form class="container" (ngSubmit)="searchPatient()">
+        <div class="card grey lighten-4 z-depth-4 larger-card">
+          <div class="card-content form_signin">
+            <div class="row">
+              <div class="input-field col s8 input-container">
+                <input id="dni" type="text" class="large-input" [(ngModel)]="dni" name="dni" placeholder="Ingrese DNI"
+                  required (input)="validateDni()" />
+                <!-- Mensaje de error para caracteres no válidos en el DNI -->
+                <p *ngIf="dniErrorMessage" class="error-message">{{ dniErrorMessage }}</p>
+              </div>
+              <div class="input-field col s4 input-container">
+                <button type="submit" class="btn-search">Buscar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Información del paciente -->
+      <div class="card grey lighten-4 z-depth-4 larger-card" *ngIf="patient">
+        <div class="card-content">
+          <h5 class="left-aligned-tittle">Información del Paciente</h5>
+          <p>Nombre: {{ patient.first_name }} {{ patient.last_name }}</p>
+          <p>Dirección: {{ patient.address }}</p>
+          <p>Teléfono: {{ patient.phone }}</p>
+        </div>
+      </div>
+
+      <!-- Citas pendientes del paciente -->
+      <div class="card grey lighten-4 z-depth-4 larger-card" *ngIf="appointments.length > 0">
+        <div class="card-content">
+          <h5 class="left-aligned-tittle">Citas Pendientes</h5>
+          <table class="highlight">
+            <thead>
+              <tr>
+                <th>Fecha de Inicio</th>
+                <th>Fecha de Fin</th>
+                <th>Nombre del Paciente</th>
+                <th>Seleccionar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let appointment of appointments">
+                <td>{{ appointment.start_date | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>{{ appointment.end_date | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>{{ patient?.first_name }} {{ patient?.last_name }}</td>
+                <td>
+                  <button (click)="selectAppointment(appointment)" class="btn-small">Seleccionar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Campos para agregar la historia clínica -->
+      <form *ngIf="selectedAppointment" class="container" (ngSubmit)="addProcedure()">
+        <div class="card grey lighten-4 z-depth-4 larger-card">
+          <div class="card-content form_signin">
+            <h5 class="left-aligned-tittle">Adicionar Historia Clínica</h5>
+            <div class="row">
+              <div class="input-field col s12 input-container">
+                <select class="browser-default" [(ngModel)]="typeOfConsultation" name="typeOfConsultation" required>
+                  <option value="" disabled selected>Tipo de Consulta</option>
+                  <option value="Consulta General">Consulta General</option>
+                  <option value="Urgencias">Urgencias</option>
+                  <option value="Control Periódico">Control Periódico</option>
+                </select>
+              </div>
+              <div class="input-field col s12 input-container">
+                <textarea class="materialize-textarea" [(ngModel)]="procedureDescription" name="procedureDescription"
+                  placeholder="Detalles de la Historia Clínica" required></textarea>
+              </div>
+              <div class="button-container">
+                <button type="submit" class="btn-search">Guardar Historia Clínica</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Modal de éxito -->
+      <div id="successModal" class="modal">
+        <div class="modal-content">
+          <h4>¡Éxito!</h4>
+          <p>El procedimiento médico se ha registrado correctamente.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close btn-blue">Aceptar</button>
+        </div>
+      </div>
+
+      <!-- Modal para campos vacíos -->
+      <div id="emptyFieldsModal" class="modal">
+        <div class="modal-content">
+          <h4>Error</h4>
+          <p>El tipo de consulta y la descripción no pueden estar vacíos. Por favor, complete todos los campos.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close btn-blue">Aceptar</button>
+        </div>
+      </div>
+
+      <!-- Modal para DNI no proporcionado -->
+      <div id="missingDniModal" class="modal">
+        <div class="modal-content">
+          <h4>Advertencia</h4>
+          <p>Debe ingresar un DNI para realizar la búsqueda.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close btn-blue">Aceptar</button>
+        </div>
+      </div>
+
+      <!-- Modal para paciente sin citas pendientes -->
+      <div id="noAppointmentsModal" class="modal">
+        <div class="modal-content">
+          <h4>Sin Citas Pendientes</h4>
+          <p>El paciente no tiene citas pendientes.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close btn-blue">Aceptar</button>
+        </div>
+      </div>
+
+
+      <!-- Modal para usuario no encontrado -->
+      <div id="userNotFoundModal" class="modal">
+        <div class="modal-content">
+          <h4>Error</h4>
+          <p>No se encontró al usuario con el DNI proporcionado.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close btn-blue">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

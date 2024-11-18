@@ -1,3 +1,7 @@
+export interface Procedure {
+    description: string;
+  }
+
 export interface Appointment {
     id?: string;
     start_date?: string;
@@ -7,4 +11,5 @@ export interface Appointment {
     patient_id?: string;
     patient_name?: string;
     status?: number;
+    procedures?: Procedure[];  
 }
