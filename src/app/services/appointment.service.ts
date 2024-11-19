@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { urlBackend } from '../config/configuration.routes.backend';
 import { catchError } from 'rxjs/operators';
 import { SecurityService } from './security.service';
-import { Appointment } from '../modelos/appointment.model';
+import { Appointment, Procedure } from '../modelos/appointment.model';
 import { UserModel } from '../modelos/user.model';
 
 @Injectable({
@@ -95,4 +95,17 @@ export class AppointmentService {
       })
     );
   }
+
+  addProcedure(appointmentId: string, procedure: Procedure): Observable<unknown> {
+    const token = this.securityService.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.patch(`${this.urlBase}appointments/${appointmentId}/add-procedure`, procedure, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error al agregar el procedimiento', error);
+        return throwError(() => error);
+      })
+    );
+  }
+  
 }
