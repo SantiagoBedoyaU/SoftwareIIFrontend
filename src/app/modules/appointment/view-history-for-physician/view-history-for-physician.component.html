@@ -34,6 +34,7 @@
             </div>
 
             <!-- Citas realizadas del paciente -->
+            <!-- Citas realizadas del paciente -->
             <div class="card grey lighten-4 z-depth-4 larger-card" *ngIf="appointments.length > 0">
                 <div class="card-content">
                     <h5 class="left-aligned-tittle">Citas Realizadas</h5>
@@ -42,6 +43,7 @@
                             <tr>
                                 <th>Fecha de Inicio</th>
                                 <th>Fecha de Fin</th>
+                                <th>Doctor</th>
                                 <th>Seleccionar</th>
                             </tr>
                         </thead>
@@ -49,6 +51,7 @@
                             <tr *ngFor="let appointment of appointments">
                                 <td>{{ appointment.start_date | date: 'yyyy-MM-dd HH:mm' }}</td>
                                 <td>{{ appointment.end_date | date: 'yyyy-MM-dd HH:mm' }}</td>
+                                <td>{{ appointment.doctor_name }}</td>
                                 <td>
                                     <button (click)="selectAppointment(appointment)"
                                         class="btn-small">Seleccionar</button>
@@ -58,7 +61,6 @@
                     </table>
                 </div>
             </div>
-
 
             <!-- Visualización de la historia clínica -->
             <div class="card grey lighten-4 z-depth-4 larger-card" *ngIf="selectedAppointment">

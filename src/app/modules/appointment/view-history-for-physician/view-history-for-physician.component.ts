@@ -81,7 +81,7 @@ export class ViewHistoryForPhysicianComponent implements AfterViewInit {
 
   loadCompletedAppointments() {
     const startDate = '2000-01-01';
-  
+    
     // Calcula el día de hoy y añade un día para asegurarse de incluir el día completo
     const today = new Date();
     today.setDate(today.getDate() + 1);
@@ -92,18 +92,39 @@ export class ViewHistoryForPhysicianComponent implements AfterViewInit {
         // Filtra las citas con el estado 2
         this.appointments = appointments.filter((appt) => appt.status === 2);
 
-        // Mostrar modal si no hay citas realizadas
         if (this.appointments.length === 0) {
           const noAppointmentsModal = M.Modal.getInstance(document.getElementById('noAppointmentsModal')!) as { open: () => void };
           noAppointmentsModal.open();
+          return;
         }
+
+        // Obtener los nombres de los doctores para cada cita
+        this.appointments.forEach((appointment, index) => {
+          if (appointment.doctor_id) {
+            this.securityService.getUserByDNI(appointment.doctor_id).subscribe({
+              next: (doctorData) => {
+                if (doctorData) {
+                  this.appointments[index].doctor_name = `${doctorData.first_name} ${doctorData.last_name}`;
+                } else {
+                  this.appointments[index].doctor_name = 'Nombre no disponible';
+                }
+              },
+              error: () => {
+                this.appointments[index].doctor_name = 'Nombre no disponible';
+              }
+            });
+          } else {
+            this.appointments[index].doctor_name = 'Nombre no disponible';
+          }
+        });
       },
       (error) => {
         console.error('Error al obtener las citas:', error);
         this.appointments = [];
       }
     );
-  }
+}
+
 
   selectAppointment(appointment: Appointment) {
     this.selectedAppointment = appointment;
