@@ -96,6 +96,13 @@ export class AppointmentService {
     );
   }
 
+
+  /**
+   * @param appointmentId 
+   * @param procedure 
+   * @returns 
+   * Add a procedure to an appointment
+   */
   addProcedure(appointmentId: string, procedure: Procedure): Observable<unknown> {
     const token = this.securityService.GetToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -103,6 +110,22 @@ export class AppointmentService {
     return this.http.patch(`${this.urlBase}appointments/${appointmentId}/add-procedure`, procedure, { headers }).pipe(
       catchError((error) => {
         console.error('Error al agregar el procedimiento', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+
+   /**
+   * Obtener el historial de citas del usuario autenticado
+   */
+   getMyHistory(): Observable<Appointment[]> {
+    const token = this.securityService.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.get<Appointment[]>(`${this.urlBase}appointments/my-history`, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error al obtener el historial del usuario:', error);
         return throwError(() => error);
       })
     );
