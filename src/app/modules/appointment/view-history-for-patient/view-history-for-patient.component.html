@@ -1,0 +1,58 @@
+<body class="background-image">
+    <div class="container-scrollable">
+      <div class="container-centered">
+        <h4 class="card-title title left-aligned-tittle">Visualización de Mi Historia Clínica</h4>
+        
+        <!-- Citas realizadas del paciente -->
+        <div class="card grey lighten-4 z-depth-4 larger-card" *ngIf="appointments.length > 0">
+          <div class="card-content">
+            <h5 class="left-aligned-tittle">Mis Citas Realizadas</h5>
+            <table class="highlight">
+              <thead>
+                <tr>
+                  <th>Fecha de Inicio</th>
+                  <th>Fecha de Fin</th>
+                  <th>Médico</th>
+                  <th>Seleccionar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let appointment of appointments">
+                  <td>{{ appointment.start_date | date: 'yyyy-MM-dd HH:mm' }}</td>
+                  <td>{{ appointment.end_date | date: 'yyyy-MM-dd HH:mm' }}</td>
+                  <td>{{ appointment.doctor_name }}</td>
+                  <td>
+                    <button (click)="selectAppointment(appointment)" class="btn-small">Seleccionar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+  
+        <!-- Visualización de la historia clínica -->
+        <div class="card grey lighten-4 z-depth-4 larger-card" *ngIf="selectedAppointment">
+          <div class="card-content form_signin">
+            <h5 class="left-aligned-tittle">Historia Clínica</h5>
+            <div class="row">
+              <div class="input-field col s12 input-container" *ngFor="let procedure of selectedAppointment.procedures">
+                <p><strong>Procedimiento:</strong> {{ procedure.description }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal for no appointments -->
+    <div id="noAppointmentsModal" class="modal">
+      <div class="modal-content">
+        <h5>Sin Citas Realizadas</h5>
+        <p>No se encontraron citas realizadas en su historial clínico.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-close btn-blue">Cerrar</button>
+      </div>
+    </div>
+  </body>
+  
