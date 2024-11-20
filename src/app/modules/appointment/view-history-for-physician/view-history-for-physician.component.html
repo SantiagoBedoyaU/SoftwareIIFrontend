@@ -1,7 +1,7 @@
 <body class="background-image">
     <div class="container-scrollable">
         <div class="container-centered">
-            <h4 class="card-title title left-aligned-tittle">Visualización de Historia Clínica</h4>
+            <h4 class="card-title title left-aligned-tittle">Visualización de Historial Médico</h4>
             <p class="instruction-text">Por favor, busque el paciente por el DNI:</p>
 
             <!-- Formulario de búsqueda con validación de DNI -->
@@ -34,6 +34,7 @@
             </div>
 
             <!-- Citas realizadas del paciente -->
+            <!-- Citas realizadas del paciente -->
             <div class="card grey lighten-4 z-depth-4 larger-card" *ngIf="appointments.length > 0">
                 <div class="card-content">
                     <h5 class="left-aligned-tittle">Citas Realizadas</h5>
@@ -42,7 +43,7 @@
                             <tr>
                                 <th>Fecha de Inicio</th>
                                 <th>Fecha de Fin</th>
-                                <th>Nombre del Paciente</th>
+                                <th>Médico</th>
                                 <th>Seleccionar</th>
                             </tr>
                         </thead>
@@ -50,7 +51,7 @@
                             <tr *ngFor="let appointment of appointments">
                                 <td>{{ appointment.start_date | date: 'yyyy-MM-dd HH:mm' }}</td>
                                 <td>{{ appointment.end_date | date: 'yyyy-MM-dd HH:mm' }}</td>
-                                <td>{{ patient?.first_name }} {{ patient?.last_name }}</td>
+                                <td>{{ appointment.doctor_name }}</td>
                                 <td>
                                     <button (click)="selectAppointment(appointment)"
                                         class="btn-small">Seleccionar</button>
