@@ -24,5 +24,6 @@ export const MENU_ROLES: Record<number, MenuItem[] >  = {
         { route: '/security/password-change', name: 'Cambiar contraseña', icon: 'vpn_key' },
         { route: '/appointment/addAppointment', name: 'Solicitar cita', icon: 'event_available' },
         { route: '/appointment/cancelAppointment', name: 'Cancelar cita', icon: 'event_busy' },
+        { route: '/appointment/viewHistoryForPatient', name: 'Ver historial clínico', icon: 'history' },
     ],
 };
