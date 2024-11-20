@@ -81,15 +81,12 @@ export class ViewHistoryForPhysicianComponent implements AfterViewInit {
 
   loadCompletedAppointments() {
     const startDate = '2000-01-01';
-    
-    // Calcula el día de hoy y añade un día para asegurarse de incluir el día completo
     const today = new Date();
     today.setDate(today.getDate() + 1);
-    const endDate = today.toISOString().split('T')[0]; // Obtiene el formato YYYY-MM-DD
+    const endDate = today.toISOString().split('T')[0]; 
 
     this.appointmentService.getAppointmentsByPatient(startDate, endDate, this.dni).subscribe(
       (appointments) => {
-        // Filtra las citas con el estado 2
         this.appointments = appointments.filter((appt) => appt.status === 2);
 
         if (this.appointments.length === 0) {
