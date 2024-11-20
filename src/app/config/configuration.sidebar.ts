@@ -17,13 +17,13 @@ export const MENU_ROLES: Record<number, MenuItem[] >  = {
         { route: '/appointment/consultHours', name: 'Consultar horario', icon: 'event'},
         { route: 'security/patientDoctorRegistration', name: 'Registrar usuario', icon: 'person_add' },
         { route: '/appointment/addNewHistory', name: 'Añadir historial clínico', icon: 'add_to_photos' },
-        { route: '/appointment/viewHistoryForPhysician', name: 'Ver historial clínico', icon: 'history' },
+        { route: '/appointment/viewHistoryForPhysician', name: 'Ver historial de citas', icon: 'history' },
     ],
     2: [ // 2: Paciente
         { route: '/user/get-personal-data', name: 'Mis datos personales', icon: 'folder_shared' },
         { route: '/security/password-change', name: 'Cambiar contraseña', icon: 'vpn_key' },
         { route: '/appointment/addAppointment', name: 'Solicitar cita', icon: 'event_available' },
         { route: '/appointment/cancelAppointment', name: 'Cancelar cita', icon: 'event_busy' },
-        { route: '/appointment/viewHistoryForPatient', name: 'Ver historial clínico', icon: 'history' },
+        { route: '/appointment/viewHistoryForPatient', name: 'Ver historial de citas', icon: 'history' },
     ],
 };
