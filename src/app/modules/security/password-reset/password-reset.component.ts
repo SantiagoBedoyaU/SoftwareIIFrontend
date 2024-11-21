@@ -55,7 +55,7 @@ export class PasswordResetComponent implements AfterViewInit, OnInit {
   // Handle password reset logic
   ResetPassword() {
     if (this.fGroup.invalid) {
-      alert('Introduce una contraseña vállida');
+      alert('Introduce una contraseña válida');
       return;
     }
 
