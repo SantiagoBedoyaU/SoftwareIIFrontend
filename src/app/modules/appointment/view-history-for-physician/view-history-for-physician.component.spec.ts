@@ -46,18 +46,21 @@ describe('ViewHistoryForPhysicianComponent', () => {
   });
 
   it('should open noAppointmentsModal if there are no completed appointments', fakeAsync(() => {
-    const noAppointmentsModal = { open: jasmine.createSpy('open') };
-    spyOn(M.Modal, 'getInstance').and.returnValue(noAppointmentsModal as any);
-
+    const noAppointmentsModal: Partial<M.Modal> = { 
+      open: jasmine.createSpy('open') 
+    };
+    spyOn(M.Modal, 'getInstance').and.returnValue(noAppointmentsModal as M.Modal);
+  
     component.dni = '123456';
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of([])); // Simula que no hay citas
-
+  
     component.loadCompletedAppointments();
     tick();
-
+  
     expect(noAppointmentsModal.open).toHaveBeenCalled();
     expect(component.appointments.length).toBe(0);
   }));
+  
 
   it('should set doctor_name to "Nombre no disponible" if doctor_id is not present', fakeAsync(() => {
     const mockAppointments: Appointment[] = [
@@ -121,13 +124,17 @@ describe('ViewHistoryForPhysicianComponent', () => {
 
   it('should open missingDniModal if DNI is not provided', () => {
     component.dni = '';
-    const missingDniModal = { open: jasmine.createSpy('open') };
-    spyOn(M.Modal, 'getInstance').and.returnValue(missingDniModal as any);
-
+  
+    // Crear un mock parcial de la instancia del modal
+    const missingDniModal: Partial<M.Modal> = { open: jasmine.createSpy('open') };
+    spyOn(M.Modal, 'getInstance').and.returnValue(missingDniModal as M.Modal);
+  
     component.searchPatient();
-
+  
+    // Verificar que el modal fue abierto
     expect(missingDniModal.open).toHaveBeenCalled();
   });
+  
 
   it('should call loadCompletedAppointments when user is found', () => {
     const mockUser = { dni: '12345678', first_name: 'John', last_name: 'Doe' } as UserModel;
@@ -167,17 +174,23 @@ describe('ViewHistoryForPhysicianComponent', () => {
 
   it('should open userNotFoundModal if patient is not found', fakeAsync(() => {
     component.dni = '123456';
+  
+    // Configurar el mock para el servicio
     mockSecurityService.getUserByDNI.and.returnValue(of(null));
-    const userNotFoundModal = { open: jasmine.createSpy('open') };
-    spyOn(M.Modal, 'getInstance').and.returnValue(userNotFoundModal as any);
-
+  
+    // Crear un mock parcial de la instancia del modal
+    const userNotFoundModal: Partial<M.Modal> = { open: jasmine.createSpy('open') };
+    spyOn(M.Modal, 'getInstance').and.returnValue(userNotFoundModal as M.Modal);
+  
     component.searchPatient();
-    tick();
-
+    tick(); // Simular el paso del tiempo para resolver las suscripciones
+  
+    // Verificaciones
     expect(userNotFoundModal.open).toHaveBeenCalled();
     expect(component.patient).toBeNull();
     expect(component.appointments.length).toBe(0);
   }));
+  
 
   it('should load completed appointments and set doctor names', fakeAsync(() => {
     component.dni = '123456';

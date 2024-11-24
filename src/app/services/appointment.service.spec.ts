@@ -3,8 +3,6 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { AppointmentService } from './appointment.service';
 import { SecurityService } from './security.service';
 import { Appointment, Procedure } from '../modelos/appointment.model';
-import { UserModel } from '../modelos/user.model';
-import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 describe('AppointmentService', () => {

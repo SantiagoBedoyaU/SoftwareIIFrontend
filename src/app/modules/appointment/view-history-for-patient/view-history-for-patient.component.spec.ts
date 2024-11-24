@@ -87,18 +87,23 @@ describe('ViewHistoryForPatientComponent', () => {
     const modalElement = document.createElement('div');
     modalElement.id = 'noAppointmentsModal';
     document.body.appendChild(modalElement);
-
-    const spyOpen = jasmine.createSpy('open');
-    spyOn(M.Modal, 'getInstance').and.returnValue({ open: spyOpen } as any);
-
+  
+    const modalInstance: Partial<M.Modal> = {
+      open: jasmine.createSpy('open'),
+    };
+  
+    spyOn(M.Modal, 'getInstance').and.returnValue(modalInstance as M.Modal);
+  
     mockAppointmentService.getMyHistory.and.returnValue(of([]));
-
+  
     component.loadMyAppointments();
-    tick(); // simulate passage of time to allow for subscriptions to resolve
-
-    expect(spyOpen).toHaveBeenCalled();
+    tick();
+  
+    expect(modalInstance.open).toHaveBeenCalled();
     document.body.removeChild(modalElement);
   }));
+  
+  
 
   it('should fetch and set doctor name for each appointment', fakeAsync(() => {
     const mockAppointments: Appointment[] = [
