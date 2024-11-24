@@ -4,6 +4,7 @@ import { SecurityService } from '../../../services/security.service';
 import { Router } from '@angular/router';
 import M from 'materialize-css';
 import { HttpErrorResponse } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-patient-doctor-registration',
@@ -130,17 +131,14 @@ export class PatientDoctorRegistrationComponent implements OnInit {
     formData.append('file', this.selectedFile);
   
     try {
-      await this.securityService.uploadUsersFromCSV(formData).toPromise();
+      await firstValueFrom(this.securityService.uploadUsersFromCSV(formData));
       this.showModal('csvUploadSuccessModal');
       this.selectedFile = null;
     } catch (error: unknown) {
       console.error('Error al cargar usuarios desde CSV:', error);
-      
-      // Comprobación de tipo más segura antes de acceder a la propiedad 'error'
       if (this.isErrorWithDetail(error)) {
         console.error('Detalles del error:', error.error);
       }
-      
       this.showModal('validationErrorModal', 'Error al cargar usuarios desde CSV.');
     }
   }

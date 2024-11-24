@@ -115,13 +115,18 @@ export class AssignRoleComponent implements OnInit {
     const modalElement = document.getElementById(modalId);
     if (modalElement) {
       const modalInstance = M.Modal.getInstance(modalElement);
-      if (message) {
-        modalElement.querySelector('.modal-content p')!.textContent = message;
+      if (modalInstance) {
+        if (message) {
+          const messageElement = modalElement.querySelector('.modal-content p');
+          if (messageElement) {
+            messageElement.textContent = message;
+          }
+        }
+        modalInstance.open();
       }
-      modalInstance.open();
     }
   }
-
+  
   getRoleName(role: number): string {
     switch (role) {
       case 0:
