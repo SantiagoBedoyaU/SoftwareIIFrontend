@@ -110,7 +110,13 @@ export class CancelAppointmentComponent implements OnInit{
 
           // Para cada cita, obtener el nombre del doctor a partir del DNI utilizando SecurityService
           this.appointments.forEach((appointment, index) => {
-            this.securityService.getUserByDNI(appointment.doctor_id ?? "").subscribe({
+            const doctorId = appointment.doctor_id ?? '';
+            if (!doctorId) { // Si doctor_id es null, undefined o vacío
+              this.appointments[index].doctor_name = 'Nombre no disponible';
+              return; // Salir temprano para evitar llamar al servicio
+            }
+
+            this.securityService.getUserByDNI(doctorId).subscribe({
               next: (doctorData) => {
                 if (doctorData) {
                   this.appointments[index].doctor_name = `${doctorData.first_name} ${doctorData.last_name}`;

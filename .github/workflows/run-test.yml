@@ -1,0 +1,32 @@
+name: Run Component and Service Tests
+
+on:
+  push:
+    branches:
+      - unit-tests-for-components-and-services 
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Configurar el repositorio
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      # Configurar Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.17.0' # Asegúrate de usar la versión correcta
+
+      # Instalar dependencias
+      - name: Instalar dependencias
+        run: npm ci # Más rápido y confiable que npm install para CI
+
+      # Ejecutar pruebas unitarias
+      - name: Ejecutar pruebas unitarias
+        run: npm test -- --watch=false
