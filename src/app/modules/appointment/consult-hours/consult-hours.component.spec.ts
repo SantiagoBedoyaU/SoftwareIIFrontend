@@ -8,8 +8,7 @@ import { By } from '@angular/platform-browser';
 import { AppointmentService } from '../../../services/appointment.service';
 import { of, throwError } from 'rxjs';
 import { SecurityService } from '../../../services/security.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Appointment } from '../../../modelos/appointment.model';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 interface MGlobal {
   Modal: {
@@ -26,7 +25,6 @@ describe('ConsultHoursComponent', () => {
   let fixture: ComponentFixture<ConsultHoursComponent>;
   let appointmentService: jasmine.SpyObj<AppointmentService>;
   let securityService: jasmine.SpyObj<SecurityService>;
-  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     appointmentService = jasmine.createSpyObj('AppointmentService', ['getAppointmentsByDoctor']);
@@ -68,7 +66,6 @@ describe('ConsultHoursComponent', () => {
     component = fixture.componentInstance;
     appointmentService = TestBed.inject(AppointmentService) as jasmine.SpyObj<AppointmentService>;
     securityService = TestBed.inject(SecurityService) as jasmine.SpyObj<SecurityService>;
-    httpMock = TestBed.inject(HttpTestingController);
 
     // Mock del servicio para retornar un array vacío por defecto
     spyOn(appointmentService, 'getAppointmentsByDoctor').and.returnValue(of([]));
@@ -162,12 +159,12 @@ describe('ConsultHoursComponent', () => {
     const mockElement = document.createElement('input');
     mockElement.value = '2024-11-15';
 
-    spyOn(document, 'querySelectorAll').and.returnValue([mockElement] as any);
+    spyOn(document, 'querySelectorAll').and.returnValue([mockElement] as unknown as NodeListOf<Element>);
     spyOn(component.fGroup, 'get').and.callThrough();
 
     component.initDatepickers();
 
-    const pickerOptions = (window as any).M.Datepicker.init.calls.mostRecent().args[1];
+    const pickerOptions = (globalThis as unknown as { M: MGlobal }).M.Datepicker.init.calls.mostRecent().args[1];
     pickerOptions.onClose();
 
     expect(component.fGroup.get('startDate')?.value).toBe('2024-11-15');
