@@ -49,11 +49,13 @@ export class GetPersonalDataComponent implements OnInit {
     this.userService.GetUserData().pipe(
       catchError((error) => {
         console.error('Error al cargar los datos del usuario:', error);
-        return of(null);  // Devuelve un observable vacío en caso de error
+        // Retorna un objeto vacío con las propiedades necesarias (o valores por defecto)
+        return of(null);  // Asegúrate de que el objeto sea compatible con la estructura esperada por el formulario
       })
     ).subscribe({
       next: (userData) => {
         if (userData) {
+          // Si los datos fueron obtenidos correctamente (aunque estén vacíos)
           this.fGroup.patchValue({
             firstName: userData.first_name,
             lastName: userData.last_name,
@@ -64,7 +66,6 @@ export class GetPersonalDataComponent implements OnInit {
           });
         }
       },
-      error: (err) => console.error('Error en la suscripción:', err),
       complete: () => console.log('Datos del usuario cargados correctamente.')
     });
   }

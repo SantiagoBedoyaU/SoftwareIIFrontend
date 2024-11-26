@@ -9,22 +9,22 @@ import { Router } from '@angular/router';
   templateUrl: './logout.component.html',
   styleUrl: './logout.component.css'
 })
-export class LogoutComponent implements OnInit {
 
+
+export class LogoutComponent implements OnInit {
   constructor(
     private securityService: SecurityService,
-    private router: Router
-  ) { }
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.logout();
   }
 
   logout() {
-    this.securityService.RemoveLoggedUserData(); // Elimina los datos.
+    this.securityService.RemoveLoggedUserData();
     this.router.navigate(['']).then(() => {
-      window.location.reload(); // Fuerza la recarga tras navegar.
+      window.location.reload(); // Ahora depende del objeto inyectado
     });
   }
-
 }
