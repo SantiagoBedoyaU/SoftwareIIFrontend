@@ -17,7 +17,7 @@ import { Appointment } from '../../../modelos/appointment.model';
 })
 export class ConsultHoursComponent implements OnInit {
   fGroup: FormGroup = new FormGroup({});
-  appointments: Appointment [] = [];
+  appointments: Appointment[] = [];
   doctorID = '';
 
   constructor(
@@ -89,7 +89,7 @@ export class ConsultHoursComponent implements OnInit {
     });
   }
 
-
+  
   // Load the doctor ID
   loadDoctorId(): void {
     this.securityService.GetUserData().subscribe({
@@ -110,7 +110,20 @@ export class ConsultHoursComponent implements OnInit {
     if (this.fGroup.valid) {
       const { startDate, endDate } = this.fGroup.value;
 
-      console.log('Fechas ingresadas:', startDate, endDate); // Verifica las fechas ingresadas
+      console.log('Fechas ingresadas:', startDate, endDate);
+
+      // Validar el formato de las fechas (yyyy-mm-dd)
+      const dateRegex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/;
+      if (!dateRegex.test(startDate) || !dateRegex.test(endDate)) {
+        // Si el formato es incorrecto, mostrar el modal de error
+        this.showModal('validationErrorModal', 'El formato de la fecha es incorrecto');
+        return; // Detener la ejecución del método
+      }
+
+      if (new Date(startDate) > new Date(endDate)) {
+        this.showModal('validationErrorModal', 'La fecha de inicio no puede ser mayor a la fecha de fin.');
+        return;
+      }
 
       this.showModal('loadingModal');
 

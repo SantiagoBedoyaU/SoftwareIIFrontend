@@ -305,6 +305,30 @@ describe('SecurityService', () => {
     expect(req.request.headers.get('Authorization')).toBe('Bearer mockAccessToken'); // Verifica el encabezado
     req.flush(mockResponse); // Simula una respuesta exitosa
   });
+
+  // 4. Prueba: Envío de solicitud de inicio de sesión
+  it('debería enviar la solicitud de inicio de sesión correctamente y almacenar el token', () => {
+    const mockResponse = { access_token: 'mocked-token' };
+    const document_number = '12345678';
+    const password = 'password123';
+
+    // Espía el método StoreToken para verificar si se llama correctamente
+    spyOn(service, 'StoreToken').and.callThrough();
+
+    service.SignIn(document_number, password).subscribe((response) => {
+      expect(response).toEqual(mockResponse); // Verifica que la respuesta coincida
+      expect(service.StoreToken).toHaveBeenCalledWith('mocked-token'); // Verifica que se guarde el token
+    });
+
+    const req = httpMock.expectOne(`${service.urlBase}sign-in`);
+    expect(req.request.method).toBe('POST'); // Verifica el método HTTP
+    expect(req.request.body).toEqual({
+      DNI: document_number,
+      Password: password
+    }); // Verifica el cuerpo de la solicitud
+
+    req.flush(mockResponse); // Simula la respuesta del backend
+  });
 });
 
 // ng test --include src/app/services/security.service.spec.ts --code-coverage

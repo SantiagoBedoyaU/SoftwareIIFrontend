@@ -61,7 +61,6 @@ export class PatchPersonalDataComponent implements AfterViewInit, OnInit {
           });
         }
       },
-      error: (err) => console.error('Error al cargar los datos del usuario:', err),
       complete: () => console.log('Datos del usuario cargados correctamente.')
     });
   }
