@@ -36,6 +36,7 @@ export class ConsultHoursComponent implements OnInit {
   doctorID = '';
   calendarOptions: CalendarOptions = {};
   selectedUnavailableTime: UnavailableTime | null = null;
+  selectedUnavailableTimeForCreate: UnavailableTime | null = null;
   selectedDate = '';
 
   constructor(
@@ -235,35 +236,57 @@ export class ConsultHoursComponent implements OnInit {
     return { startTime, endTime };
   }
 
-  // Método para editar el horario no disponible
   editUnavailableTime(): void {
-    if (this.selectedUnavailableTime) {
-      console.log('Editando:', this.selectedUnavailableTime);
+    // Muestra el modal de edición
+    this.showModal('editUnavailableTimeModal');
+  }
 
-      const updatedData: UnavailableTime = {
-        ...this.selectedUnavailableTime,
-        start_date: new Date(this.selectedUnavailableTime.start_date).toISOString(),
-        end_date: new Date(this.selectedUnavailableTime.end_date).toISOString(),
-        doctor_id: this.doctorID
+  // Método para actualizar horario no disponible
+  saveUpdatedUnavailableTime(form: NgForm): void {
+    if (form.valid && this.selectedUnavailableTime) {
+      const updatedStartTime = `${this.selectedUnavailableTime.start_date.split('T')[0]}T${form.value.editStartTime}:00Z`;
+      const updatedEndTime = `${this.selectedUnavailableTime.end_date.split('T')[0]}T${form.value.editEndTime}:00Z`;
+
+      const updatedUnavailableTime: UnavailableTime = {
+        id: this.selectedUnavailableTime.id,
+        start_date: updatedStartTime,
+        end_date: updatedEndTime,
+        doctor_id: this.selectedUnavailableTime.doctor_id
       };
 
-      this.unavailableTimeService.updateUnavailableTimes(this.selectedUnavailableTime.id ?? '', updatedData).subscribe({
-        next: () => {
-          alert('Horario editado con éxito.');
-          // Recarga los horarios actualizados
+      console.log('Data sent to server:', updatedUnavailableTime);
+
+      this.unavailableTimeService.updateUnavailableTimes(updatedUnavailableTime.id ?? '', updatedUnavailableTime).subscribe({
+        next: (response) => {
+          console.log('Horario no disponible actualizado:', response);
+          this.showModal('successModal', 'Horario actualizado correctamente.');
+
+          // Recarga los horarios actualizados en el calendario
           this.loadUnavailableTimes(
             this.fGroup.value.startDate,
             this.fGroup.value.endDate
           );
-          this.closeModal('unavailableTimesModal');
+
+          // Limpiar selectedUnavailableTime después de la edición
+          this.selectedUnavailableTime = null; // Limpiar la variable para evitar conflictos
+
+          // Cierra los modales después de un breve retraso
+          setTimeout(() => {
+            this.closeModal('successModal');
+            this.closeModal('editUnavailableTimeModal');
+            this.closeModal('unavailableTimesModal');
+          }, 2000); // 2 segundos
         },
         error: (err) => {
-          console.error('Error al editar el horario:', err);
-          alert('Hubo un error al editar el horario.');
+          console.error('Error al actualizar el horario:', err);
+          M.toast({ html: 'Error al actualizar el horario no disponible' });
         }
       });
+    } else {
+      M.toast({ html: 'Por favor, completa todos los campos' });
     }
   }
+
 
   // Método para agregar un horario no disponible
   saveUnavailableTime(form: NgForm): void {
