@@ -139,6 +139,7 @@ export class ConsultHoursComponent implements OnInit {
     }));
 
     const unavailableEvents = this.unavailableTimes.map(unavailable => ({
+      id: unavailable.id, // Asegúrate de que el horario no disponible tenga un ID
       title: 'Horario No Disponible',
       start: this.formatDateToUTC(unavailable.start_date),
       end: this.formatDateToUTC(unavailable.end_date),
@@ -164,8 +165,21 @@ export class ConsultHoursComponent implements OnInit {
   handleEventClick(info: EventClickArg) {
     console.log('Evento:', info.event);
 
+    // Verifica si el título del evento es 'Horario No Disponible'
     if (info.event.title === 'Horario No Disponible') {
+      // Obtiene las propiedades extendidas del evento
       const extendedProps = info.event.extendedProps as MyExtendedProps;
+
+      // Actualiza selectedUnavailableTime con la información del evento
+      this.selectedUnavailableTime = {
+        id: info.event.id, // Asegúrate de que el evento tenga un ID
+        start_date: extendedProps.startTime,
+        end_date: extendedProps.endTime,
+        doctor_id: this.doctorID
+        // Agrega cualquier otra propiedad que necesites
+      };
+
+      // Formatea los horarios
       const { startTime, endTime } = this.getFormattedEventTimes(
         extendedProps.startTime,
         extendedProps.endTime
@@ -235,30 +249,47 @@ export class ConsultHoursComponent implements OnInit {
   }
 
 
+  // Método para eliminar el horario
   deleteUnavailableTime(): void {
-    if (this.selectedUnavailableTime) {
-      console.log('Eliminando:', this.selectedUnavailableTime);
 
-      if (confirm('¿Estás seguro de que deseas eliminar este horario?')) {
-        this.unavailableTimeService.deleteUnavailableTimes(this.selectedUnavailableTime.id).subscribe({
-          next: () => {
-            alert('Horario eliminado con éxito.');
-            // Recarga los horarios actualizados
-            this.loadUnavailableTimes(
-              this.fGroup.value.startDate,
-              this.fGroup.value.endDate
-            );
-            this.closeModal('unavailableTimesModal');
-          },
-          error: (err) => {
-            console.error('Error al eliminar el horario:', err);
-            alert('Hubo un error al eliminar el horario.');
-          }
-        });
-      }
-    }
+    console.log('Eliminando:', this.selectedUnavailableTime);
+    // Muestra el modal de confirmación
+    const message = '¿Estás seguro de que deseas eliminar el horario seleccionado?';
+    this.showModal('deleteConfirmationModal', message);
+
   }
 
+  // Método que se llama al confirmar la eliminación
+  confirmDelete(): void {
+    if (this.selectedUnavailableTime) {
+      console.log('id:', this.selectedUnavailableTime.id);
+
+      this.unavailableTimeService.deleteUnavailableTimes(this.selectedUnavailableTime.id).subscribe({
+        next: () => {
+          this.showModal('successModal', 'Horario eliminado con éxito.');
+
+          // Recarga los horarios actualizados
+          this.loadUnavailableTimes(
+            this.fGroup.value.startDate,
+            this.fGroup.value.endDate
+          );
+
+          this.selectedUnavailableTime = null;
+
+          // Cierra el modal de éxito después de un breve retraso
+          setTimeout(() => {
+            this.closeModal('successModal');
+            this.closeModal('unavailableTimesModal');
+            this.closeModal('deleteConfirmationModal');
+          }, 2000); // 2000 ms = 2 segundos
+        },
+        error: (err) => {
+          console.error('Error al eliminar el horario:', err);
+          alert('Hubo un error al eliminar el horario.');
+        }
+      });
+    }
+  }
 
   searchAppointments(): void {
     console.log('Formulario:', this.fGroup.value); // Verifica los valores del formulario
@@ -344,8 +375,6 @@ export class ConsultHoursComponent implements OnInit {
   updateCalendarEvents(): void {
     this.calendarOptions.events = this.getEvents(); // Actualiza los eventos
   }
-
-  // Show a modal
   showModal(modalId: string, message?: string): void {
     const modalElement = document.getElementById(modalId);
     if (modalElement) {
@@ -355,6 +384,8 @@ export class ConsultHoursComponent implements OnInit {
         contentElement.innerHTML = message; // Cambia textContent a innerHTML para permitir HTML
       }
       instance.open();
+    } else {
+      console.error(`Modal con ID ${modalId} no encontrado.`);
     }
   }
 

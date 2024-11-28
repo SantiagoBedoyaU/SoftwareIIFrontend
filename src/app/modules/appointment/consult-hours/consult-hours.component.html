@@ -58,6 +58,26 @@
                 </div>
             </div>
 
+            <!-- Modal de Confirmación de Eliminación -->
+            <div id="deleteConfirmationModal" class="modal">
+                <div class="modal-content">
+                    <h4>Confirmación de Eliminación</h4>
+                    <p>¿Estás seguro de que deseas eliminar el horario seleccionado?</p>
+                </div>
+                <div class="modal-footer">
+                    <button (click)="confirmDelete()" class="btn waves-effect waves-light red">Eliminar</button>
+                    <button class="modal-close btn waves-effect waves-light grey">Cancelar</button>
+                </div>
+            </div>
+
+            <!-- Modal de exito -->
+            <div id="successModal" class="modal">
+                <div class="modal-content">
+                    <h4>Éxito</h4>
+                    <p></p> <!-- Aquí se insertará el mensaje -->
+                </div>
+            </div>
+
         </div>
 
         <!-- Contenedor para el calendario -->
