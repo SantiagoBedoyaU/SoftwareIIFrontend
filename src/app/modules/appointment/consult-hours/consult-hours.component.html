@@ -78,6 +78,30 @@
                 </div>
             </div>
 
+            <!-- Modal para agregar horario no disponible -->
+            <div id="addUnavailableTimeModal" class="modal">
+                <div class="modal-content">
+                    <h4>Agregar Horario No Disponible</h4>
+                    <p id="modal-message"> <!-- Este es el lugar donde se mostrará el mensaje dinámico --> </p>
+                    <form #unavailableTimeForm="ngForm" (ngSubmit)="saveUnavailableTime(unavailableTimeForm)">
+                        <div class="input-field">
+                            <label for="startTime">Hora de Inicio</label>
+                            <input id="startTime" type="time" name="startTime" ngModel required>
+                        </div>
+                        <div class="input-field">
+                            <label for="endTime">Hora de Fin</label>
+                            <input id="endTime" type="time" name="endTime" ngModel required>
+                        </div>
+                        <button type="submit" class="btn">Guardar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-close btn">Cancelar</button>
+                </div>
+            </div>
+
+
+
         </div>
 
         <!-- Contenedor para el calendario -->

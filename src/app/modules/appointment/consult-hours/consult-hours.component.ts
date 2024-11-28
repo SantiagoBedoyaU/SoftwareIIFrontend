@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppointmentService } from '../../../services/appointment.service';
 import { SecurityService } from '../../../services/security.service';
 import { Appointment } from '../../../modelos/appointment.model';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid'; // Importa el plugin de día
 import timeGridPlugin from '@fullcalendar/timegrid'; // Importa el plugin de tiempo
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'; // Importa el plugin de interacción
 import { UnavailableTime } from '../../../modelos/unavaibale-times.model';
 import { UnavailableTimeService } from '../../../services/unavailable-time.service';
 import { CalendarOptions, EventClickArg, EventInput } from '@fullcalendar/core/index.js';
@@ -22,7 +23,8 @@ interface MyExtendedProps {
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    FullCalendarModule
+    FullCalendarModule,
+    FormsModule
   ],
   templateUrl: './consult-hours.component.html',
   styleUrl: './consult-hours.component.css'
@@ -34,6 +36,7 @@ export class ConsultHoursComponent implements OnInit {
   doctorID = '';
   calendarOptions: CalendarOptions = {};
   selectedUnavailableTime: UnavailableTime | null = null;
+  selectedDate = '';
 
   constructor(
     private fb: FormBuilder,
@@ -119,16 +122,19 @@ export class ConsultHoursComponent implements OnInit {
     });
   }
 
+  // Initialize the calendar
   initializeCalendar(): void {
     this.calendarOptions = {
       initialView: 'dayGridMonth',
-      plugins: [dayGridPlugin, timeGridPlugin], // Usa los plugins importados
+      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin], // Usa los plugins importados
       timeZone: 'UTC',
       events: this.getEvents(), // Asegúrate de que este método devuelva eventos correctamente
-      eventClick: this.handleEventClick.bind(this) // Cambia dateClick a eventClick
+      eventClick: this.handleEventClick.bind(this), // Cambia dateClick a eventClick
+      dateClick: this.handleDateClick.bind(this)
     };
   }
 
+  // Método para obtener los eventos del calendario
   getEvents(): EventInput[] {
     const appointmentEvents = this.appointments.map(appt => ({
       id: appt.id?.toString(), // ID de la cita
@@ -162,6 +168,7 @@ export class ConsultHoursComponent implements OnInit {
     return date.toISOString().split('.')[0] + 'Z';
   }
 
+  // Método para manejar el clic en un evento
   handleEventClick(info: EventClickArg) {
     console.log('Evento:', info.event);
 
@@ -212,6 +219,15 @@ export class ConsultHoursComponent implements OnInit {
       }
     }
   }
+
+  // Método para manejar el clic en una fecha
+  handleDateClick(info: DateClickArg): void {
+    this.selectedDate = info.dateStr; // Captura la fecha seleccionada
+    const message = `Fecha seleccionada: ${this.selectedDate}. Por favor, ingrese el horario no disponible.`;
+    this.showModal('addUnavailableTimeModal', message); // Muestra el mensaje en el modal
+  }
+
+
   // Utility para formatear horas
   private getFormattedEventTimes(startUTC: string | Date, endUTC: string | Date): { startTime: string, endTime: string } {
     const startTime = new Date(startUTC).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
@@ -219,6 +235,7 @@ export class ConsultHoursComponent implements OnInit {
     return { startTime, endTime };
   }
 
+  // Método para editar el horario no disponible
   editUnavailableTime(): void {
     if (this.selectedUnavailableTime) {
       console.log('Editando:', this.selectedUnavailableTime);
@@ -230,7 +247,7 @@ export class ConsultHoursComponent implements OnInit {
         doctor_id: this.doctorID
       };
 
-      this.unavailableTimeService.updateUnavailableTimes(this.selectedUnavailableTime.id, updatedData).subscribe({
+      this.unavailableTimeService.updateUnavailableTimes(this.selectedUnavailableTime.id ?? '', updatedData).subscribe({
         next: () => {
           alert('Horario editado con éxito.');
           // Recarga los horarios actualizados
@@ -245,6 +262,49 @@ export class ConsultHoursComponent implements OnInit {
           alert('Hubo un error al editar el horario.');
         }
       });
+    }
+  }
+
+  // Método para agregar un horario no disponible
+  saveUnavailableTime(form: NgForm): void {
+    if (form.valid && this.selectedDate) {
+      console.log('Selected date:', this.selectedDate); // Depuración
+      console.log('Start time:', form.value.startTime); // Debe ser solo hora
+      const startTime = `${this.selectedDate}T${form.value.startTime}:00Z`;
+      const endTime = `${this.selectedDate}T${form.value.endTime}:00Z`;
+
+      console.log('Formatted Start Time:', startTime);
+      console.log('Formatted End Time:', endTime);
+
+      const newUnavailableTime: UnavailableTime = {
+        start_date: startTime,
+        end_date: endTime,
+        doctor_id: this.doctorID
+      };
+
+      this.unavailableTimeService.createUnavailableTimes(newUnavailableTime).subscribe({
+        next: () => {
+          this.showModal('successModal', 'Horario agregado correctamente.');
+
+          // Carga los eventos del rango actual para refrescar el calendario inmediatamente.
+          this.loadUnavailableTimes(
+            this.fGroup.value.startDate,
+            this.fGroup.value.endDate
+          );
+
+          setTimeout(() => {
+            this.closeModal('successModal');
+            this.closeModal('addUnavailableTimeModal');
+          }, 2000); // 2 segundos
+        },
+        error: (err) => {
+          console.error('Error al agregar el horario:', err);
+          console.log('Error:', err.error);
+          M.toast({ html: 'Error al guardar el horario no disponible' });
+        }
+      });
+    } else {
+      M.toast({ html: 'Por favor, completa todos los campos' });
     }
   }
 
@@ -264,7 +324,7 @@ export class ConsultHoursComponent implements OnInit {
     if (this.selectedUnavailableTime) {
       console.log('id:', this.selectedUnavailableTime.id);
 
-      this.unavailableTimeService.deleteUnavailableTimes(this.selectedUnavailableTime.id).subscribe({
+      this.unavailableTimeService.deleteUnavailableTimes(this.selectedUnavailableTime.id ?? '').subscribe({
         next: () => {
           this.showModal('successModal', 'Horario eliminado con éxito.');
 
@@ -291,6 +351,7 @@ export class ConsultHoursComponent implements OnInit {
     }
   }
 
+  // Método para buscar citas
   searchAppointments(): void {
     console.log('Formulario:', this.fGroup.value); // Verifica los valores del formulario
 
@@ -372,9 +433,12 @@ export class ConsultHoursComponent implements OnInit {
     });
   }
 
+  // Método para actualizar los eventos del calendario
   updateCalendarEvents(): void {
     this.calendarOptions.events = this.getEvents(); // Actualiza los eventos
   }
+
+  // Show a modal
   showModal(modalId: string, message?: string): void {
     const modalElement = document.getElementById(modalId);
     if (modalElement) {

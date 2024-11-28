@@ -1,5 +1,5 @@
 export class UnavailableTime {
-    id: string;
+    id?: string;
     start_date: string;
     end_date: string;
     doctor_id: string;

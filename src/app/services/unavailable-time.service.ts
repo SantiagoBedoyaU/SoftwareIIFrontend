@@ -42,4 +42,10 @@ export class UnavailableTimeService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete(`${this.urlBase}unavailable-times/${id}`, {headers})
   }
+
+  createUnavailableTimes(data: UnavailableTime): Observable<UnavailableTime> {
+    const token = this.securityService.GetToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<UnavailableTime>(`${this.urlBase}unavailable-times`, data, {headers});
+  }
 }
