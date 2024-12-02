@@ -4,7 +4,7 @@
         <div class="container-centered">
             <h4 class="card-title title centered-tittle">Consultar Citas</h4>
 
-            <form [formGroup]="fGroup" class="container">
+            <form [formGroup]="fGroup" class="container" (ngSubmit)="searchAppointments()">
                 <div class="card grey lighten-4 z-depth-4 larger-card">
                     <div class="card-content form_signin">
                         <div class="row">
@@ -25,40 +25,112 @@
                             </div>
                         </div>
                         <div class="button-container">
-                            <button type="submit" (click)="searchAppointments()" class="btn-search">Buscar</button>
+                            <button type="submit" class="btn-search">Buscar</button>
                         </div>
                     </div>
                 </div>
             </form>
 
-            <!-- Modales de Carga, Error, y Validación -->
-            <!-- (aquí irían los modales como los tienes actualmente) -->
+            <!-- Modal para mostrar detalles de la cita -->
+            <div id="appointmentDetailsModal" class="modal">
+                <div class="modal-content">
+                    <h4>Detalles de la Cita</h4>
+                    <p></p> <!-- Aquí se insertará el mensaje -->
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-close btn">Cerrar</button>
+                </div>
+            </div>
+
+            <!-- Modal para horarios no disponibles -->
+            <div id="unavailableTimesModal" class="modal">
+                <div class="modal-content">
+                    <h4>Detalles del Horario No Disponible</h4>
+                    <p>Horario seleccionado:</p>
+                    <div id="modal-content">
+                        <!-- Aquí se llenará la información del horario -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button (click)="editUnavailableTime()" class="btn waves-effect waves-light blue">Editar</button>
+                    <button (click)="deleteUnavailableTime()" class="btn waves-effect waves-light red">Eliminar</button>
+                    <button class="modal-close btn waves-effect waves-light grey">Cerrar</button>
+                </div>
+            </div>
+
+            <!-- Modal para editar horario no disponible -->
+            <div id="editUnavailableTimeModal" class="modal">
+                <div class="modal-content">
+                    <h4>Editar Horario No Disponible</h4>
+                    <form #editUnavailableTimeForm="ngForm"
+                        (ngSubmit)="saveUpdatedUnavailableTime(editUnavailableTimeForm)">
+                        <div class="input-field">
+                            <label for="editStartTime">Hora de Inicio</label>
+                            <input id="editStartTime" type="time" name="editStartTime" ngModel required>
+                        </div>
+                        <div class="input-field">
+                            <label for="editEndTime">Hora de Fin</label>
+                            <input id="editEndTime" type="time" name="editEndTime" ngModel required>
+                        </div>
+                        <button type="submit" class="btn">Guardar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-close btn">Cancelar</button>
+                </div>
+            </div>
+
+
+            <!-- Modal de Confirmación de Eliminación -->
+            <div id="deleteConfirmationModal" class="modal">
+                <div class="modal-content">
+                    <h4>Confirmación de Eliminación</h4>
+                    <p>¿Estás seguro de que deseas eliminar el horario seleccionado?</p>
+                </div>
+                <div class="modal-footer">
+                    <button (click)="confirmDelete()" class="btn waves-effect waves-light red">Eliminar</button>
+                    <button class="modal-close btn waves-effect waves-light grey">Cancelar</button>
+                </div>
+            </div>
+
+            <!-- Modal de exito -->
+            <div id="successModal" class="modal">
+                <div class="modal-content">
+                    <h4>Éxito</h4>
+                    <p></p> <!-- Aquí se insertará el mensaje -->
+                </div>
+            </div>
+
+            <!-- Modal para agregar horario no disponible -->
+            <div id="addUnavailableTimeModal" class="modal">
+                <div class="modal-content">
+                    <h4>Agregar Horario No Disponible</h4>
+                    <p id="modal-message"> <!-- Este es el lugar donde se mostrará el mensaje dinámico --> </p>
+                    <form #unavailableTimeForm="ngForm" (ngSubmit)="saveUnavailableTime(unavailableTimeForm)">
+                        <div class="input-field">
+                            <label for="startTime">Hora de Inicio</label>
+                            <input id="startTime" type="time" name="startTime" ngModel required>
+                        </div>
+                        <div class="input-field">
+                            <label for="endTime">Hora de Fin</label>
+                            <input id="endTime" type="time" name="endTime" ngModel required>
+                        </div>
+                        <button type="submit" class="btn">Guardar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-close btn">Cancelar</button>
+                </div>
+            </div>
+
+
+
         </div>
 
-        <!-- Contenedor para la tabla de resultados -->
-        <div class="container-table-wrapper">
-            <div class="container-table">
-                <table class="responsive-table centered">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Hora Inicio</th>
-                            <th>Hora fin</th>
-                            <th>Paciente</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let appt of appointments">
-                            <td>{{ appt.start_date | date: 'yyyy-MM-dd' }}</td>
-                            <td>{{ appt.start_date | date: 'HH:mm' }}</td>
-                            <td>{{ appt.end_date | date: 'HH:mm' }}</td>
-                            <td>{{ appt.patient_name }}</td>
-                            <td>{{ getStatusLabel(appt.status ?? 0) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <!-- Contenedor para el calendario -->
+        <div class="container-calendar">
+            <full-calendar [options]="calendarOptions"></full-calendar>
         </div>
+
     </div>
 </body>
