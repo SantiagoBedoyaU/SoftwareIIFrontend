@@ -10,6 +10,7 @@ export const MENU_ROLES: Record<number, MenuItem[] >  = {
         { route: '/security/password-change', name: 'Cambiar contraseña', icon: 'vpn_key' },
         { route: '/security/assignRole', name: 'Asignar roles', icon: 'assignment_ind' },
         { route: '/security/adminRegistration', name: 'Registrar administrador', icon: 'person_add' },
+        { route: '/report/generateReports', name: 'Generar reportes', icon: 'insert_chart' },
     ],
     1: [ // 1: Médico/auxiliar
         { route: '/user/get-personal-data', name: 'Mis datos personales', icon: 'folder_shared' },

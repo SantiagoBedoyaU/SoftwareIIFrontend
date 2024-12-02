@@ -1,0 +1,76 @@
+<body>
+    <div class="container">
+        <h3>Generar Reportes</h3>
+
+        <!-- Contenedor principal -->
+        <div class="container-form">
+            <!-- Selección de Fechas -->
+            <div class="row">
+                <div class="input-field col s6">
+                    <input type="date" id="startDate" [(ngModel)]="startDate" />
+                    <label for="startDate">Fecha de Inicio</label>
+                </div>
+                <div class="input-field col s6">
+                    <input type="date" id="endDate" [(ngModel)]="endDate" />
+                    <label for="endDate">Fecha de Fin</label>
+                </div>
+            </div>
+
+            <!-- Botones para elegir tipo de reporte -->
+            <div class="row buttons">
+                <button class="btn waves-effect waves-light" (click)="selectReport('attendance')">
+                    Reporte de Asistencia
+                </button>
+                <button class="btn waves-effect waves-light" (click)="selectReport('waitingTime')">
+                    Reporte de Tiempo de Espera
+                </button>
+            </div>
+        </div>
+
+        <!-- Gráfica de reporte seleccionado -->
+        <div *ngIf="selectedReport" class="reports">
+            <!-- Contenedor para el título -->
+            <div class="report-title">
+                <h4>
+                    {{ selectedReport === 'attendance' ? 'Reporte de Asistencia' : 'Reporte de Tiempo de Espera' }}
+                </h4>
+            </div>
+
+            <!-- Contenedores para las gráficas -->
+            <div class="charts">
+                <!-- Gráfica de barras para el reporte seleccionado -->
+                <div class="chart-container">
+                    <canvas id="reportChart"></canvas>
+                </div>
+
+                <!-- Gráfica de torta (solo para reporte de asistencia) -->
+                <div class="chart-container" *ngIf="selectedReport === 'attendance'">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Información adicional (solo para reporte de tiempo de espera) -->
+            <div *ngIf="selectedReport === 'waitingTime'" class="report-details">
+                <p>
+                    <strong>Día con tiempo máximo de espera:</strong>
+                    {{ formattedMaxWaitingDate }}
+                </p>
+                <p>
+                    <strong>Día con tiempo mínimo de espera:</strong>
+                    {{ formattedMinWaitingDate }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de error -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <h4>Error</h4>
+            <p></p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close waves-effect waves-light btn red">Cerrar</button>
+        </div>
+    </div>
+</body>
