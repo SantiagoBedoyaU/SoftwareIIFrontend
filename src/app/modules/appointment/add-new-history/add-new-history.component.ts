@@ -2,7 +2,7 @@ import { Component, AfterViewInit } from '@angular/core';
 import { AppointmentService } from '../../../services/appointment.service';
 import { SecurityService } from '../../../services/security.service';
 import { FormsModule } from '@angular/forms';
-import { Appointment, Procedure } from '../../../modelos/appointment.model';
+import { Appointment} from '../../../modelos/appointment.model';
 import { CommonModule } from '@angular/common';
 import { UserModel } from '../../../modelos/user.model';
 
@@ -32,6 +32,7 @@ export class AddNewHistoryComponent implements AfterViewInit {
   selectedAppointment: Appointment | null = null;
   typeOfConsultation = '';
   procedureDescription = '';
+  realStartTime = '';
 
   constructor(
     private appointmentService: AppointmentService,
@@ -156,34 +157,52 @@ export class AddNewHistoryComponent implements AfterViewInit {
       console.error('No se ha seleccionado una cita');
       return;
     }
-
+  
     const appointmentId = this.selectedAppointment.id;
     if (!appointmentId) {
       console.error('No se ha encontrado un ID de cita válido');
       return;
     }
-
-    if (!this.typeOfConsultation.trim() || !this.procedureDescription.trim()) {
-      // Mostrar modal de error si los campos están vacíos
+  
+    if (!this.typeOfConsultation.trim() || !this.procedureDescription.trim() || !this.realStartTime.trim()) {
       const emptyFieldsModal = M.Modal.getInstance(document.getElementById('emptyFieldsModal')!) as { open: () => void };
       emptyFieldsModal.open();
       return;
     }
-
-    const fullDescription = `${this.typeOfConsultation} - ${this.procedureDescription.trim()}`;
-    const procedure: Procedure = { description: fullDescription };
-
-    this.appointmentService.addProcedure(appointmentId, procedure).subscribe(
-      () => {
+  
+    // Combinar la fecha de la cita con la hora ingresada
+    const startDate = this.selectedAppointment?.start_date;
+    if (!startDate) {
+      console.error('La cita seleccionada no tiene una fecha de inicio válida');
+      return;
+    }
+  
+    const appointmentDate = new Date(startDate); // Fecha base de la cita
+    const [hours, minutes] = this.realStartTime.split(':'); // Separar la hora y los minutos
+    appointmentDate.setHours(parseInt(hours, 10)); // Ajustar la hora
+    appointmentDate.setMinutes(parseInt(minutes, 10)); // Ajustar los minutos
+    const realStartDateTime = appointmentDate.toISOString(); // Generar fecha y hora completa en formato ISO
+  
+    // Crear el objeto de procedimiento con los campos requeridos
+    const requestBody = {
+      real_start_date: realStartDateTime, // La fecha y hora real de inicio
+      procedure: {
+        description: `${this.typeOfConsultation.trim()} - ${this.procedureDescription.trim()}`,
+      },
+    };
+  
+    // Enviar al backend
+    this.appointmentService.addProcedure(appointmentId, requestBody).subscribe({
+      next: () => {
         const successModal = M.Modal.getInstance(document.getElementById('successModal')!) as { open: () => void };
         successModal.open();
         this.clearFields();
       },
-      (error) => {
-        console.error('Error al agregar el procedimiento', error);
+      error: (err) => {
+        console.error('Error al agregar el procedimiento', err);
         alert('Hubo un error al agregar la historia clínica. Por favor intente de nuevo.');
-      }
-    );
+      },
+    });
   }
 
   clearFields() {

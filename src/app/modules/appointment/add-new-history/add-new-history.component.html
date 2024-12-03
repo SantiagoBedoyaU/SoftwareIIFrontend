@@ -47,8 +47,8 @@
             </thead>
             <tbody>
               <tr *ngFor="let appointment of appointments">
-                <td>{{ appointment.start_date | date: 'yyyy-MM-dd HH:mm' }}</td>
-                <td>{{ appointment.end_date | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>{{ appointment.start_date | date: 'yyyy-MM-dd hh:mm a' }}</td>
+                <td>{{ appointment.end_date | date: 'yyyy-MM-dd hh:mm a' }}</td>
                 <td>
                   <button (click)="selectAppointment(appointment)" class="btn-small">Seleccionar</button>
                 </td>
@@ -58,25 +58,38 @@
         </div>
       </div>
 
-
       <!-- Campos para agregar la historia clínica -->
       <form *ngIf="selectedAppointment" class="container" (ngSubmit)="addProcedure()">
         <div class="card grey lighten-4 z-depth-4 larger-card">
           <div class="card-content form_signin">
             <h5 class="left-aligned-tittle">Adicionar Historia Clínica</h5>
             <div class="row">
-              <div class="input-field col s12 input-container">
-                <select class="browser-default" [(ngModel)]="typeOfConsultation" name="typeOfConsultation" required>
+              <!-- Menú desplegable -->
+              <div class="input-field col s6">
+                <select id="typeOfConsultation" class="browser-default" [(ngModel)]="typeOfConsultation"
+                  name="typeOfConsultation" required>
                   <option value="" disabled selected>Tipo de Consulta</option>
                   <option value="Consulta General">Consulta General</option>
-                  <option value="Urgencias">Urgencias</option>
                   <option value="Control Periódico">Control Periódico</option>
                 </select>
               </div>
-              <div class="input-field col s12 input-container">
-                <textarea class="materialize-textarea" [(ngModel)]="procedureDescription" name="procedureDescription"
-                  placeholder="Detalles de la Historia Clínica" required></textarea>
+              <!-- Campo de hora -->
+              <div class="input-field col s6">
+                <label for="realStartTime" class="active">Hora Real de Inicio</label>
+                <input id="realStartTime" type="time" class="custom-time-field" [(ngModel)]="realStartTime"
+                  name="realStartTime" required />
               </div>
+
+            </div>
+            <div class="row">
+              <!-- Detalles de la historia clínica -->
+              <div class="input-field col s12 input-container">
+                <label for="procedureDescription" class="active">Detalles de la Historia Clínica</label>
+                <textarea id="procedureDescription" class="materialize-textarea" [(ngModel)]="procedureDescription"
+                  name="procedureDescription" placeholder="Ingrese los detalles" required></textarea>
+              </div>
+            </div>
+            <div class="row">
               <div class="button-container">
                 <button type="submit" class="btn-search">Guardar Historia Clínica</button>
               </div>
@@ -85,61 +98,62 @@
         </div>
       </form>
 
-      <!-- Modal de éxito -->
-      <div id="successModal" class="modal">
-        <div class="modal-content">
-          <h4>¡Éxito!</h4>
-          <p>El procedimiento médico se ha registrado correctamente.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="modal-close btn-blue">Aceptar</button>
-        </div>
-      </div>
+    </div>
+  </div>
 
-      <!-- Modal para campos vacíos -->
-      <div id="emptyFieldsModal" class="modal">
-        <div class="modal-content">
-          <h4>Error</h4>
-          <p>El tipo de consulta y la descripción no pueden estar vacíos. Por favor, complete todos los campos.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="modal-close btn-blue">Aceptar</button>
-        </div>
-      </div>
+  <!-- Modal de éxito -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <h4>¡Éxito!</h4>
+      <p>El procedimiento médico se ha registrado correctamente.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close btn-blue">Aceptar</button>
+    </div>
+  </div>
 
-      <!-- Modal para DNI no proporcionado -->
-      <div id="missingDniModal" class="modal">
-        <div class="modal-content">
-          <h4>Advertencia</h4>
-          <p>Debe ingresar un DNI para realizar la búsqueda.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="modal-close btn-blue">Aceptar</button>
-        </div>
-      </div>
+  <!-- Modal para campos vacíos -->
+  <div id="emptyFieldsModal" class="modal">
+    <div class="modal-content">
+      <h4>Error</h4>
+      <p>El tipo de consulta, la descripción y la fecha/hora de inicio no pueden estar vacíos. Por favor, complete todos
+        los campos.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close btn-blue">Aceptar</button>
+    </div>
+  </div>
 
-      <!-- Modal para paciente sin citas pendientes -->
-      <div id="noAppointmentsModal" class="modal">
-        <div class="modal-content">
-          <h4>Sin Citas Pendientes</h4>
-          <p>El paciente no tiene citas pendientes.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="modal-close btn-blue">Aceptar</button>
-        </div>
-      </div>
+  <!-- Modal para DNI no proporcionado -->
+  <div id="missingDniModal" class="modal">
+    <div class="modal-content">
+      <h4>Advertencia</h4>
+      <p>Debe ingresar un DNI para realizar la búsqueda.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close btn-blue">Aceptar</button>
+    </div>
+  </div>
 
+  <!-- Modal para paciente sin citas pendientes -->
+  <div id="noAppointmentsModal" class="modal">
+    <div class="modal-content">
+      <h4>Sin Citas Pendientes</h4>
+      <p>El paciente no tiene citas pendientes.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close btn-blue">Aceptar</button>
+    </div>
+  </div>
 
-      <!-- Modal para usuario no encontrado -->
-      <div id="userNotFoundModal" class="modal">
-        <div class="modal-content">
-          <h4>Error</h4>
-          <p>No se encontró al usuario con el DNI proporcionado.</p>
-        </div>
-        <div class="modal-footer">
-          <button class="modal-close btn-blue">Aceptar</button>
-        </div>
-      </div>
+  <!-- Modal para usuario no encontrado -->
+  <div id="userNotFoundModal" class="modal">
+    <div class="modal-content">
+      <h4>Error</h4>
+      <p>No se encontró al usuario con el DNI proporcionado.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close btn-blue">Aceptar</button>
     </div>
   </div>
 </body>
