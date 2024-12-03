@@ -1,0 +1,188 @@
+/* Fondo de la página */
+body {
+  padding: 50px;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/assets/images/image3.jpg"); /* Cambia por la ruta de tu imagen */
+  background-color: rgba(255, 255, 255, 0.5);
+  background-blend-mode: overlay;
+  background-size: cover;
+}
+
+/* Contenedor principal */
+.container {
+  width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el contenedor general */
+.container-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  margin: 20px auto;
+  padding: 50px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+h3 {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+/* Estilo para las filas */
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Campos de fecha */
+.input-field {
+  position: relative;
+  flex: 1;
+  margin: 0 10px;
+}
+
+.input-field input[type="date"] {
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.input-field label {
+  position: absolute;
+  top: -20px;
+  left: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #616161;
+}
+
+/* Estilos para los botones */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Espacio entre los botones */
+  width: 100%;
+}
+
+button.btn {
+  padding: 12px 30px;
+  font-size: 16px;
+  background-color: #1565c0;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button.btn:hover {
+  background-color: #0d47a1;
+}
+
+/* Mejorar la alineación del texto dentro de los botones */
+button.btn span {
+  display: inline-block;
+  text-align: center;
+}
+
+/* Contenedor de reportes */
+.reports {
+  margin-top: 30px;
+  padding: 40px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título de reporte */
+.report-title h4 {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Contenedores de gráficos */
+.charts {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.chart-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Estilos para el modal */
+.modal {
+  max-width: 400px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+}
+
+.modal-content h5 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  color: #616161;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border-top: none;
+  margin-bottom: 20px;
+}
+
+.modal-footer .btn {
+  background-color: #1565c0;
+  margin: 10px;
+  border-radius: 25px;
+}
+
+.modal-footer .btn:hover {
+  background-color: #0d47a1;
+}
