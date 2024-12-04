@@ -228,34 +228,48 @@ it('debe manejar un error al obtener el historial del usuario autenticado', () =
 // Prueba: Adicionar un procedimiento exitosamente
 it('debe adicionar un procedimiento a una cita exitosamente', () => {
   const mockAppointmentId = '1';
-  const mockProcedure: Procedure = {
-    description: 'Consulta General - Detalles de la consulta',
+  const mockUpdatedAppointment: Appointment = {
+    id: mockAppointmentId,
+    start_date: '2024-11-25T10:00:00',
+    end_date: '2024-11-25T11:00:00',
+    doctor_id: '123456',
+    status: 0,
+    procedures: [
+      { description: 'Consulta General - Detalles de la consulta' },
+    ],
   };
   const mockResponse = { success: true };
 
   securityService.GetToken.and.returnValue('mockAccessToken');
 
-  service.addProcedure(mockAppointmentId, mockProcedure).subscribe((response) => {
+  service.addProcedure(mockAppointmentId, mockUpdatedAppointment).subscribe((response) => {
     expect(response).toEqual(mockResponse); // Valida la respuesta
   });
 
   const req = httpMock.expectOne(`${service.urlBase}appointments/${mockAppointmentId}/add-procedure`);
   expect(req.request.method).toBe('PATCH'); // Verifica que el método sea PATCH
   expect(req.request.headers.get('Authorization')).toBe('Bearer mockAccessToken'); // Verifica el encabezado de autorización
-  expect(req.request.body).toEqual(mockProcedure); // Verifica el cuerpo de la solicitud
+  expect(req.request.body).toEqual(mockUpdatedAppointment); // Verifica el cuerpo de la solicitud
   req.flush(mockResponse); // Simula una respuesta exitosa
 });
 
 // Prueba: Manejar error al adicionar un procedimiento
 it('debe manejar un error al adicionar un procedimiento a una cita', () => {
   const mockAppointmentId = '1';
-  const mockProcedure: Procedure = {
-    description: 'Consulta General - Detalles de la consulta',
+  const mockUpdatedAppointment: Appointment = {
+    id: mockAppointmentId,
+    start_date: '2024-11-25T10:00:00',
+    end_date: '2024-11-25T11:00:00',
+    doctor_id: '123456',
+    status: 0,
+    procedures: [
+      { description: 'Consulta General - Detalles de la consulta' },
+    ],
   };
 
   securityService.GetToken.and.returnValue('mockAccessToken');
 
-  service.addProcedure(mockAppointmentId, mockProcedure).subscribe({
+  service.addProcedure(mockAppointmentId, mockUpdatedAppointment).subscribe({
     next: () => fail('La llamada debería haber fallado'),
     error: (error) => {
       // Valida las propiedades del error
@@ -266,6 +280,7 @@ it('debe manejar un error al adicionar un procedimiento a una cita', () => {
 
   const req = httpMock.expectOne(`${service.urlBase}appointments/${mockAppointmentId}/add-procedure`);
   expect(req.request.method).toBe('PATCH'); // Verifica el método PATCH
+  expect(req.request.body).toEqual(mockUpdatedAppointment); // Verifica el cuerpo de la solicitud
   req.flush({ message: 'Error al agregar el procedimiento' }, { status: 500, statusText: 'Internal Server Error' }); // Simula un error
 });
 
