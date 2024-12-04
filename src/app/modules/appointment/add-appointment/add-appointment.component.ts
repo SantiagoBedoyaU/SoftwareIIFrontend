@@ -197,14 +197,25 @@ export class AddAppointmentComponent implements OnInit {
 
   updateCalendarEvents(events: EventInput[]) {
     console.log('Eventos antes de actualizar:', this.calendarOptions.events);
-
+  
+    const existingEvents = Array.isArray(this.calendarOptions.events) ? this.calendarOptions.events : [];
+    
+    // Combinar eventos sin duplicados
+    const combinedEvents = [...existingEvents, ...events].reduce((uniqueEvents, event) => {
+      if (!uniqueEvents.some(e => e.id === event.id)) {
+        uniqueEvents.push(event);
+      }
+      return uniqueEvents;
+    }, [] as EventInput[]);
+  
     this.calendarOptions = {
       ...this.calendarOptions,
-      events, // Asignamos los eventos actualizados al calendario
+      events: combinedEvents,
     };
-
+  
     console.log('Eventos después de actualizar:', this.calendarOptions.events);
   }
+  
 
   // Método para formatear fechas a UTC sin milisegundos
   private formatDateToUTC(dateString: string | Date): string {
@@ -213,11 +224,18 @@ export class AddAppointmentComponent implements OnInit {
   }
 
   onConfirmAppointment(): void {
+    // Log para verificar el valor de la fecha seleccionada
+    console.log('Fecha seleccionada (local):', this.selectedDateTime);
+    
+    // Convertir la fecha local a UTC
+    const utcStartDate = moment(this.selectedDateTime).utcOffset(0, true).toISOString();
+    console.log('Fecha enviada al backend (UTC):', utcStartDate);
+
     // Preparar los datos para la cita
     const appointmentData: Appointment = {
       doctor_id: this.selectedDoctorId,
       patient_id: this.userData?.dni,
-      start_date: moment(this.selectedDateTime).toISOString(),
+      start_date: utcStartDate,
       status: 0,
     };
 
@@ -241,7 +259,7 @@ export class AddAppointmentComponent implements OnInit {
           ...this.calendarOptions.events,
           {
             title: 'Cita',
-            start: appointmentData.start_date,
+            start: utcStartDate,
             backgroundColor: '#4CAF50',
             borderColor: '#4CAF50',
           },
@@ -253,6 +271,7 @@ export class AddAppointmentComponent implements OnInit {
       },
     });
   }
+
 
   setMinDate() {
     const today = new Date();
