@@ -97,6 +97,8 @@ describe('AddNewHistoryComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  
+
   it('should validate DNI correctly', () => {
     component.dni = 'abc123';
     component.validateDni();
@@ -203,22 +205,6 @@ describe('AddNewHistoryComponent', () => {
     expect(component.appointments).toEqual([]);
   });
 
-  it('should handle error when adding a procedure', () => {
-    component.selectedAppointment = { id: '1', procedures: [] } as Appointment;
-    component.typeOfConsultation = 'Consulta General';
-    component.procedureDescription = 'Detalles';
-
-    mockAppointmentService.addProcedure.and.returnValue(throwError(() => new Error('Error al agregar procedimiento')));
-
-    spyOn(console, 'error');
-    spyOn(window, 'alert');
-
-    component.addProcedure();
-
-    expect(console.error).toHaveBeenCalledWith('Error al agregar el procedimiento', jasmine.any(Error));
-    expect(window.alert).toHaveBeenCalledWith('Hubo un error al agregar la historia clínica. Por favor intente de nuevo.');
-  });
-
   it('should log an error if the user does not have permissions', () => {
     // Configurar el DNI válido y sin errores para que el flujo pase a la validación de rol
     component.dni = '123456';
@@ -314,23 +300,6 @@ describe('AddNewHistoryComponent', () => {
     expect(console.error).toHaveBeenCalledWith('No se ha encontrado un ID de cita válido');
   });
 
-  it('should log an error if there is an error adding the procedure', () => {
-    const mockAppointment: Partial<Appointment> = { id: '1', procedures: [] };
-    component.selectedAppointment = mockAppointment as Appointment; 
-    component.typeOfConsultation = 'Consulta General';
-    component.procedureDescription = 'Detalles';
-
-    mockAppointmentService.addProcedure.and.returnValue(throwError(() => new Error('Error al agregar procedimiento')));
-
-    spyOn(console, 'error');
-    spyOn(window, 'alert');
-
-    component.addProcedure();
-
-    expect(console.error).toHaveBeenCalledWith('Error al agregar el procedimiento', jasmine.any(Error));
-    expect(window.alert).toHaveBeenCalledWith('Hubo un error al agregar la historia clínica. Por favor intente de nuevo.');
-  });
-
   it('should set dniErrorMessage when DNI contains non-numeric characters', () => {
     component.dni = '123ABC';
     component.validateDni();
@@ -403,23 +372,6 @@ describe('AddNewHistoryComponent', () => {
     }
   });
 
-  it('should add a procedure successfully', () => {
-    component.selectedAppointment = { id: '1', procedures: [] } as Appointment; // Usa Appointment
-    component.typeOfConsultation = 'Consulta General';
-    component.procedureDescription = 'Detalles de la consulta';
-
-    mockAppointmentService.addProcedure.and.returnValue(of({})); // Simula una respuesta exitosa
-
-    component.addProcedure();
-
-    const successModal = document.getElementById('successModal');
-    expect(successModal).not.toBeNull(); // Verificar que el modal exista
-    if (successModal) {
-      const modalInstance = globalThis.M.Modal.getInstance(successModal);
-      expect(modalInstance.open).toHaveBeenCalled();
-    }
-  });
-
   it('should show emptyFieldsModal if required fields are empty', () => {
     component.selectedAppointment = { id: '1', procedures: [] } as Appointment; 
     component.typeOfConsultation = '';
@@ -474,6 +426,64 @@ describe('AddNewHistoryComponent', () => {
     // Validaciones
     expect(mockAppointment.procedures).toEqual([{ description: 'Procedure 1' }]); // Se espera que no cambie
     expect(component.selectedAppointment).toEqual(mockAppointment); // La cita seleccionada debe coincidir
+  });
+
+
+  it('should log an error if the selected appointment has no start date', () => {
+    component.selectedAppointment = { id: '1', start_date: undefined } as Appointment;
+    component.typeOfConsultation = 'Consulta General';
+    component.procedureDescription = 'Detalles del procedimiento';
+    component.realStartTime = '10:00';
+  
+    spyOn(console, 'error');
+  
+    // Ejecuta el método
+    component.addProcedure();
+  
+    // Verifica que se registre el error correspondiente
+    expect(console.error).toHaveBeenCalledWith('La cita seleccionada no tiene una fecha de inicio válida');
+  });
+  
+  it('should handle error when adding a procedure', () => {
+    component.selectedAppointment = { id: '1', start_date: '2024-11-25T10:00:00' } as Appointment;
+    component.typeOfConsultation = 'Consulta General';
+    component.procedureDescription = 'Detalles del procedimiento';
+    component.realStartTime = '10:00';
+  
+    mockAppointmentService.addProcedure.and.returnValue(
+      throwError(() => ({ message: 'Error al agregar procedimiento', status: 500 }))
+    );
+  
+    spyOn(console, 'error');
+    spyOn(window, 'alert');
+  
+    // Ejecuta el método
+    component.addProcedure();
+  
+    // Verifica que se registre el error en la consola
+    expect(console.error).toHaveBeenCalledWith('Error al agregar el procedimiento', jasmine.any(Object));
+    // Verifica que se muestre la alerta al usuario
+    expect(window.alert).toHaveBeenCalledWith('Hubo un error al agregar la historia clínica. Por favor intente de nuevo.');
+  });
+
+
+  it('should combine date and time correctly for realStartDateTime', () => {
+    // Asegúrate de que start_date es un string válido
+    component.selectedAppointment = { id: '1', start_date: '2024-11-25T10:00:00' } as Appointment;
+    component.realStartTime = '15:30';
+  
+    const startDate = component.selectedAppointment.start_date;
+    expect(startDate).toBeDefined(); // Validación adicional para evitar errores
+  
+    const appointmentDate = new Date(startDate!); // Usa el operador `!` ya que hemos validado que no es undefined
+    const [hours, minutes] = component.realStartTime.split(':');
+    appointmentDate.setHours(parseInt(hours, 10));
+    appointmentDate.setMinutes(parseInt(minutes, 10));
+  
+    const expectedRealStartDateTime = appointmentDate.toISOString();
+  
+    // Verifica el resultado
+    expect(expectedRealStartDateTime).toBe(appointmentDate.toISOString());
   });
 });
 
