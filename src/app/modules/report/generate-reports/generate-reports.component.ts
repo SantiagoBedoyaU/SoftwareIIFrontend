@@ -3,7 +3,7 @@ import { Chart, ChartConfiguration, ChartType, ChartTypeRegistry, registerables 
 import { ReportService } from '../../../services/report.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AttendanceReport, WaitingTimeReport } from '../../../modelos/report.model';
+import { AttendanceReport, ConsultedDoctorsReport, UsersDNIReport, WaitingTimeReport } from '../../../modelos/report.model';
 
 interface BarChartData {
   data: number[];
@@ -35,9 +35,19 @@ export class GenerateReportsComponent implements OnInit {
   waitingTimeReport?: WaitingTimeReport;
   formattedMaxWaitingDate = '';
   formattedMinWaitingDate = '';
-
+  usersDNIReport: UsersDNIReport = {
+    cc_users: 0,
+    ti_users: 0,
+    tp_users: 0,
+    cc_percentage: 0,
+    ti_percentage: 0,
+    tp_percentage: 0,
+  };
+  consultedDoctorsReport: ConsultedDoctorsReport | null = null;
+  usersDNIChartInstance: Chart<"pie"> | null = null;
   chartInstance: Chart<keyof ChartTypeRegistry, number[], string> | null = null;
   pieChartInstance: Chart<"pie"> | null = null;
+  doctorsArray: { doctorName: string; consultations: number }[] = [];
 
   // Configuración de gráficas
   barChartOptions: ChartConfiguration['options'] = {
@@ -59,6 +69,11 @@ export class GenerateReportsComponent implements OnInit {
   selectReport(type: string) {
     this.selectedReport = type;
 
+    if (!this.startDate || !this.endDate) {
+      this.showModal('errorModal', 'Por favor, selecciona una fecha de inicio y fin.');
+      return;
+    }
+
     // Obtener la fecha actual en formato YYYY-MM-DD
     const currentDate = new Date().toISOString().split('T')[0];
     const endDateFormatted = new Date(this.endDate).toISOString().split('T')[0];
@@ -78,9 +93,14 @@ export class GenerateReportsComponent implements OnInit {
       this.generateAttendanceReport();
     } else if (type === 'waitingTime') {
       this.generateWaitingTimeReport();
+    } else if (type === 'usersDNI') {
+      this.generateUsersDNIReport();
+    } else if (type === 'mostConsultedDoctors') {
+      this.generateConsultedDoctorsReport();
     }
   }
 
+  // generar reporte de asistencia
   generateAttendanceReport() {
     this.reportService.getAttendanceReport(this.startDate, this.endDate).subscribe(
       (data) => {
@@ -95,7 +115,7 @@ export class GenerateReportsComponent implements OnInit {
     );
   }
 
-
+  // generar reporte de tiempo de espera
   generateWaitingTimeReport() {
     this.reportService.getWaitingTimeReport(this.startDate, this.endDate).subscribe(
       (data) => {
@@ -115,6 +135,32 @@ export class GenerateReportsComponent implements OnInit {
     );
   }
 
+  // generar reporte de usuarios DNI
+  generateUsersDNIReport() {
+    this.reportService.getUsersDNIReport().subscribe((data) => {
+      this.usersDNIReport = data;
+      console.log('Users DNI report:', this.usersDNIReport);
+      // Asegúrate de que el gráfico se cargue después de recibir los datos
+      this.loadUserDNIChart();
+      this.loadUsersDNIPieChart();
+    }, (error) => {
+      console.error('Error fetching users DNI report:', error);
+    });
+  }
+
+  // generar reporte de doctores más consultados
+  generateConsultedDoctorsReport() {
+    this.reportService.getMostConsultedDoctors(this.startDate, this.endDate).subscribe((data) => {
+      this.consultedDoctorsReport = data;
+      console.log('Doctors report:', this.consultedDoctorsReport);
+      // Asegúrate de que el gráfico se cargue después de recibir los datos
+      this.loadDoctorsChart();
+    }, (error) => {
+      console.error('Error fetching doctors report:', error);
+    });
+  }
+
+  // Cargar gráfica de asistencia
   loadAttendanceChart() {
     const attending = this.attendanceReport.attending_patients || 0;
     const nonAttending = this.attendanceReport['non-attending_patients'] || 0;
@@ -163,7 +209,7 @@ export class GenerateReportsComponent implements OnInit {
     });
   }
 
-
+  // Cargar gráfica de torta de asistencia
   loadAttendancePieChart() {
     const attendancePercentage = this.attendanceReport.attendance_percentage || 0;
     const nonAttendancePercentage = this.attendanceReport['non-attendance_percentage'] || 0;
@@ -193,7 +239,10 @@ export class GenerateReportsComponent implements OnInit {
         plugins: {
           tooltip: {
             callbacks: {
-              label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw}%`,
+              label: (tooltipItem) => {
+                const value = tooltipItem.raw as number;
+                return `${tooltipItem.label}: ${value.toFixed(2)}%`;
+              },
             },
           },
         },
@@ -201,8 +250,9 @@ export class GenerateReportsComponent implements OnInit {
     });
   }
 
+  // Cargar gráfica de tiempo de espera
   loadWaitingTimeChart() {
-    const ctx = document.getElementById('reportChart') as HTMLCanvasElement;
+    const ctx = document.getElementById('reportTimeChart') as HTMLCanvasElement;
 
     if (this.chartInstance) {
       this.chartInstance.destroy();
@@ -298,6 +348,177 @@ export class GenerateReportsComponent implements OnInit {
     // Mostrar información adicional en la consola (opcional, ajusta según tus necesidades)
     console.log(`Día con tiempo máximo de espera: ${formattedMaxWaitingDate}`);
     console.log(`Día con tiempo mínimo de espera: ${formattedMinWaitingDate}`);
+  }
+
+  // Cargar gráfica de usuarios DNI
+  loadUserDNIChart() {
+    const cc_users = this.usersDNIReport.cc_users || 0;
+    const ti_users = this.usersDNIReport.ti_users || 0;
+    const tp_users = this.usersDNIReport.tp_users || 0;
+    const ctx = document.getElementById('reportDNIChart') as HTMLCanvasElement;
+
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
+    }
+
+    this.chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['CC', 'TI', 'TP'],
+        datasets: [
+          {
+            label: 'Usuarios',
+            data: [cc_users, ti_users, tp_users],
+            backgroundColor: ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(144, 238, 144, 0.7)'],
+            borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(75, 192, 192, 1)'],
+            borderWidth: 1,
+            barThickness: 40,
+            maxBarThickness: 40,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2,
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+          x: {
+            ticks: {
+              maxRotation: 0,
+            },
+          },
+        },
+        plugins: {
+          legend: {
+            display: true,
+          },
+        },
+      },
+    });
+  }
+
+  // Cargar gráfica de torta de usuarios DNI
+  loadUsersDNIPieChart() {
+    const ccPercentage = this.usersDNIReport.cc_percentage || 0;
+    const tiPercentage = this.usersDNIReport.ti_percentage || 0;
+    const tpPercentage = this.usersDNIReport.tp_percentage || 0;
+
+    const pieCtx = document.getElementById('usersDNIChart') as HTMLCanvasElement;
+
+    if (this.pieChartInstance) {
+      this.pieChartInstance.destroy();
+    }
+
+    this.pieChartInstance = new Chart(pieCtx, {
+      type: 'pie',
+      data: {
+        labels: ['CC (%)', 'TI (%)', 'TP (%)'],
+        datasets: [
+          {
+            data: [ccPercentage, tiPercentage, tpPercentage],
+            backgroundColor: ['rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.7)', 'rgba(144, 238, 144, 0.7)'],
+            hoverBackgroundColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)'],
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 1.5,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: (tooltipItem) => {
+                const value = tooltipItem.raw as number;
+                return `${tooltipItem.label}: ${value.toFixed(2)}%`;
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  // Cargar gráfica de doctores más consultados
+  loadDoctorsChart() {
+    const ctx = document.getElementById('reportDoctorsChart') as HTMLCanvasElement;
+
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
+    }
+
+    const rawData = this.consultedDoctorsReport?.doctors ?? {};
+
+    const labels = Object.keys(rawData);
+    const values = Object.values(rawData);
+    const colors = values.map(value => (value >= 0 ? 'rgba(75, 192, 192, 0.7)' : 'rgba(60, 179, 113, 0.7)'));
+    const borderColors = values.map(value => (value >= 0 ? 'rgba(75, 192, 192, 1)' : 'rgba(60, 179, 113, 1)'));
+
+    this.chartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            data: values,
+            label: 'Consultas',
+            backgroundColor: colors,
+            borderColor: borderColors,
+            borderWidth: 1,
+            barThickness: 30,
+            maxBarThickness: 30,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Consultas',
+              font: {
+                size: 14,
+              },
+            },
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Doctores',
+              font: {
+                size: 14,
+              },
+            },
+          },
+        },
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              font: {
+                size: 12,
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const value = context.raw as number;
+                return `${value} consultas`;
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
   // Show a modal

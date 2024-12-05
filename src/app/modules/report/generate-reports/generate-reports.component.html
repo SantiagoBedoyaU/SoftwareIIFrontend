@@ -1,7 +1,6 @@
 <body>
     <div class="container">
         <h3>Generar Reportes</h3>
-
         <!-- Contenedor principal -->
         <div class="container-form">
             <!-- Selección de Fechas -->
@@ -19,10 +18,19 @@
             <!-- Botones para elegir tipo de reporte -->
             <div class="row buttons">
                 <button class="btn waves-effect waves-light" (click)="selectReport('attendance')">
-                    Reporte de Asistencia
+                    Asistencia
                 </button>
                 <button class="btn waves-effect waves-light" (click)="selectReport('waitingTime')">
-                    Reporte de Tiempo de Espera
+                    Tiempo de Espera
+                </button>
+            </div>
+
+            <div class="row buttons">
+                <button class="btn waves-effect waves-light" (click)="selectReport('usersDNI')">
+                    Tipos de documento
+                </button>
+                <button class="btn waves-effect waves-light" (click)="selectReport('mostConsultedDoctors')">
+                    Doctores más consultados
                 </button>
             </div>
         </div>
@@ -32,33 +40,64 @@
             <!-- Contenedor para el título -->
             <div class="report-title">
                 <h4>
-                    {{ selectedReport === 'attendance' ? 'Reporte de Asistencia' : 'Reporte de Tiempo de Espera' }}
+                    {{
+                    selectedReport === 'attendance' ? 'Reporte de Asistencia' :
+                    selectedReport === 'waitingTime' ? 'Reporte de Tiempo de Espera' :
+                    selectedReport === 'usersDNI' ? 'Reporte de tipos de documento' :
+                    'Reporte de doctores más consultados'
+                    }}
                 </h4>
             </div>
 
             <!-- Contenedores para las gráficas -->
-            <div class="charts">
+            <div class="charts" *ngIf="selectedReport === 'attendance'">
                 <!-- Gráfica de barras para el reporte seleccionado -->
                 <div class="chart-container">
                     <canvas id="reportChart"></canvas>
                 </div>
 
                 <!-- Gráfica de torta (solo para reporte de asistencia) -->
-                <div class="chart-container" *ngIf="selectedReport === 'attendance'">
+                <div class="chart-container">
                     <canvas id="pieChart"></canvas>
                 </div>
             </div>
 
             <!-- Información adicional (solo para reporte de tiempo de espera) -->
-            <div *ngIf="selectedReport === 'waitingTime'" class="report-details">
-                <p>
-                    <strong>Día con tiempo máximo de espera:</strong>
-                    {{ formattedMaxWaitingDate }}
-                </p>
-                <p>
-                    <strong>Día con tiempo mínimo de espera:</strong>
-                    {{ formattedMinWaitingDate }}
-                </p>
+            <div *ngIf="selectedReport === 'waitingTime'" class="charts">
+                <!-- Gráfica de barras para el reporte seleccionado -->
+                <div class="chart-container-report">
+                    <canvas id="reportTimeChart"></canvas>
+                </div>
+                <div class="column-report">
+                    <p>
+                        <strong>Día con tiempo máximo de espera:</strong>
+                        {{ formattedMaxWaitingDate }}
+                    </p>
+                    <p>
+                        <strong>Día con tiempo mínimo de espera:</strong>
+                        {{ formattedMinWaitingDate }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Contenedores para las gráficas -->
+            <div class="charts" *ngIf="selectedReport === 'usersDNI'">
+                <!-- Gráfica de barras para el reporte seleccionado -->
+                <div class="chart-container">
+                    <canvas id="reportDNIChart"></canvas>
+                </div>
+
+                <!-- Gráfica de torta (solo para reporte de asistencia) -->
+                <div class="chart-container">
+                    <canvas id="usersDNIChart"></canvas>
+                </div>
+            </div>
+
+            <div class="charts" *ngIf="selectedReport === 'mostConsultedDoctors'">
+                <!-- Gráfica de barras para el reporte seleccionado -->
+                <div class="chart-container">
+                    <canvas id="reportDoctorsChart"></canvas>
+                </div>
             </div>
         </div>
     </div>

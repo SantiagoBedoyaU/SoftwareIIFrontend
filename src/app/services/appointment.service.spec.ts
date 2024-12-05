@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppointmentService } from './appointment.service';
 import { SecurityService } from './security.service';
-import { Appointment, Procedure } from '../modelos/appointment.model';
+import { Appointment } from '../modelos/appointment.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 describe('AppointmentService', () => {
