@@ -137,12 +137,35 @@ button.btn span {
 .chart-container {
   width: 100%;
   max-width: 400px;
+  height: auto; /* Asegura que la altura se ajuste */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chart-container-report {
+  width: 100%;
+  max-width: 400px;
+  height: auto; /* Asegura que la altura se ajuste */
+  margin: 0;
+  padding: 0;
+}
+
+.column-report {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
 canvas {
   max-width: 100%;
   height: auto;
-  display: block;
+  margin: 0;
+  padding: 0;
 }
 
 /* Estilos para el modal */
