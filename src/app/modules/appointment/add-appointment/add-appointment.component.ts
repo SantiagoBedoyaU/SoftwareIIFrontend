@@ -7,13 +7,15 @@ import { CommonModule } from '@angular/common';
 import moment from 'moment';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserModel } from '../../../modelos/user.model';
-import { CalendarOptions, EventInput } from '@fullcalendar/core/index.js';
+import { CalendarOptions, EventClickArg, EventInput } from '@fullcalendar/core/index.js';
 import { UnavailableTimeService } from '../../../services/unavailable-time.service';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
+import interactionPlugin from '@fullcalendar/interaction';
 import { Appointment } from '../../../modelos/appointment.model';
+import { forkJoin } from 'rxjs';
+import { UnavailableTime } from '../../../modelos/unavaibale-times.model';
 
 @Component({
   selector: 'app-add-appointment',
@@ -46,7 +48,7 @@ export class AddAppointmentComponent implements OnInit {
     private fb: FormBuilder,
     private appointmentService: AppointmentService,
     private securityService: SecurityService,
-    private unavailableTimesService: UnavailableTimeService
+    private unavailableTimesService: UnavailableTimeService,
   ) { }
 
   ngOnInit(): void {
@@ -102,7 +104,9 @@ export class AddAppointmentComponent implements OnInit {
     });
   }
 
-  searchUnavailableTimes() {
+  searchUnavailableTimes(): void {
+    this.hasSearchedUnavailableTimes = false;
+    this.updateCalendarEvents([]);
     if (this.fGroup.invalid) {
       M.toast({ html: 'Por favor, complete todos los campos antes de continuar.', classes: 'red' });
       return;
@@ -114,33 +118,113 @@ export class AddAppointmentComponent implements OnInit {
 
     console.log('Parámetros enviados al servicio:', { startDate, endDate, doctorId });
     const loadingModalInstance = M.Modal.getInstance(document.getElementById('loadingModal')!);
-    loadingModalInstance.open(); // Abre el modal de carga
+    loadingModalInstance.open();
 
-    this.unavailableTimesService.getUnavailableTimes(startDate, endDate, doctorId).subscribe({
-      next: (unavailableTimes) => {
-        console.log('DATOS DEL BACKEND:', unavailableTimes);
-        const events = unavailableTimes.map((time) => ({
+    const unavailableTimes$ = this.unavailableTimesService.getUnavailableTimes(startDate, endDate, doctorId);
+    const appointment$ = this.appointmentService.getAppointmentsByDoctor(startDate, endDate, doctorId);
+
+    forkJoin([unavailableTimes$, appointment$]).subscribe({
+      next: ([unavailableTimes, appointments]) => {
+        console.log('Horarios no disponibles:', unavailableTimes);
+        console.log('Citas del doctor:', appointments);
+
+        // Crear eventos de horarios no disponibles
+        // Crear eventos de horarios no disponibles
+        const unavailableEvents = unavailableTimes.map((time) => ({
           id: time.id,
           title: 'No Disponible',
           start: this.formatDateToUTC(time.start_date),
           end: this.formatDateToUTC(time.end_date),
-          backgroundColor: '#FF0000',
-          borderColor: '#FF0000',
+          backgroundColor: '#F44336',
+          borderColor: '#F44336',
           textColor: '#FFFFFF',
         }));
 
-        console.log('Horarios no disponibles cargados:', events);
+        //Crear eventos de citas pendientes
+        const appointmentEvents = appointments.filter((appointment) => appointment.status === 0).map((appointment) => ({
+          id: `appointment-${appointment.id}`,
+          title: 'No disponible',
+          start: this.formatDateToUTC(appointment.start_date ?? ''),
+          end: this.formatDateToUTC(appointment.end_date ?? ''),
+          backgroundColor: '#F44336',
+          borderColor: '#F44336',
+          textColor: '#FFFFFF',
+        }));
+
+        const allTimes = this.generateTimeSlots(startDate, endDate);
+
+        //Filtrar horarios disponibles
+        const availableTimes = allTimes.filter((time) =>
+          !unavailableTimes.some((unavailable) => {
+            const unavailableStart = moment.utc(unavailable.start_date);
+            const unavailableEnd = moment.utc(unavailable.end_date);
+            return (
+              moment.utc(time.start).isSameOrAfter(unavailableStart) &&
+              moment.utc(time.start).isBefore(unavailableEnd)
+            );
+          }) &&
+          !appointments.some((appointment) => {
+            const appointmentStart = moment.utc(appointment.start_date);
+            const appointmentEnd = moment.utc(appointment.end_date);
+            return (
+              moment.utc(time.start).isSameOrAfter(appointmentStart) &&
+              moment.utc(time.start).isBefore(appointmentEnd)
+            );
+          })
+        );
+
+        // Crear eventos de horarios disponibles
+        const availableEvents = availableTimes.map((time, index) => ({
+          id: `available-${index}`,
+          title: 'Disponible',
+          start: time.start,
+          end: time.end,
+          backgroundColor: '#4CAF50',
+          borderColor: '#4CAF50',
+          textColor: '#FFFFFF',
+        }));
+
+        // Combinar eventos
+        const events = [...unavailableEvents, ...appointmentEvents, ...availableEvents];
+
+        console.log('Eventos generados para el calendario:', events);
         this.updateCalendarEvents(events);
+
         this.hasSearchedUnavailableTimes = true;
-        loadingModalInstance.close(); // Cierra el modal cuando los datos están listos
+        loadingModalInstance.close();
       },
       error: (error) => {
         console.error('Error al obtener horarios no disponibles:', error);
-        loadingModalInstance.close(); // Cierra el modal incluso en caso de error
+        loadingModalInstance.close();
       },
+
     });
   }
 
+  generateTimeSlots(startDate: string, endDate: string): { start: string; end: string }[] {
+    const slots = [];
+    const start = moment(startDate).startOf('day');
+    const end = moment(endDate).endOf('day');
+
+    while (start.isBefore(end)) {
+      const slotStart = start.clone();
+      const slotEnd = start.add(15, 'minutes');
+
+      slots.push({
+        start: slotStart.toISOString(),
+        end: slotEnd.toISOString(),
+      });
+    }
+
+    return slots;
+  }
+
+  isTimeInUnavailable(slot: { start: string, end: string }, unavailableTimes: UnavailableTime[]): boolean {
+    return unavailableTimes.some((time) => {
+      return moment(slot.start).isBetween(time.start_date, time.end_date, null, '[)') ||
+        moment(slot.end).isBetween(time.start_date, time.end_date, null, '[)');
+    });
+  }
 
   initializeCalendar(): void {
     this.calendarOptions = {
@@ -156,23 +240,32 @@ export class AddAppointmentComponent implements OnInit {
       allDaySlot: false,
       slotMinTime: '06:00:00',
       slotMaxTime: '18:00:00',
-      slotDuration: '00:30:00',
-      slotLabelInterval: '00:30:00',
-      dateClick: this.onDateClick.bind(this),
+      slotDuration: '00:15:00',
+      slotLabelInterval: '00:15:00',
+      eventClick: this.onEventClick.bind(this),
     };
   }
 
-  onDateClick(info: DateClickArg): void {
-    if (!this.hasSearchedUnavailableTimes) {
-      M.toast({ html: 'Por favor, busque horarios disponibles antes de continuar.', classes: 'red' });
+  onEventClick(info: EventClickArg): void {
+    const event = info.event;
+
+    // Validar que el evento sea de disponibilidad (color verde)
+    if (event.backgroundColor !== '#4CAF50') {
+      M.toast({ html: 'Solo se pueden seleccionar horarios disponibles.', classes: 'red' });
       return;
     }
 
-    // Código existente
-    const clickedDate = moment.utc(info.date);
+    const clickedDate = moment.utc(event.start);
+    const doctorId = this.fGroup.get('doctorId')?.value;
+    const doctor = this.doctors.find(doc => doc.id === doctorId);
 
-    if (clickedDate.isBefore(moment.utc().startOf('day'))) {
-      M.toast({ html: 'Las citas solo pueden asignarse a partir del día actual.', classes: 'red' });
+    if (!doctor) {
+      M.toast({ html: 'Por favor, seleccione un doctor antes de continuar.', classes: 'red' });
+      return;
+    }
+
+    if (!this.hasSearchedUnavailableTimes) {
+      M.toast({ html: 'Por favor, busque horarios disponibles antes de continuar.', classes: 'red' });
       return;
     }
 
@@ -182,14 +275,10 @@ export class AddAppointmentComponent implements OnInit {
     }
 
     this.selectedDateTime = clickedDate.format('YYYY-MM-DD HH:mm');
-    const doctor = this.doctors.find(doc => doc.id === this.fGroup.get('doctorId')?.value);
-    if (!doctor) {
-      M.toast({ html: 'Por favor, seleccione un doctor antes de continuar.', classes: 'red' });
-      return;
-    }
-
     this.selectedDoctorId = doctor.id;
     this.selectedDoctorName = doctor.name;
+
+    console.log('Datos seleccionados:', { selectedDateTime: this.selectedDateTime, selectedDoctorId: this.selectedDoctorId });
 
     const modalInstance = M.Modal.getInstance(document.getElementById('createAppointmentModal')!);
     modalInstance.open();
@@ -197,25 +286,15 @@ export class AddAppointmentComponent implements OnInit {
 
   updateCalendarEvents(events: EventInput[]) {
     console.log('Eventos antes de actualizar:', this.calendarOptions.events);
-  
-    const existingEvents = Array.isArray(this.calendarOptions.events) ? this.calendarOptions.events : [];
-    
-    // Combinar eventos sin duplicados
-    const combinedEvents = [...existingEvents, ...events].reduce((uniqueEvents, event) => {
-      if (!uniqueEvents.some(e => e.id === event.id)) {
-        uniqueEvents.push(event);
-      }
-      return uniqueEvents;
-    }, [] as EventInput[]);
-  
+
+    // Reemplazar completamente los eventos actuales con los nuevos
     this.calendarOptions = {
       ...this.calendarOptions,
-      events: combinedEvents,
+      events: [...events],
     };
-  
+
     console.log('Eventos después de actualizar:', this.calendarOptions.events);
   }
-  
 
   // Método para formatear fechas a UTC sin milisegundos
   private formatDateToUTC(dateString: string | Date): string {
@@ -226,7 +305,7 @@ export class AddAppointmentComponent implements OnInit {
   onConfirmAppointment(): void {
     // Log para verificar el valor de la fecha seleccionada
     console.log('Fecha seleccionada (local):', this.selectedDateTime);
-    
+
     // Convertir la fecha local a UTC
     const utcStartDate = moment(this.selectedDateTime).utcOffset(0, true).toISOString();
     console.log('Fecha enviada al backend (UTC):', utcStartDate);
@@ -251,19 +330,8 @@ export class AddAppointmentComponent implements OnInit {
         const modalInstance = M.Modal.getInstance(document.getElementById('createAppointmentModal')!);
         modalInstance.close();
 
-        // Asegurar que `events` es un array
-        this.calendarOptions.events = Array.isArray(this.calendarOptions.events) ? this.calendarOptions.events : [];
+        this.searchUnavailableTimes();
 
-        // Actualizar el calendario con el nuevo evento
-        this.calendarOptions.events = [
-          ...this.calendarOptions.events,
-          {
-            title: 'Cita',
-            start: utcStartDate,
-            backgroundColor: '#4CAF50',
-            borderColor: '#4CAF50',
-          },
-        ];
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al registrar la cita:', error);
