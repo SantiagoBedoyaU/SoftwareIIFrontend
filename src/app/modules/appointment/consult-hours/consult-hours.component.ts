@@ -15,6 +15,10 @@ import { CalendarOptions, EventClickArg, EventInput } from '@fullcalendar/core/i
 interface MyExtendedProps {
   startTime: string; // Formato de tiempo esperado (puede ser 'string', 'Date', etc.)
   endTime: string;
+  patientName: string;
+  status: number;
+  startDate: string;
+  endDate: string;
 }
 
 @Component({
@@ -138,11 +142,17 @@ export class ConsultHoursComponent implements OnInit {
   // Método para obtener los eventos del calendario
   getEvents(): EventInput[] {
     const appointmentEvents = this.appointments.map(appt => ({
-      id: appt.id?.toString(), // ID de la cita
+      id: appt.id, // ID de la cita
       title: appt.patient_name || 'Paciente no disponible',
       start: this.formatDateToUTC(appt.start_date ?? ''), // Formato correcto de fecha
       end: this.formatDateToUTC(appt.end_date ?? ''),    // Formato correcto de fecha
-      allDay: true
+      allDay: true,
+      extendedProps: {
+        patientName: appt.patient_name,
+        startDate: appt.start_date,
+        endDate: appt.end_date,
+        status: appt.status
+      }
     }));
 
     const unavailableEvents = this.unavailableTimes.map(unavailable => ({
@@ -200,26 +210,25 @@ export class ConsultHoursComponent implements OnInit {
       `;
       this.showModal('unavailableTimesModal', message);
     } else {
-      const appointment = this.appointments.find(appt => appt.id === info.event.id);
+      console.log('Procesando cita...');
 
-      if (appointment) {
-        const startTime = new Date(appointment.start_date ?? '').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const endTime = new Date(appointment.end_date ?? '').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const statusLabel = this.getStatusLabel(appointment.status ?? 0);
+      const extendedProps = info.event.extendedProps as MyExtendedProps;
 
-        const message = `
-          <strong>Paciente:</strong> ${appointment.patient_name}<br>
+      const startTime = new Date(extendedProps.startDate).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+      const endTime = new Date(extendedProps.endDate).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+      const statusLabel = this.getStatusLabel(extendedProps.status);
+
+      const message = `
+          <strong>Paciente:</strong> ${extendedProps.patientName}<br>
           <strong>Horario de Inicio:</strong> ${startTime}<br>
           <strong>Horario de Fin:</strong> ${endTime}<br>
           <strong>Estado:</strong> ${statusLabel}
         `;
 
-        this.showModal('appointmentDetailsModal', message);
-      } else {
-        alert('No se encontró la cita.');
-      }
-    }
+      this.showModal('appointmentDetailsModal', message);
+    } 
   }
+
 
   // Método para manejar el clic en una fecha
   handleDateClick(info: DateClickArg): void {

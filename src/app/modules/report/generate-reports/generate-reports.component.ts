@@ -274,14 +274,6 @@ export class GenerateReportsComponent implements OnInit {
     const colors = values.map(value => (value >= 0 ? 'rgba(75, 192, 192, 0.7)' : 'rgba(60, 179, 113, 0.7)'));
     const borderColors = values.map(value => (value >= 0 ? 'rgba(75, 192, 192, 1)' : 'rgba(60, 179, 113, 1)'));
 
-    // Determinar días con máximos y mínimos
-    const maxWaitingDate = new Date(this.waitingTimeReport?.days_with_max_waiting_time ?? '').toISOString().split('T')[0];
-    const minWaitingDate = new Date(this.waitingTimeReport?.days_with_min_waiting_time ?? '').toISOString().split('T')[0];
-
-    // Formateo al estilo DD/MM/YYYY
-    const formattedMaxWaitingDate = maxWaitingDate.split('-').reverse().join('/');
-    const formattedMinWaitingDate = minWaitingDate.split('-').reverse().join('/');
-
     // Crear el gráfico
     this.chartInstance = new Chart(ctx, {
       type: 'bar',
@@ -344,10 +336,6 @@ export class GenerateReportsComponent implements OnInit {
         },
       },
     });
-
-    // Mostrar información adicional en la consola (opcional, ajusta según tus necesidades)
-    console.log(`Día con tiempo máximo de espera: ${formattedMaxWaitingDate}`);
-    console.log(`Día con tiempo mínimo de espera: ${formattedMinWaitingDate}`);
   }
 
   // Cargar gráfica de usuarios DNI
