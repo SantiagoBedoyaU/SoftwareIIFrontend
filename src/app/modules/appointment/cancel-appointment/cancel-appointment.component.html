@@ -8,7 +8,8 @@
                 <div class="card grey lighten-4 z-depth-4 larger-card">
                     <div class="card-content form_signin">
                         <div class="row">
-                            <p>Ingrese la fecha de inicio y la fecha de fin para buscar citas a cancelar en ese periodo.</p>
+                            <p>Ingrese la fecha de inicio y la fecha de fin para buscar citas a cancelar en ese periodo.
+                            </p>
                             <div class="input-field col s6 input-container">
                                 <div class="date-field-wrapper">
                                     <input formControlName="startDate" id="startDate" type="text"
@@ -48,21 +49,21 @@
                     <tbody>
                         <tr *ngFor="let appt of appointments">
                             <td>{{ appt.start_date | date: 'yyyy-MM-dd' }}</td>
-                            <td>{{ appt.start_date | date: 'HH:mm' }}</td>
-                            <td>{{ appt.end_date | date: 'HH:mm' }}</td>
+                            <td>{{ appt.start_date ? convertToLocalTime(appt.start_date) : '' }}</td>
+                            <td>{{ appt.end_date ? convertToLocalTime(appt.end_date) : '' }}</td>
                             <td>{{ appt.doctor_name }}</td>
                             <td>
-                                <button class="btn-cancel btn-search"
-                                    (click)="onCancelAppointment(appt.id ?? '')">Cancelar</button>
+                                <button class="btn-cancel btn-search" (click)="onCancelAppointment(appt.id ?? '')">
+                                    Cancelar
+                                </button>
                             </td>
-
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    
+
     <!-- Modal de Éxito de Cancelación -->
     <div id="cancelSuccessModal" class="modal">
         <div class="modal-content">
