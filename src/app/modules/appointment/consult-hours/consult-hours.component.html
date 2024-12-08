@@ -5,9 +5,9 @@
             <h4 class="card-title title centered-tittle">Consultar Citas</h4>
 
             <form [formGroup]="fGroup" class="container" (ngSubmit)="searchAppointments()">
-                <div class="card grey lighten-4 z-depth-4 larger-card">
+              
                     <div class="card-content form_signin">
-                        <div class="row">
+                        <div class="form-datas">
                             <p>Ingrese la fecha de inicio y la fecha de fin para buscar citas en ese periodo.</p>
                             <div class="input-field col s6 input-container">
                                 <div class="date-field-wrapper">
@@ -28,7 +28,6 @@
                             <button type="submit" class="btn-search">Buscar</button>
                         </div>
                     </div>
-                </div>
             </form>
 
             <!-- Modal para mostrar detalles de la cita -->

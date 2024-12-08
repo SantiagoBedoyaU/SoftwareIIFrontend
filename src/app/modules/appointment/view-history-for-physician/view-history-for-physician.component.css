@@ -262,5 +262,18 @@ body {
       width: 100%;
       padding: 10px;
     }
+
+    .card-content table {
+      font-size: 12px; /* Reduce el tamaño del texto */
+    }
+  
+    .card-content th,
+    .card-content td {
+      padding: 8px; /* Reduce el padding */
+    }
+  
+    .card-content table th {
+      font-size: 13px; /* Ajusta el tamaño del texto en encabezados */
+    }
   }
   

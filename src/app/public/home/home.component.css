@@ -41,3 +41,13 @@
   height: 250px; 
   object-fit: cover; 
 }
+
+@media (max-width: 600px) {
+  .aside-padding {
+    padding: 20px;
+  }
+
+  .buttom-margin {
+    margin-bottom: 40px;
+  }
+}

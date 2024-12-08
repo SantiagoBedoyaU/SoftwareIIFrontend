@@ -1,8 +1,8 @@
 /* Estilos para la página de cancelación de citas */
 body {
-    padding: 0;
+    padding: 70px;
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -232,3 +232,57 @@ table.responsive-table th, table.responsive-table td {
     text-align: center;
     border-bottom: 1px solid #ddd;
 }
+
+/* Ajustes responsivos para pantallas pequeñas */
+@media (max-width: 768px) {
+    body {
+      padding: 20px;
+    }
+  
+    .container-main {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .container-centered,
+    .container-table-wrapper {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  
+    /* Alineación centrada del título en pantallas pequeñas */
+    .centered-tittle {
+      text-align: center;
+      font-size: 1.5rem;
+    }
+  
+    .container-table-wrapper {
+      max-height: 400px; 
+    }
+  
+    .card {
+      width: 100%; 
+    }
+
+    .btn-search {
+        padding: 10px 20px;
+    }
+  
+    table.responsive-table {
+      font-size: 14px; 
+    }
+  
+    table.responsive-table th,
+    table.responsive-table td {
+      padding: 8px; 
+    }
+  
+    .modal {
+      width: 80%;
+    }
+
+    .modal-footer .btn-blue {
+        padding: 10px 20px;
+    }
+  }
+  

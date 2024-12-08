@@ -104,16 +104,37 @@ select.browser-default {
 }
 
 .calendar-card {
-  background-color: #ffffff; /* Fondo blanco */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
-  padding: 20px; /* Espaciado interno */
-  width: 90%; /* Ancho del contenedor */
-  max-width: 1200px; /* Ancho máximo */
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 100%; /* Ocupa todo el ancho en pantallas pequeñas */
+  max-width: 1200px;
+  box-sizing: border-box;
 }
 
 .full-calendar {
   border-radius: 8px; /* Para que el calendario coincida con el contenedor */
+}
+
+/* Diseño general del calendario */
+.fc-toolbar {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten en varias líneas */
+  justify-content: center; /* Centra los elementos horizontalmente */
+  align-items: center;
+}
+
+/* Ajusta las celdas del calendario */
+.fc-daygrid-day-top {
+  font-size: 12px; /* Reduce el tamaño del texto */
+  text-overflow: ellipsis; /* Corta el texto si es demasiado largo */
+  overflow: hidden;
+  white-space: nowrap; /* Impide que el texto ocupe más de una línea */
+}
+
+.fc-daygrid-day-number {
+  font-weight: bold;
 }
 
 .instructions {
@@ -154,4 +175,73 @@ select.browser-default {
 
 .modal-footer .btn-confirm:hover {
   background-color: #0d47a1;
+}
+
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  body {
+    padding: 20px;
+  }
+
+  .container-main {
+    flex-direction: column; /* Los elementos se apilan verticalmente */
+    align-items: center;
+  }
+
+  .container-centered,
+  .calendar-card {
+    width: 100%; /* Ocupan todo el ancho disponible */
+    margin-bottom: 20px; /* Espaciado entre el formulario y el calendario */
+  }
+
+  .calendar-card {
+    padding: 5px;
+  }
+
+  .fc .fc-toolbar {
+    flex-wrap: wrap; /* Permite que los elementos se apilen */
+  }
+
+  .fc-toolbar-title {
+    order: -1; /* Mueve el título al principio */
+    text-align: center; /* Centra el título */
+    font-size: 16px; /* Ajusta el tamaño */
+    margin-bottom: 10px; /* Añade espacio debajo */
+  }
+
+  .fc-toolbar-chunk {
+    width: 100%; /* Botones en fila */
+    text-align: center;
+    margin-bottom: 5px;
+  }
+
+  .fc-button {
+    font-size: 12px;
+    margin: 0 5px;
+    padding: 5px 10px;
+  }
+
+  .fc-timegrid-slot-label {
+    font-size: 12px; /* Tamaño reducido para las etiquetas */
+  }
+
+  .fc-daygrid-day-top {
+    font-size: 12px; /* Días más compactos */
+  }
+
+  .fc-timegrid {
+    overflow-x: auto; /* Permite desplazamiento horizontal si es necesario */
+  }
+
+  .fc-toolbar-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .fc-toolbar-chunk:first-child {
+    margin-top: 10px;
+    order: 2; /* Mueve los botones de navegación abajo */
+  }
 }

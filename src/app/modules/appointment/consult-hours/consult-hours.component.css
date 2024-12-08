@@ -1,189 +1,195 @@
 /* Fondo y alineación centrada */
 body {
-    padding: 60px;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url("/assets/images/image3.jpg");
-    background-color: rgba(255, 255, 255, 0.5);
-    background-blend-mode: overlay;
-    background-size: cover;
-  }
-  
-  /* Contenedor principal que alinea el formulario y la tabla en dos columnas */
-  .container-main {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 90%;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .centered-tittle {
-    margin: 0 auto;
-    text-align: center;
-  }
-  
-  /* Contenedor para el formulario */
-  .container-centered {
-    width: 45%;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .container {
-    width: 90%;
-  }
-  
-  /* Estilo del cuadro interno */
-  .larger-card {
-    width: 100%;
-    padding: 30px;
-  }
-  
-  /* Estilo del título */
-  .title {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #000;
-  }
-  
-  /* Estilo de formulario */
-  .form_signin {
-    padding: 15px;
-  }
-  
-  .input-field {
-    margin-bottom: 20px;
-  }
-  
-  .input-container label {
-    font-size: 12px;
-    font-weight: bold;
-    color: #616161;
-  }
-  
-  /* Estilo de los campos de fecha */
-  .date-field-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  
-  .large-input {
-    padding: 15px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .date-icon {
-    position: absolute;
-    right: 15px;
-    color: #757575;
-    cursor: pointer;
-  }
-  
-  .button-container {
-    text-align: right;
-  }
-  
-  /* Botón de búsqueda */
-  .btn-search {
-    background-color: #1565c0;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .btn-search:hover {
-    background-color: #0d47a1;
-  }
-  
-  /* Estilos personalizados para el calendario */
-  ::ng-deep .datepicker-date-display {
-    background-color: #1565c0 !important;
-    color: white;
-  }
-  
-  ::ng-deep .datepicker-today {
-    background-color: #1565c0 !important;
-    color: white !important;
-  }
-  
-  ::ng-deep .datepicker-day-button:hover,
-  ::ng-deep .datepicker-selected {
-    color: #1565c0 !important;
-  }
-  
-  ::ng-deep .datepicker-footer button {
-    color: #1565c0 !important;
-  }
-  
-  /* Estilos para el modal */
-  .modal {
-    max-width: 400px;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .modal-content {
-    text-align: center;
-    padding: 20px;
-    font-size: 16px;
-  }
-  
-  .modal-content h5 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .modal-content p {
-    color: #616161;
-  }
-  
-  .modal-footer {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    border-top: none;
-    margin-bottom: 20px;
-  }
-  
-  .modal-footer .btn {
-    background-color: #1565c0;
-    margin: 10px;
-    border-radius: 25px;
-  }
-  
-  .modal-footer .btn:hover {
-    background-color: #0d47a1;
-  }
-  
-  /* Mensajes de error en los campos */
-  .error-message {
-    height: 15px;
-    font-size: 10px;
-    color: #d32f2f;
-  }
-  
-  /* Contenedor para el calendario */
+  padding: 60px;
+  margin: 0;
+  display: flex;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/assets/images/image3.jpg");
+  background-color: rgba(255, 255, 255, 0.5);
+  background-blend-mode: overlay;
+  background-size: cover;
+}
+
+/* Contenedor principal que alinea el formulario y la tabla en dos columnas */
+.container-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-datas {
+  display: flex;
+  flex-direction: column;
+}
+
+.centered-tittle {
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Contenedor para el formulario */
+.container-centered {
+  width: 45%;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  width: 90%;
+}
+
+/* Estilo del cuadro interno */
+.larger-card {
+  width: 100%;
+  padding: 30px;
+}
+
+/* Estilo del título */
+.title {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #000;
+}
+
+/* Estilo de formulario */
+.form_signin {
+  padding: 15px;
+}
+
+.input-field {
+  margin-bottom: 20px;
+}
+
+.input-container label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #616161;
+}
+
+/* Estilo de los campos de fecha */
+.date-field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.large-input {
+  padding: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.date-icon {
+  position: absolute;
+  right: 15px;
+  color: #757575;
+  cursor: pointer;
+}
+
+.button-container {
+  text-align: right;
+}
+
+/* Botón de búsqueda */
+.btn-search {
+  background-color: #1565c0;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-search:hover {
+  background-color: #0d47a1;
+}
+
+/* Estilos personalizados para el calendario */
+::ng-deep .datepicker-date-display {
+  background-color: #1565c0 !important;
+  color: white;
+}
+
+::ng-deep .datepicker-today {
+  background-color: #1565c0 !important;
+  color: white !important;
+}
+
+::ng-deep .datepicker-day-button:hover,
+::ng-deep .datepicker-selected {
+  color: #1565c0 !important;
+}
+
+::ng-deep .datepicker-footer button {
+  color: #1565c0 !important;
+}
+
+/* Estilos para el modal */
+.modal {
+  max-width: 400px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+}
+
+.modal-content h5 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  color: #616161;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border-top: none;
+  margin-bottom: 20px;
+}
+
+.modal-footer .btn {
+  background-color: #1565c0;
+  margin: 10px;
+  border-radius: 25px;
+}
+
+.modal-footer .btn:hover {
+  background-color: #0d47a1;
+}
+
+/* Mensajes de error en los campos */
+.error-message {
+  height: 15px;
+  font-size: 10px;
+  color: #d32f2f;
+}
+
+/* Contenedor para el calendario */
 .container-calendar {
   width: 50%; /* Ajusta según sea necesario */
   background-color: rgba(255, 255, 255, 0.9);
@@ -197,4 +203,82 @@ body {
   width: 100%;
   height: auto; /* Ajusta según sea necesario */
 }
-  
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  /* Contenedor principal: columnas apiladas */
+  .container-main {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+  }
+
+  /* Formularios y calendario ocupan todo el ancho */
+  .container-centered,
+  .container-calendar {
+    width: 100%;
+    padding: 15px;
+  }
+
+  /* Títulos más pequeños */
+  .title,
+  .centered-tittle {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  /* Ajuste en campos de entrada */
+  .large-input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  /* Botones más compactos */
+  .btn-search {
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 20px;
+  }
+
+  /* Contenedor de fecha adaptado */
+  .date-field-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .date-icon {
+    position: relative;
+    margin-top: 5px;
+    margin-left: auto;
+  }
+
+  .form-datas {
+    flex-direction: column;
+  }
+
+  .date-field-wrapper {
+    display: flex;
+    flex-direction: row;
+  }
+
+  /* Modales ajustados */
+  .modal {
+    width: 90%;
+    max-width: 350px;
+    border-radius: 10px;
+  }
+
+  .modal-content {
+    font-size: 14px;
+    padding: 15px;
+  }
+
+  .modal-footer {
+    justify-content: space-around;
+    padding: 10px;
+  }
+}

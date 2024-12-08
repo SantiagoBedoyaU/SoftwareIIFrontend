@@ -1,5 +1,13 @@
-.footer-copyright {
+.page-footer .footer-copyright {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribuye los elementos a los extremos */
   padding: 0 60px;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
 }
 
 .logo-img {
@@ -9,7 +17,29 @@
   margin-right: 10px;
 }
 
-.brand-logo {
-  display: flex;
-  align-items: center;
+a.grey-text {
+  font-size: 14px;
+  text-align: right;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+  .page-footer .footer-copyright {
+    text-align: center; 
+    padding: 10px;
+  }
+
+  .brand-logo {
+    justify-content: center;
+    margin-bottom: 10px; 
+  }
+
+  .logo-img {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  a.grey-text {
+    font-size: 12px; 
+  }
 }

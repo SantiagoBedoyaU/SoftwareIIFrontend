@@ -236,6 +236,7 @@ export class AddAppointmentComponent implements OnInit {
         center: 'title',
         right: 'timeGridWeek,timeGridDay',
       },
+      aspectRatio: window.innerWidth > 768 ? 1.5 : 0.8,
       events: [],
       allDaySlot: false,
       slotMinTime: '06:00:00',

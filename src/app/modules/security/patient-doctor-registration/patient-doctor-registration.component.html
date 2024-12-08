@@ -1,125 +1,125 @@
 <body class="background-image">
-    <div class="container-centered">
-      <h4 class="card-title title">Registro Usuario</h4>
-  
-      <form [formGroup]="fGroup" class="contenedor">
-        <div class="card grey lighten-4 z-depth-4">
-          <div class="card-content form_signin">
-            <div class="row">
-              <div class="input-field col s6">
-                <input formControlName="name" id="name" type="text" class="validate" required />
-                <label for="name">Nombre</label>
-                <div *ngIf="GetFormGroup['name'].invalid && GetFormGroup['name'].touched" class="error-message">
-                  Este campo es requerido.
-                </div>
-              </div>
-              <div class="input-field col s6">
-                <input formControlName="lastName" id="lastName" type="text" class="validate" required />
-                <label for="lastName">Apellidos</label>
-                <div *ngIf="GetFormGroup['lastName'].invalid && GetFormGroup['lastName'].touched" class="error-message">
-                  Este campo es requerido.
-                </div>
+  <div class="container-centered">
+    <h4 class="card-title title">Registro Usuario</h4>
+
+    <form [formGroup]="fGroup" class="contenedor">
+      <div class="card grey lighten-4 z-depth-4">
+        <div class="card-content form_signin">
+          <div class="row">
+            <div class="input-field col s6">
+              <input formControlName="name" id="name" type="text" class="validate" required />
+              <label for="name">Nombre</label>
+              <div *ngIf="GetFormGroup['name'].invalid && GetFormGroup['name'].touched" class="error-message">
+                Este campo es requerido.
               </div>
             </div>
-  
-            <div class="row">
-              <div class="input-field col s6">
-                <select formControlName="typeDNI" id="typeDNI" class="browser-default">
-                  <option value="" disabled selected>Tipo de documento</option>
-                  <option value="1">Cédula</option>
-                  <option value="2">Tarjeta de Identidad</option>
-                  <option value="3">Pasaporte</option>
-                </select>
+            <div class="input-field col s6">
+              <input formControlName="lastName" id="lastName" type="text" class="validate" required />
+              <label for="lastName">Apellidos</label>
+              <div *ngIf="GetFormGroup['lastName'].invalid && GetFormGroup['lastName'].touched" class="error-message">
+                Este campo es requerido.
               </div>
-              <div class="input-field col s6">
-                <input formControlName="dni" id="dni" type="text" class="validate" required />
-                <label for="dni">Número de Documento</label>
-                <div *ngIf="GetFormGroup['dni'].invalid && GetFormGroup['dni'].touched" class="error-message">
-                  El número de documento debe ser numérico.
-                </div>
-              </div>
-            </div>
-  
-            <div class="row">
-              <div class="input-field col s6">
-                <input formControlName="email" id="email" type="email" class="validate" required />
-                <label for="email">Correo Electrónico</label>
-                <div *ngIf="GetFormGroup['email'].invalid && GetFormGroup['email'].touched" class="error-message">
-                  Ingrese un correo electrónico válido.
-                </div>
-              </div>
-              <div class="input-field col s6">
-                <select formControlName="role" id="role" class="browser-default">
-                  <option value="" disabled selected>Tipo de rol</option>
-                  <option value="1">Médico</option>
-                  <option value="2">Paciente</option>
-                </select>
-              </div>
-            </div>
-  
-            <div class="row button-container">
-              <button (click)="onSubmit()" class="btn-agregar" type="button" [disabled]="false">
-                Agregar Usuario
-              </button>
-            </div>
-  
-            <div class="row">
-              <div class="col s6 input-field">
-                <input type="file" (change)="onFileSelected($event)" accept=".csv" class="file-input">
-              </div>
-            </div>
-  
-            <div class="row button-container" style="text-align: center;">
-              <button (click)="onUploadCSV()" class="btn-agregar" type="button" [disabled]="!selectedFile">
-                Cargar Usuarios desde CSV
-              </button>
             </div>
           </div>
+
+          <div class="row-design">
+            <div class="input-field col s6">
+              <select formControlName="typeDNI" id="typeDNI" class="browser-default">
+                <option value="" disabled selected>Tipo de documento</option>
+                <option value="1">Cédula</option>
+                <option value="2">Tarjeta de Identidad</option>
+                <option value="3">Pasaporte</option>
+              </select>
+            </div>
+            <div class="input-field col s6">
+              <input formControlName="dni" id="dni" type="text" class="validate" required />
+              <label for="dni">Número de Documento</label>
+              <div *ngIf="GetFormGroup['dni'].invalid && GetFormGroup['dni'].touched" class="error-message">
+                El número de documento debe ser numérico.
+              </div>
+            </div>
+          </div>
+
+          <div class="row-design">
+            <div class="input-field col s6">
+              <input formControlName="email" id="email" type="email" class="validate" required />
+              <label for="email">Correo Electrónico</label>
+              <div *ngIf="GetFormGroup['email'].invalid && GetFormGroup['email'].touched" class="error-message">
+                Ingrese un correo electrónico válido.
+              </div>
+            </div>
+            <div class="input-field col s6">
+              <select formControlName="role" id="role" class="browser-default">
+                <option value="" disabled selected>Tipo de rol</option>
+                <option value="1">Médico</option>
+                <option value="2">Paciente</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row button-container">
+            <button (click)="onSubmit()" class="btn-agregar" type="button" [disabled]="false">
+              Agregar Usuario
+            </button>
+          </div>
+          
+          <div class="row">
+            <div class="col s6 input-field">
+              <input type="file" (change)="onFileSelected($event)" accept=".csv" class="file-input">
+            </div>
+          </div>
+
+          <div class="row button-container" style="text-align: center;">
+            <button (click)="onUploadCSV()" class="btn-agregar" type="button" [disabled]="!selectedFile">
+              Cargar Usuarios desde CSV
+            </button>
+          </div>
         </div>
-      </form>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal para registro exitoso de usuario -->
+  <div id="userRegisteredModal" class="modal">
+    <div class="modal-content">
+      <h4>Usuario Registrado</h4>
+      <p>El usuario ha sido registrado exitosamente.</p>
     </div>
-  
-    <!-- Modal para registro exitoso de usuario -->
-    <div id="userRegisteredModal" class="modal">
-      <div class="modal-content">
-        <h4>Usuario Registrado</h4>
-        <p>El usuario ha sido registrado exitosamente.</p>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-close btn blue">Aceptar</button>
-      </div>
+    <div class="modal-footer">
+      <button class="modal-close btn blue">Aceptar</button>
     </div>
-  
-    <!-- Modal para carga exitosa de CSV -->
-    <div id="csvUploadSuccessModal" class="modal">
-      <div class="modal-content">
-        <h4>Usuarios Cargados</h4>
-        <p>Los usuarios han sido cargados exitosamente desde el archivo CSV.</p>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-close btn blue">Aceptar</button>
-      </div>
+  </div>
+
+  <!-- Modal para carga exitosa de CSV -->
+  <div id="csvUploadSuccessModal" class="modal">
+    <div class="modal-content">
+      <h4>Usuarios Cargados</h4>
+      <p>Los usuarios han sido cargados exitosamente desde el archivo CSV.</p>
     </div>
-  
-    <!-- Modal para error de usuario existente -->
-    <div id="userExistsModal" class="modal">
-      <div class="modal-content">
-        <h4>Error de Registro</h4>
-        <p>El usuario con este DNI o correo electrónico ya existe.</p>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-close btn blue">Aceptar</button>
-      </div>
+    <div class="modal-footer">
+      <button class="modal-close btn blue">Aceptar</button>
     </div>
-  
-    <!-- Modal para error de validación -->
-    <div id="validationErrorModal" class="modal">
-      <div class="modal-content">
-        <h4>Error de Validación</h4>
-        <p>Por favor, complete todos los campos correctamente.</p>
-      </div>
-      <div class="modal-footer">
-        <button class="modal-close btn blue">Aceptar</button>
-      </div>
+  </div>
+
+  <!-- Modal para error de usuario existente -->
+  <div id="userExistsModal" class="modal">
+    <div class="modal-content">
+      <h4>Error de Registro</h4>
+      <p>El usuario con este DNI o correo electrónico ya existe.</p>
     </div>
-  </body>
+    <div class="modal-footer">
+      <button class="modal-close btn blue">Aceptar</button>
+    </div>
+  </div>
+
+  <!-- Modal para error de validación -->
+  <div id="validationErrorModal" class="modal">
+    <div class="modal-content">
+      <h4>Error de Validación</h4>
+      <p>Por favor, complete todos los campos correctamente.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-close btn blue">Aceptar</button>
+    </div>
+  </div>
+</body>
