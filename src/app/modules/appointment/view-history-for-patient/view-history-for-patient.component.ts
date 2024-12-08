@@ -30,12 +30,18 @@ export class ViewHistoryForPatientComponent implements OnInit {
     this.appointmentService.getMyHistory().subscribe(
       (appointments) => {
         this.appointments = appointments.filter((appt) => appt.status === 2);
-
+  
+        // Formatear las fechas antes de mostrarlas
+        this.appointments.forEach((appt) => {
+          appt.start_date = appt.start_date ? this.convertToLocalDateTime(appt.start_date) : '';
+          appt.end_date = appt.end_date ? this.convertToLocalDateTime(appt.end_date) : '';
+        });
+  
         if (this.appointments.length === 0) {
-          this.showNoAppointmentsModal(); // Show modal if no appointments
+          this.showNoAppointmentsModal(); // Mostrar modal si no hay citas
         }
-
-        // Get doctor's name for each appointment
+  
+        // Obtener el nombre del médico para cada cita
         this.appointments.forEach((appointment, index) => {
           this.securityService.getUserByDNI(appointment.doctor_id ?? '').subscribe({
             next: (doctorData) => {
@@ -47,7 +53,7 @@ export class ViewHistoryForPatientComponent implements OnInit {
             },
             error: () => {
               this.appointments[index].doctor_name = 'Nombre no disponible';
-            }
+            },
           });
         });
       },
@@ -57,26 +63,31 @@ export class ViewHistoryForPatientComponent implements OnInit {
       }
     );
   }
+  
 
   selectAppointment(appointment: Appointment) {
     this.selectedAppointment = appointment;
   }
 
-  formatDateWithAMPM(dateString?: string): string {
-    if (!dateString) {
-      return 'Fecha no disponible'; // Maneja el caso en el que la fecha sea `undefined`
-    }
-    const date = new Date(dateString); // Convierte el string a un objeto Date
+  convertToLocalDateTime(dateString: string): string {
+    const utcDate = new Date(dateString); // Convertir cadena UTC a objeto Date
+    const localDate = new Date(
+      utcDate.getTime() + utcDate.getTimezoneOffset() * 60000
+    ); // Convertir UTC a hora local
+  
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true, // Habilita el formato 12 horas
+      hour12: true, // Formato 12 horas
+      timeZone: 'America/Bogota', // Asegurar la zona horaria correcta
     };
-    return date.toLocaleString('es-ES', options); // Devuelve la fecha en formato 12 horas
+  
+    return new Intl.DateTimeFormat('es-CO', options).format(localDate); // Combinar fecha y hora
   }
+  
   
   
   showNoAppointmentsModal() {

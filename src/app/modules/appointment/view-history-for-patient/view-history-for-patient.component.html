@@ -18,8 +18,8 @@
               </thead>
               <tbody>
                 <tr *ngFor="let appointment of appointments">
-                  <td>{{ formatDateWithAMPM(appointment.start_date) }}</td>
-                  <td>{{ formatDateWithAMPM(appointment.end_date) }}</td>
+                  <td>{{ appointment.start_date }}</td>
+                  <td>{{ appointment.end_date }}</td>
                   <td>{{ appointment.doctor_name }}</td>
                   <td>
                     <button (click)="selectAppointment(appointment)" class="btn-small">Seleccionar</button>
