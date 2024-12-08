@@ -157,6 +157,37 @@ describe('ViewHistoryForPatientComponent', () => {
     
     expect(component.selectedAppointment).toBe(appointment);
   });
+
+  it('should format start_date and end_date correctly or set them to empty strings if null', fakeAsync(() => {
+    const mockAppointments: Appointment[] = [
+      { id: '1', doctor_id: 'doc1', start_date: '2024-12-08T10:00:00Z', end_date: '2024-12-08T11:00:00Z', status: 2, procedures: [] },
+      { id: '2', doctor_id: 'doc2', start_date: undefined, end_date: undefined, status: 2, procedures: [] },
+    ];
+  
+    // Mock responses
+    mockAppointmentService.getMyHistory.and.returnValue(of(mockAppointments));
+    mockSecurityService.getUserByDNI.and.returnValue(of({ first_name: 'Jane', last_name: 'Doe' }));
+  
+    // Espiar el método para controlar la salida
+    spyOn(component, 'convertToLocalDateTime').and.callFake((dateString: string) => {
+      if (dateString === '2024-12-08T10:00:00Z') return '08/12/2024, 05:00 a. m.';
+      if (dateString === '2024-12-08T11:00:00Z') return '08/12/2024, 06:00 a. m.';
+      return '';
+    });
+  
+    // Ejecutar método
+    component.loadMyAppointments();
+    tick(); // Simular la resolución de las suscripciones
+  
+    // Validar que las fechas se formatearon correctamente
+    expect(component.convertToLocalDateTime).toHaveBeenCalledTimes(2);
+    expect(component.appointments[0].start_date).toBe('08/12/2024, 05:00 a. m.'); // Fecha formateada correctamente
+    expect(component.appointments[0].end_date).toBe('08/12/2024, 06:00 a. m.');   // Fecha formateada correctamente
+    expect(component.appointments[1].start_date).toBe('');                         // Fecha vacía para `null`
+    expect(component.appointments[1].end_date).toBe('');                           // Fecha vacía para `null`
+  }));
+  
+  
 });
 
 

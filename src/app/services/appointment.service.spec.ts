@@ -284,6 +284,155 @@ it('debe manejar un error al adicionar un procedimiento a una cita', () => {
   req.flush({ message: 'Error al agregar el procedimiento' }, { status: 500, statusText: 'Internal Server Error' }); // Simula un error
 });
 
+it('debe crear una cita exitosamente', () => {
+  const mockAppointment: Appointment = {
+    id: '1',
+    start_date: '2024-12-08T10:00:00',
+    end_date: '2024-12-08T11:00:00',
+    doctor_id: 'doc1',
+    status: 0,
+  };
+
+  const mockResponse = { id: '1', ...mockAppointment };
+
+  securityService.GetToken.and.returnValue('mockAccessToken');
+
+  service.createAppointment(mockAppointment).subscribe((response) => {
+    expect(response).toEqual(mockResponse); // Valida la respuesta
+  });
+
+  const req = httpMock.expectOne(`${service.urlBase}appointments`);
+  expect(req.request.method).toBe('POST'); // Verifica que el método sea POST
+  expect(req.request.headers.get('Authorization')).toBe('Bearer mockAccessToken'); // Verifica el encabezado
+  expect(req.request.body).toEqual(mockAppointment); // Verifica el cuerpo de la solicitud
+  req.flush(mockResponse); // Simula una respuesta exitosa
+});
+
+it('debe manejar un error al crear una cita', () => {
+  const mockAppointment: Appointment = {
+    id: '1',
+    start_date: '2024-12-08T10:00:00',
+    end_date: '2024-12-08T11:00:00',
+    doctor_id: 'doc1',
+    status: 0,
+  };
+
+  const mockError = {
+    message: 'Error al crear la cita',
+    details: 'El servidor no pudo procesar la solicitud.',
+  };
+
+  securityService.GetToken.and.returnValue('mockAccessToken');
+
+  service.createAppointment(mockAppointment).subscribe({
+    next: () => fail('La llamada debería haber fallado'),
+    error: (error: HttpErrorResponse) => {
+      expect(error.status).toBe(500); // Verifica el código de error
+      expect(error.error).toEqual(mockError); // Valida el contenido del error
+    },
+  });
+
+  const req = httpMock.expectOne(`${service.urlBase}appointments`);
+  expect(req.request.method).toBe('POST'); // Verifica que el método sea POST
+  expect(req.request.body).toEqual(mockAppointment); // Verifica el cuerpo de la solicitud
+  req.flush(mockError, { status: 500, statusText: 'Internal Server Error' }); // Simula un error del servidor
+});
+it('debe obtener la lista de doctores exitosamente', () => {
+  const mockDoctors = [
+    { id: '1', firstName: 'John', lastName: 'Doe', role: 1 },
+    { id: '2', firstName: 'Jane', lastName: 'Smith', role: 1 },
+  ];
+
+  securityService.GetToken.and.returnValue('mockAccessToken');
+
+  service.getDoctors().subscribe((doctors) => {
+    expect(doctors).toEqual(mockDoctors); // Valida la lista de doctores obtenida
+  });
+
+  const req = httpMock.expectOne(`${service.urlBase}users?role=1`);
+  expect(req.request.method).toBe('GET'); // Verifica que el método HTTP sea GET
+  expect(req.request.headers.get('Authorization')).toBe('Bearer mockAccessToken'); // Verifica el encabezado
+  req.flush(mockDoctors); // Simula una respuesta exitosa
+});
+
+it('debe manejar un error al obtener la lista de doctores', () => {
+  const mockError = {
+    message: 'Error al obtener la lista de doctores',
+  };
+
+  const consoleErrorSpy = spyOn(console, 'error');
+
+  securityService.GetToken.and.returnValue('mockAccessToken');
+
+  service.getDoctors().subscribe({
+    next: () => fail('La llamada debería haber fallado'),
+    error: (error: HttpErrorResponse) => {
+      expect(error.status).toBe(500); // Verifica el código de error
+      expect(error.error).toEqual(mockError); // Valida el mensaje de error
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        'Error al obtener la lista de doctores:',
+        jasmine.any(HttpErrorResponse) // Verifica que sea un HttpErrorResponse
+      ); // Verifica el log del error
+    },
+  });
+
+  const req = httpMock.expectOne(`${service.urlBase}users?role=1`);
+  expect(req.request.method).toBe('GET'); // Verifica que el método sea GET
+  req.flush(mockError, { status: 500, statusText: 'Internal Server Error' }); // Simula un error del servidor
+});
+
+it('debe obtener citas por doctor exitosamente', () => {
+  const startDate = '2024-12-01';
+  const endDate = '2024-12-31';
+  const doctorID = '123';
+  const mockAppointments: Appointment[] = [
+    {
+      id: '1',
+      start_date: '2024-12-05T10:00:00',
+      end_date: '2024-12-05T11:00:00',
+      doctor_id: doctorID,
+      status: 0,
+    },
+  ];
+
+  securityService.GetToken.and.returnValue('mockAccessToken');
+
+  service.getAppointmentsByDoctor(startDate, endDate, doctorID).subscribe((appointments) => {
+    expect(appointments).toEqual(mockAppointments); // Valida la respuesta de las citas
+  });
+
+  const req = httpMock.expectOne(
+    `${service.urlBase}appointments?start_date=${startDate}&end_date=${endDate}&doctor_id=${doctorID}`
+  );
+  expect(req.request.method).toBe('GET'); // Verifica el método HTTP
+  expect(req.request.headers.get('Authorization')).toBe('Bearer mockAccessToken'); // Verifica el encabezado de autorización
+  req.flush(mockAppointments); // Simula una respuesta exitosa
+});
+
+it('debe manejar un error al obtener citas por doctor', () => {
+  const startDate = '2024-12-01';
+  const endDate = '2024-12-31';
+  const doctorID = '123';
+  const mockError = { message: 'Error al obtener citas por doctor' };
+
+  securityService.GetToken.and.returnValue('mockAccessToken');
+
+  service.getAppointmentsByDoctor(startDate, endDate, doctorID).subscribe({
+    next: () => fail('La llamada debería haber fallado'),
+    error: (error: HttpErrorResponse) => {
+      expect(error.status).toBe(500); // Verifica el código de error
+      expect(error.error).toEqual(mockError); // Valida el mensaje de error
+    },
+  });
+
+  const req = httpMock.expectOne(
+    `${service.urlBase}appointments?start_date=${startDate}&end_date=${endDate}&doctor_id=${doctorID}`
+  );
+  expect(req.request.method).toBe('GET');
+  req.flush(mockError, { status: 500, statusText: 'Internal Server Error' }); // Simula un error
+});
+
+
 });
 
 
