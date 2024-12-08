@@ -112,58 +112,60 @@ export class CancelAppointmentComponent implements OnInit{
     console.log('Formulario:', this.fGroup.value); // Verifica los valores del formulario
 
     if (this.fGroup.valid) {
-      const { startDate, endDate } = this.fGroup.value;
+        const { startDate, endDate } = this.fGroup.value;
 
-      console.log('Fechas ingresadas:', startDate, endDate); // Verifica las fechas ingresadas
+        console.log('Fechas ingresadas:', startDate, endDate); // Verifica las fechas ingresadas
 
-      this.showModal('loadingModal');
+        this.showModal('loadingModal');
 
-      this.appointmentService.getAppointmentsByPatient(startDate, endDate, this.patientID).subscribe({
-        next: (data) => {
-          this.appointments = data;
+        this.appointmentService.getAppointmentsByPatient(startDate, endDate, this.patientID).subscribe({
+            next: (data) => {
+                // Filtrar solo las citas con estado 0 (pendiente)
+                this.appointments = data.filter((appointment) => appointment.status === 0);
 
-          // Para cada cita, obtener el nombre del doctor a partir del DNI utilizando SecurityService
-          this.appointments.forEach((appointment, index) => {
-            const doctorId = appointment.doctor_id ?? '';
-            if (!doctorId) { // Si doctor_id es null, undefined o vacío
-              this.appointments[index].doctor_name = 'Nombre no disponible';
-              return; // Salir temprano para evitar llamar al servicio
-            }
+                // Para cada cita, obtener el nombre del doctor a partir del DNI utilizando SecurityService
+                this.appointments.forEach((appointment, index) => {
+                    const doctorId = appointment.doctor_id ?? '';
+                    if (!doctorId) { // Si doctor_id es null, undefined o vacío
+                        this.appointments[index].doctor_name = 'Nombre no disponible';
+                        return; // Salir temprano para evitar llamar al servicio
+                    }
 
-            this.securityService.getUserByDNI(doctorId).subscribe({
-              next: (doctorData) => {
-                if (doctorData) {
-                  this.appointments[index].doctor_name = `${doctorData.first_name} ${doctorData.last_name}`;
-                } else {
-                  this.appointments[index].doctor_name = 'Nombre no disponible';
+                    this.securityService.getUserByDNI(doctorId).subscribe({
+                        next: (doctorData) => {
+                            if (doctorData) {
+                                this.appointments[index].doctor_name = `${doctorData.first_name} ${doctorData.last_name}`;
+                            } else {
+                                this.appointments[index].doctor_name = 'Nombre no disponible';
+                            }
+                        },
+                        error: () => {
+                            this.appointments[index].doctor_name = 'Nombre no disponible';
+                        }
+                    });
+                });
+
+                console.log('Citas obtenidas:', this.appointments);
+                this.closeModal('loadingModal');
+
+                // Mostrar el modal de "sin citas" solo si la búsqueda no retorna resultados
+                if (this.appointments.length === 0) {
+                    this.fGroup.reset();
+                    this.showModal('noAppointmentsModal');
                 }
-              },
-              error: () => {
-                this.appointments[index].doctor_name = 'Nombre no disponible';
-              }
-            });
-          });
-
-          console.log('Citas obtenidas:', this.appointments);
-          this.closeModal('loadingModal');
-
-          // Mostrar el modal de "sin citas" solo si la búsqueda no retorna resultados
-          if (this.appointments.length === 0) {
-            this.fGroup.reset();
-            this.showModal('noAppointmentsModal');
-          }
-        },
-        error: (err) => {
-          console.error('Error al obtener las citas:', err);
-          this.closeModal('loadingModal');
-          this.showModal('errorModal');
-        }
-      });
+            },
+            error: (err) => {
+                console.error('Error al obtener las citas:', err);
+                this.closeModal('loadingModal');
+                this.showModal('errorModal');
+            }
+        });
     } else {
-      console.warn('Formulario inválido'); // Verifica si el formulario es inválido
-      this.showModal('validationErrorModal'); // Mostrar el modal de error si el formulario no es válido
+        console.warn('Formulario inválido'); // Verifica si el formulario es inválido
+        this.showModal('validationErrorModal'); // Mostrar el modal de error si el formulario no es válido
     }
-  }
+}
+
 
   // Método para abrir el modal de confirmación antes de cancelar
   onCancelAppointment(appointmentId: string): void {
