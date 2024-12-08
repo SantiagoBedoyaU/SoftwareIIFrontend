@@ -93,6 +93,20 @@ export class CancelAppointmentComponent implements OnInit{
     });
   }
 
+  convertToLocalTime(dateString: string): string {
+    const utcDate = new Date(dateString); // Fecha en UTC
+    const localDate = new Date(
+      utcDate.getTime() + utcDate.getTimezoneOffset() * 60000
+    ); // Convertir UTC a local
+  
+    const options: Intl.DateTimeFormatOptions = {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    };
+    return localDate.toLocaleTimeString(undefined, options); // Convertir a string en formato local
+  }
+
   // Search for appointments
   searchAppointments(): void {
     console.log('Formulario:', this.fGroup.value); // Verifica los valores del formulario

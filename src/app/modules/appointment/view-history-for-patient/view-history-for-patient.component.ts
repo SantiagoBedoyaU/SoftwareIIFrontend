@@ -62,6 +62,23 @@ export class ViewHistoryForPatientComponent implements OnInit {
     this.selectedAppointment = appointment;
   }
 
+  formatDateWithAMPM(dateString?: string): string {
+    if (!dateString) {
+      return 'Fecha no disponible'; // Maneja el caso en el que la fecha sea `undefined`
+    }
+    const date = new Date(dateString); // Convierte el string a un objeto Date
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true, // Habilita el formato 12 horas
+    };
+    return date.toLocaleString('es-ES', options); // Devuelve la fecha en formato 12 horas
+  }
+  
+  
   showNoAppointmentsModal() {
     const modalElement = document.getElementById('noAppointmentsModal');
     if (modalElement) {

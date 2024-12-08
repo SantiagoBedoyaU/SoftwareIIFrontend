@@ -47,13 +47,14 @@
             </thead>
             <tbody>
               <tr *ngFor="let appointment of appointments">
-                <td>{{ appointment.start_date | date: 'yyyy-MM-dd hh:mm a' }}</td>
-                <td>{{ appointment.end_date | date: 'yyyy-MM-dd hh:mm a' }}</td>
+                <td>{{ appointment.start_date ? convertToLocalDateTime(appointment.start_date) : '' }}</td>
+                <td>{{ appointment.end_date ? convertToLocalDateTime(appointment.end_date) : '' }}</td>
                 <td>
                   <button (click)="selectAppointment(appointment)" class="btn-small">Seleccionar</button>
                 </td>
               </tr>
             </tbody>
+
           </table>
         </div>
       </div>
