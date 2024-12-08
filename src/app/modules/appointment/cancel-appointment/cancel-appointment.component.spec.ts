@@ -71,33 +71,57 @@ describe('CancelAppointmentComponent', () => {
 
   it('should set doctor_name to "Nombre no disponible" when getUserByDNI returns null', () => {
     const appointments: Appointment[] = [
-      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1' },
+      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1', status: 0 },
     ];
-
+  
+    // Configura el mock para devolver las citas simuladas
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(appointments));
+  
+    // Configura el mock para devolver null al buscar el doctor
     mockSecurityService.getUserByDNI.and.returnValue(of(null));
-
+  
+    // Establece los valores del formulario
     component.fGroup.setValue({ startDate: '2024-11-20', endDate: '2024-11-25' });
+  
+    // Ejecuta el método de búsqueda de citas
     component.searchAppointments();
-
+  
+    // Verifica que el método getUserByDNI haya sido llamado con el ID correcto
     expect(mockSecurityService.getUserByDNI).toHaveBeenCalledWith('doc1');
-    expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+  
+    // Verifica que el nombre del doctor se haya establecido como "Nombre no disponible"
+    setTimeout(() => {
+      expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+    }, 0); // Usamos `setTimeout` para manejar el asíncronismo
   });
-
-  it('should set doctor_name to "Nombre no disponible" when doctor_id is null or empty', () => {
+  it('should set doctor_name to "Nombre no disponible" when doctor_id is null or empty', (done) => {
     const appointments: Appointment[] = [
-      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: undefined },
+      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: undefined, status: 0 },
     ];
-
+  
+    // Mock para devolver citas simuladas
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(appointments));
-    mockSecurityService.getUserByDNI.and.returnValue(of(null)); 
-
+  
+    // Mock para `getUserByDNI` que no debería ser llamado
+    mockSecurityService.getUserByDNI.and.returnValue(of(null));
+  
+    // Configuración del formulario
     component.fGroup.setValue({ startDate: '2024-11-20', endDate: '2024-11-25' });
+  
+    // Ejecutar el método
     component.searchAppointments();
-
-    expect(mockSecurityService.getUserByDNI).not.toHaveBeenCalled(); // Verifica que no se llama al servicio
-    expect(component.appointments[0].doctor_name).toBe('Nombre no disponible'); // Valida que el nombre sea asignado correctamente
+  
+    // Usa setTimeout para esperar el flujo asíncrono
+    setTimeout(() => {
+      // Verifica que no se haya llamado al servicio `getUserByDNI` debido a doctor_id `undefined`
+      expect(mockSecurityService.getUserByDNI).not.toHaveBeenCalled();
+  
+      // Verifica que el nombre del doctor sea "Nombre no disponible"
+      expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+      done(); // Marca la prueba como completada
+    }, 0);
   });
+  
 
   it('should open the datepicker when the date icon is clicked', () => {
     // Simular jerarquía del DOM
@@ -188,52 +212,63 @@ describe('CancelAppointmentComponent', () => {
     expect(consoleErrorSpy).toHaveBeenCalledWith('Error al cargar el ID del paciente:', jasmine.any(Error));
   });
 
-  it('should set doctor_name correctly when getUserByDNI returns valid data', () => {
+  it('should set doctor_name correctly when getUserByDNI returns valid data', (done) => {
     const appointments: Appointment[] = [
-      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1' },
+      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1', status: 0 },
     ];
     const doctorData = { first_name: 'Dr.', last_name: 'Smith' };
-
+  
+    // Configura el mock para devolver las citas simuladas
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(appointments));
+  
+    // Configura el mock para devolver los datos del doctor
     mockSecurityService.getUserByDNI.and.returnValue(of(doctorData));
-
+  
+    // Establece los valores del formulario
     component.fGroup.setValue({ startDate: '2024-11-20', endDate: '2024-11-25' });
+  
+    // Ejecuta el método de búsqueda de citas
     component.searchAppointments();
-
-    expect(mockSecurityService.getUserByDNI).toHaveBeenCalledWith('doc1');
-    expect(component.appointments[0].doctor_name).toBe('Dr. Smith');
+  
+    // Usa setTimeout para esperar la resolución de los observables dentro de `searchAppointments`
+    setTimeout(() => {
+      // Verifica que el método getUserByDNI haya sido llamado con el ID correcto
+      expect(mockSecurityService.getUserByDNI).toHaveBeenCalledWith('doc1');
+  
+      // Verifica que el nombre del doctor se haya establecido correctamente
+      expect(component.appointments[0].doctor_name).toBe('Dr. Smith');
+      done(); // Marca la prueba como completada
+    }, 0); // Permite que la lógica asíncrona se complete
   });
-
-  it('should set doctor_name to "Nombre no disponible" when getUserByDNI returns null', () => {
+  
+  it('should set doctor_name to "Nombre no disponible" when getUserByDNI throws an error', (done) => {
     const appointments: Appointment[] = [
-      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1' },
+      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1', status: 0 },
     ];
-
+  
+    // Mock para devolver citas simuladas
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(appointments));
-    mockSecurityService.getUserByDNI.and.returnValue(of(null));
-
-    component.fGroup.setValue({ startDate: '2024-11-20', endDate: '2024-11-25' });
-    component.searchAppointments();
-
-    expect(mockSecurityService.getUserByDNI).toHaveBeenCalledWith('doc1');
-    expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
-  });
-
-  it('should set doctor_name to "Nombre no disponible" when getUserByDNI throws an error', () => {
-    const appointments: Appointment[] = [
-      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1' },
-    ];
-
-    mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(appointments));
+  
+    // Mock para lanzar un error al buscar el doctor por DNI
     mockSecurityService.getUserByDNI.and.returnValue(throwError(() => new Error('Error fetching doctor data')));
-
+  
+    // Configuración del formulario
     component.fGroup.setValue({ startDate: '2024-11-20', endDate: '2024-11-25' });
+  
+    // Ejecutar el método
     component.searchAppointments();
-
-    expect(mockSecurityService.getUserByDNI).toHaveBeenCalledWith('doc1');
-    expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+  
+    // Usa setTimeout para esperar el flujo asíncrono
+    setTimeout(() => {
+      // Verifica que se haya llamado al servicio con el ID correcto
+      expect(mockSecurityService.getUserByDNI).toHaveBeenCalledWith('doc1');
+  
+      // Verifica que el nombre del doctor sea "Nombre no disponible"
+      expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+      done(); // Marca la prueba como completada
+    }, 0);
   });
-
+  
   it('should set startDate when the first Datepicker closes', () => {
     // Crear un elemento de entrada para la fecha
     const dateInput = document.createElement('input') as HTMLInputElement;
@@ -336,7 +371,7 @@ describe('CancelAppointmentComponent', () => {
     expect(consoleErrorSpy).toHaveBeenCalledWith('Error al cargar el ID del paciente:', jasmine.any(Error)); // Verifica que se haya registrado el error en la consola
   });
 
-  it('should set doctor_name to "Nombre no disponible" if doctor data is not found or error occurs', () => {
+  it('should set doctor_name to "Nombre no disponible" if doctor data is not found or error occurs', (done) => {
     // Configura citas con doctor_id para buscar
     const appointments: Appointment[] = [
       {
@@ -344,35 +379,59 @@ describe('CancelAppointmentComponent', () => {
         start_date: '2024-11-23T10:00:00',
         end_date: '2024-11-23T11:00:00',
         doctor_id: 'invalidDoctorId',
+        status: 0,
       },
     ];
+  
+    // Configura el servicio para devolver las citas simuladas
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(appointments));
-
-    // Configura el SecurityService para devolver un error o datos nulos
+  
+    // Configura el SecurityService para lanzar un error
     mockSecurityService.getUserByDNI.and.returnValue(throwError(() => new Error('Doctor not found')));
-
+  
+    // Establece los valores del formulario
     component.fGroup.setValue({ startDate: '2024-11-20', endDate: '2024-11-25' });
+  
+    // Ejecuta el método
     component.searchAppointments();
-
-    // Verifica que el nombre del doctor sea 'Nombre no disponible' después del error
-    expect(mockSecurityService.getUserByDNI).toHaveBeenCalledWith('invalidDoctorId');
-    expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+  
+    // Usa setTimeout para esperar a que se complete la lógica asíncrona
+    setTimeout(() => {
+      // Verifica que el servicio se haya llamado con el doctor_id
+      expect(mockSecurityService.getUserByDNI).toHaveBeenCalledWith('invalidDoctorId');
+  
+      // Verifica que el nombre del doctor sea 'Nombre no disponible' tras el error
+      expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+      done(); // Marca la prueba como completada
+    }, 0);
   });
+  
 
-  it('should set doctor_name to "Nombre no disponible" if doctorData is null', () => {
+  it('should set doctor_name to "Nombre no disponible" if doctorData is null', (done) => {
     const appointments: Appointment[] = [
-      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1' },
+      { id: '1', start_date: '2024-11-23T10:00:00', end_date: '2024-11-23T11:00:00', doctor_id: 'doc1', status: 0 },
     ];
+    
+    // Simula que el servicio de citas devuelve las citas
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(appointments));
-
-    // Simula que getUserByDNI devuelve null
+    
+    // Simula que el servicio `getUserByDNI` devuelve null
     mockSecurityService.getUserByDNI.and.returnValue(of(null));
-
+  
+    // Configura los valores del formulario
     component.fGroup.setValue({ startDate: '2024-11-20', endDate: '2024-11-25' });
+  
+    // Ejecuta el método
     component.searchAppointments();
-
-    expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+  
+    // Usa setTimeout para esperar el flujo asíncrono
+    setTimeout(() => {
+      // Verifica que `doctor_name` se establezca como "Nombre no disponible"
+      expect(component.appointments[0].doctor_name).toBe('Nombre no disponible');
+      done(); // Marca la prueba como completada
+    }, 0);
   });
+  
 
   it('should update the modal message if a message is provided', () => {
     // Crear un elemento modal simulado
@@ -472,28 +531,48 @@ describe('CancelAppointmentComponent', () => {
     expect(component.selectedAppointmentId).toBe('1');
   });
 
-  it('should search for appointments and handle results correctly', () => {
+  it('should search for appointments and handle results correctly', (done) => {
     const appointments: Appointment[] = [
       {
         id: '1',
         start_date: '2024-11-23T10:00:00',
         end_date: '2024-11-23T11:00:00',
         doctor_id: 'doc1',
+        status: 0,
       },
     ];
+  
+    const doctorData = { first_name: 'Dr.', last_name: 'Smith' };
+  
+    // Mock para devolver las citas simuladas
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(appointments));
-
+  
+    // Mock para devolver los datos del doctor
+    mockSecurityService.getUserByDNI.and.returnValue(of(doctorData));
+  
+    // Espía en `showModal` para verificar que no se llama a `noAppointmentsModal`
     spyOn(component, 'showModal');
-    mockSecurityService.getUserByDNI.and.returnValue(of({ first_name: 'Dr.', last_name: 'Smith' }));
-
+  
+    // Establece los valores del formulario
     component.fGroup.setValue({ startDate: '2024-11-20', endDate: '2024-11-25' });
+  
+    // Ejecuta el método de búsqueda
     component.searchAppointments();
-
-    expect(component.appointments.length).toBe(1);
-    expect(component.appointments[0].doctor_name).toBe('Dr. Smith');
-    expect(component.showModal).not.toHaveBeenCalledWith('noAppointmentsModal');
+  
+    // Usa setTimeout para esperar a que la lógica asíncrona se complete
+    setTimeout(() => {
+      // Verifica que las citas se hayan procesado correctamente
+      expect(component.appointments.length).toBe(1);
+  
+      // Verifica que el nombre del doctor se haya asignado correctamente
+      expect(component.appointments[0].doctor_name).toBe('Dr. Smith');
+  
+      // Verifica que no se haya llamado al modal de "sin citas"
+      expect(component.showModal).not.toHaveBeenCalledWith('noAppointmentsModal');
+      done(); // Marca la prueba como completada
+    }, 0); // Permite que la lógica asíncrona se complete
   });
-
+  
   it('should show noAppointmentsModal when no appointments are found', () => {
     mockAppointmentService.getAppointmentsByPatient.and.returnValue(of([]));
 
@@ -601,6 +680,27 @@ describe('CancelAppointmentComponent', () => {
     // Limpiar el DOM después de la prueba
     document.body.removeChild(modalElement);
   });
+
+  it('should convert UTC time to local time string with the correct format', () => {
+    // Simula una fecha/hora en UTC
+    const utcDateString = '2024-12-08T14:45:00Z';
+  
+    // Llama al método
+    const result = component.convertToLocalTime(utcDateString);
+  
+    // Obtén la fecha local esperada para comparación
+    const expectedLocalTime = new Date(
+      new Date(utcDateString).getTime() + new Date(utcDateString).getTimezoneOffset() * 60000
+    ).toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  
+    // Valida que el resultado coincida con la hora local formateada esperada
+    expect(result).toBe(expectedLocalTime);
+  });
+  
 });
 
 

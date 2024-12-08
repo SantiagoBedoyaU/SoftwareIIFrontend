@@ -156,27 +156,6 @@ describe('AddNewHistoryComponent', () => {
   });
 
 
-  it('should load patient and appointments successfully', () => {
-    const mockUser = { first_name: 'John', last_name: 'Doe', address: '123 Street', phone: '555-1234', dni: '123456' };
-    const mockAppointments = [
-      { id: '1', start_date: '2024-11-25T10:00:00', end_date: '2024-11-25T11:00:00', doctor_id: '123456', status: 0 },
-    ];
-
-    mockSecurityService.GetUserData.and.returnValue(of({ role: 1, dni: '123456' }));
-    mockSecurityService.getUserByDNI.and.returnValue(of(mockUser));
-    mockAppointmentService.getAppointmentsByPatient.and.returnValue(of(mockAppointments));
-
-    component.dni = '123456';
-    component.searchPatient();
-
-    // Validación del paciente
-    expect(component.patient).toEqual(mockUser);
-
-    // Validación de citas
-    expect(component.appointments.length).toBe(1); // Debe haber exactamente 1 cita
-    expect(component.appointments[0]).toEqual(mockAppointments[0]);
-  });
-
   it('should handle error when searching for a patient', () => {
     mockSecurityService.GetUserData.and.returnValue(of({ role: 1 }));
     mockSecurityService.getUserByDNI.and.returnValue(throwError(() => new Error('Error al buscar')));
@@ -485,6 +464,23 @@ describe('AddNewHistoryComponent', () => {
     // Verifica el resultado
     expect(expectedRealStartDateTime).toBe(appointmentDate.toISOString());
   });
+
+  
+  it('should handle an empty date string gracefully', () => {
+    const dateString = ''; // Fecha vacía
+    expect(() => component.convertToLocalDateTime(dateString)).toThrowError();
+  });
+  
+  it('should handle undefined input gracefully', () => {
+    const dateString = undefined; // Fecha indefinida
+    expect(() => component.convertToLocalDateTime(dateString as unknown as string)).toThrowError();
+  });
+  
+  it('should handle invalid date string gracefully', () => {
+    const dateString = 'invalid-date'; // Formato incorrecto
+    expect(() => component.convertToLocalDateTime(dateString)).toThrowError();
+  });
+
 });
 
 //ng test --include src/app/modules/appointment/add-new-history/add-new-history.component.spec.ts

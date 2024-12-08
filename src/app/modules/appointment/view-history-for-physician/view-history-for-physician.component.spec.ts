@@ -257,8 +257,6 @@ describe('ViewHistoryForPhysicianComponent', () => {
 
     expect(component.selectedAppointment).toBe(appointment);
   });
-
-
 });
 
 
