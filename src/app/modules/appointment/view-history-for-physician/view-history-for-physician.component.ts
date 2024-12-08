@@ -79,6 +79,26 @@ export class ViewHistoryForPhysicianComponent implements AfterViewInit {
     );
   }
 
+  
+  convertToLocalDateTime(dateString: string): string {
+    const utcDate = new Date(dateString); // Convertir cadena UTC a objeto Date
+    const localDate = new Date(
+      utcDate.getTime() + utcDate.getTimezoneOffset() * 60000
+    ); // Convertir UTC a hora local
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true, // Formato 12 horas
+      timeZone: 'America/Bogota', // Asegurar la zona horaria correcta
+    };
+
+    return new Intl.DateTimeFormat('es-CO', options).format(localDate); // Combinar fecha y hora
+  }
+
   loadCompletedAppointments() {
     const startDate = '2000-01-01';
     const today = new Date();
@@ -88,6 +108,12 @@ export class ViewHistoryForPhysicianComponent implements AfterViewInit {
     this.appointmentService.getAppointmentsByPatient(startDate, endDate, this.dni).subscribe(
       (appointments) => {
         this.appointments = appointments.filter((appt) => appt.status === 2);
+
+        // Formatear las fechas a local antes de mostrarlas
+        this.appointments.forEach((appt) => {
+          appt.start_date = appt.start_date ? this.convertToLocalDateTime(appt.start_date) : '';
+          appt.end_date = appt.end_date ? this.convertToLocalDateTime(appt.end_date) : '';
+        });
 
         if (this.appointments.length === 0) {
           const noAppointmentsModal = M.Modal.getInstance(document.getElementById('noAppointmentsModal')!) as { open: () => void };
@@ -120,8 +146,7 @@ export class ViewHistoryForPhysicianComponent implements AfterViewInit {
         this.appointments = [];
       }
     );
-}
-
+  }
 
   selectAppointment(appointment: Appointment) {
     this.selectedAppointment = appointment;
