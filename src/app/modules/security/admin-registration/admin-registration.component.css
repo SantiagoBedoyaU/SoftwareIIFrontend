@@ -1,8 +1,8 @@
 /* Fondo y alineación centrada */
 body {
-    padding: 0;
+    padding: 70px;
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -89,4 +89,14 @@ body {
     font-size: 10px;
     color: #d32f2f; 
   }
+
+  @media (max-width: 768px) {
+    body {
+      padding: 20px;
+    }
+
+    .modal {
+      width: 80%;
+    }
+}
 
