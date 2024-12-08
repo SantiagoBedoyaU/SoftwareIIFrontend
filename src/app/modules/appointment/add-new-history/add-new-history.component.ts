@@ -2,7 +2,7 @@ import { Component, AfterViewInit } from '@angular/core';
 import { AppointmentService } from '../../../services/appointment.service';
 import { SecurityService } from '../../../services/security.service';
 import { FormsModule } from '@angular/forms';
-import { Appointment} from '../../../modelos/appointment.model';
+import { Appointment } from '../../../modelos/appointment.model';
 import { CommonModule } from '@angular/common';
 import { UserModel } from '../../../modelos/user.model';
 
@@ -51,6 +51,26 @@ export class AddNewHistoryComponent implements AfterViewInit {
 
     M.Modal.init(document.querySelectorAll('.modal'));
   }
+
+  convertToLocalDateTime(dateString: string): string {
+    const utcDate = new Date(dateString); // Convertir cadena UTC a objeto Date
+    const localDate = new Date(
+      utcDate.getTime() + utcDate.getTimezoneOffset() * 60000
+    ); // Convertir UTC a hora local
+
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true, // Formato 12 horas
+      timeZone: 'America/Bogota', // Asegurar la zona horaria correcta
+    };
+
+    return new Intl.DateTimeFormat('es-CO', options).format(localDate); // Combinar fecha y hora
+  }
+
 
   validateDni() {
     // Validar que el DNI solo contenga números
@@ -110,10 +130,10 @@ export class AddNewHistoryComponent implements AfterViewInit {
   loadPendingAppointments() {
     const startDate = '2000-01-01';
 
-    // Calcula el día de hoy y añade un día para asegurarse de incluirlo
+    // Calcula la fecha de fin como el día actual más uno
     const today = new Date();
     today.setDate(today.getDate() + 1);
-    const endDate = today.toISOString().split('T')[0]; // Obtiene el formato YYYY-MM-DD
+    const endDate = today.toISOString().split('T')[0]; // Formato YYYY-MM-DD
 
     this.securityService.GetUserData().subscribe(
       (userData) => {
@@ -121,14 +141,20 @@ export class AddNewHistoryComponent implements AfterViewInit {
 
         this.appointmentService.getAppointmentsByPatient(startDate, endDate, this.dni).subscribe(
           (appointments) => {
-            // Filtra las citas según el estado y el ID del doctor
-            this.appointments = appointments.filter(
-              (appt) => appt.status === 0 && appt.doctor_id === doctorId
-            );
+            // Filtra las citas y ajusta las fechas a la hora local
+            this.appointments = appointments
+              .filter((appt) => appt.status === 0 && appt.doctor_id === doctorId)
+              .map((appt) => ({
+                ...appt,
+                formattedStartDate: appt.start_date ? this.convertToLocalDateTime(appt.start_date) : 'Fecha no disponible',
+                formattedEndDate: appt.end_date ? this.convertToLocalDateTime(appt.end_date) : 'Fecha no disponible',
+              }));
 
             // Mostrar modal si no hay citas pendientes
             if (this.appointments.length === 0) {
-              const noAppointmentsModal = M.Modal.getInstance(document.getElementById('noAppointmentsModal')!) as { open: () => void };
+              const noAppointmentsModal = M.Modal.getInstance(
+                document.getElementById('noAppointmentsModal')!
+              ) as { open: () => void };
               noAppointmentsModal.open();
             }
           },
@@ -145,6 +171,7 @@ export class AddNewHistoryComponent implements AfterViewInit {
   }
 
 
+
   selectAppointment(appointment: Appointment) {
     if (!appointment.procedures) {
       appointment.procedures = [];
@@ -157,40 +184,44 @@ export class AddNewHistoryComponent implements AfterViewInit {
       console.error('No se ha seleccionado una cita');
       return;
     }
-  
+
     const appointmentId = this.selectedAppointment.id;
     if (!appointmentId) {
       console.error('No se ha encontrado un ID de cita válido');
       return;
     }
-  
+
     if (!this.typeOfConsultation.trim() || !this.procedureDescription.trim() || !this.realStartTime.trim()) {
       const emptyFieldsModal = M.Modal.getInstance(document.getElementById('emptyFieldsModal')!) as { open: () => void };
       emptyFieldsModal.open();
       return;
     }
-  
-    // Combinar la fecha de la cita con la hora ingresada
+
+    // Combinar la fecha de la cita con la hora ingresada por el usuario
     const startDate = this.selectedAppointment?.start_date;
     if (!startDate) {
       console.error('La cita seleccionada no tiene una fecha de inicio válida');
       return;
     }
-  
+
     const appointmentDate = new Date(startDate); // Fecha base de la cita
     const [hours, minutes] = this.realStartTime.split(':'); // Separar la hora y los minutos
-    appointmentDate.setHours(parseInt(hours, 10)); // Ajustar la hora
-    appointmentDate.setMinutes(parseInt(minutes, 10)); // Ajustar los minutos
-    const realStartDateTime = appointmentDate.toISOString(); // Generar fecha y hora completa en formato ISO
-  
+
+    // Ajustar la hora y los minutos ingresados
+    appointmentDate.setHours(parseInt(hours, 10)); // Ajustar la hora local
+    appointmentDate.setMinutes(parseInt(minutes, 10)); // Ajustar los minutos locales
+
+    // Convertir la fecha y hora local a UTC antes de enviarla al backend
+    const realStartDateTime = new Date(appointmentDate.getTime() - appointmentDate.getTimezoneOffset() * 60000).toISOString();
+
     // Crear el objeto de procedimiento con los campos requeridos
     const requestBody = {
-      real_start_date: realStartDateTime, // La fecha y hora real de inicio
+      real_start_date: realStartDateTime, // La fecha y hora real en UTC
       procedure: {
         description: `${this.typeOfConsultation.trim()} - ${this.procedureDescription.trim()}`,
       },
     };
-  
+
     // Enviar al backend
     this.appointmentService.addProcedure(appointmentId, requestBody).subscribe({
       next: () => {
@@ -204,6 +235,7 @@ export class AddNewHistoryComponent implements AfterViewInit {
       },
     });
   }
+
 
   clearFields() {
     this.dni = '';
