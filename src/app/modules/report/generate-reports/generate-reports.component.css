@@ -1,12 +1,12 @@
 /* Fondo de la página */
 body {
-  padding: 50px;
+  padding: 10px;
   margin: 0;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("/assets/images/image3.jpg"); /* Cambia por la ruta de tu imagen */
+  background-image: url("/assets/images/image3.jpg");
   background-color: rgba(255, 255, 255, 0.5);
   background-blend-mode: overlay;
   background-size: cover;
@@ -14,23 +14,10 @@ body {
 
 /* Contenedor principal */
 .container {
-  width: 90%;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilos para el contenedor general */
-.container-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 80%;
   margin: 20px auto;
-  padding: 50px;
-  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -44,23 +31,35 @@ h3 {
   margin-bottom: 20px;
 }
 
+/* Contenedor del formulario */
+.container-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 /* Estilo para las filas */
 .row {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
   width: 100%;
+  margin-bottom: 15px;
+  gap: 10px; /* Espaciado entre elementos */
+  justify-content: center;
 }
 
 /* Campos de fecha */
 .input-field {
-  position: relative;
-  flex: 1;
-  margin: 0 10px;
+  flex: 100%;             /* Tamaño fijo para los inputs con posibilidad de ajuste */
+  display: flex;               /* Aplica flexbox */
+  flex-direction: column;      /* Los hijos (input y label) se apilan verticalmente */
+  align-items: center;         /* Centra el contenido dentro del contenedor */
+  margin: 0 auto;              /* Asegura que el contenedor esté centrado */
 }
 
 .input-field input[type="date"] {
-  width: 100%;
+  width: 100%;                 /* Asegura que el input ocupe el 100% del contenedor */
+  max-width: 300px;            /* Define un tamaño máximo */
   padding: 10px 15px;
   font-size: 16px;
   border: 1px solid #ccc;
@@ -69,10 +68,7 @@ h3 {
 }
 
 .input-field label {
-  position: absolute;
-  top: -20px;
-  left: 15px;
-  font-size: 12px;
+  font-size: 14px;             /* Tamaño del texto del label */
   font-weight: bold;
   color: #616161;
 }
@@ -80,14 +76,17 @@ h3 {
 /* Estilos para los botones */
 .buttons {
   display: flex;
-  justify-content: center;
-  gap: 15px; /* Espacio entre los botones */
+  gap: 10px; /* Espaciado entre botones */
   width: 100%;
 }
 
 button.btn {
-  padding: 12px 30px;
-  font-size: 16px;
+  display: flex;                /* Usa flexbox para alinear el contenido */
+  justify-content: center;      /* Centrado horizontal */
+  align-items: center;          /* Centrado vertical */
+  width: 100%;                  /* Ocupa el ancho completo del contenedor */
+  padding: 12px;                /* Ajusta el espacio interno */
+  font-size: 12px;
   background-color: #1565c0;
   color: white;
   border: none;
@@ -95,25 +94,21 @@ button.btn {
   cursor: pointer;
   transition: background-color 0.3s;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  box-sizing: border-box;       /* Asegura que padding no afecte el tamaño total */
 }
 
 button.btn:hover {
   background-color: #0d47a1;
 }
 
-/* Mejorar la alineación del texto dentro de los botones */
-button.btn span {
-  display: inline-block;
-  text-align: center;
+button.btn:active {
+  transform: scale(0.98); /* Pequeño efecto al presionar */
 }
 
 /* Contenedor de reportes */
 .reports {
-  margin-top: 30px;
-  padding: 40px;
+  margin-top: 20px;
+  padding: 20px;
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -122,53 +117,30 @@ button.btn span {
 /* Título de reporte */
 .report-title h4 {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 /* Contenedores de gráficos */
 .charts {
   display: flex;
+  flex-direction: row;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
 }
 
 .chart-container {
   width: 100%;
-  max-width: 400px;
-  height: auto; /* Asegura que la altura se ajuste */
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.chart-container-report {
-  width: 100%;
-  max-width: 400px;
-  height: auto; /* Asegura que la altura se ajuste */
-  margin: 0;
-  padding: 0;
-}
-
-.column-report {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
+  max-width: 300px; /* Ajusta el tamaño máximo */
+  margin: 0 auto;
 }
 
 canvas {
   max-width: 100%;
   height: auto;
-  margin: 0;
-  padding: 0;
 }
 
-/* Estilos para el modal */
 .modal {
   max-width: 400px;
   border-radius: 15px;
@@ -208,4 +180,34 @@ canvas {
 
 .modal-footer .btn:hover {
   background-color: #0d47a1;
+}
+
+/* Responsividad adicional */
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column; /* Acomoda las filas en columna */
+    gap: 10px;
+  }
+
+  button.btn {
+    width: 100%; /* Botones ocupan todo el ancho en dispositivos pequeños */
+  }
+
+  .charts {
+    flex-direction: column;
+  }
+
+  .chart-container {
+    width: 90%;
+  }
+
+  .input-field {
+    width: 100%; /* Forzar que el cuadro ocupe todo el ancho disponible */
+    max-width: 400px; /* Tamaño máximo opcional para el cuadro */
+  }
+
+  .input-field input[type="date"] {
+    font-size: 18px; /* Opcional: aumentar tamaño del texto */
+    padding: 12px 16px; /* Aumenta el espacio dentro del input */
+  }
 }
