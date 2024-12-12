@@ -2,7 +2,7 @@
 body {
     padding: 0;
     margin: 0;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,6 +42,11 @@ body {
 
 .container {
     width: 90%;
+}
+
+.row-container {
+    display: flex;
+    flex-direction: column;
 }
 
 /* Estilo del cuadro interno */
@@ -231,4 +236,25 @@ table.responsive-table th, table.responsive-table td {
     padding: 10px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+}
+
+@media (max-width: 768px) {
+    .container-main {
+        flex-direction: column;
+    }
+
+    .container-centered {
+        width: 100%;
+        padding: 3px;
+    }
+
+    .container-table-wrapper {
+        width: 100%;
+    }
+
+    .btn-confirm, .btn-cancel {
+        font-size: 0.8rem; 
+        padding: 8px 16px; 
+        width: 100%; 
+      }
 }

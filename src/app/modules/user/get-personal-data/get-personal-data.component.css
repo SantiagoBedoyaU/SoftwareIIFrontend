@@ -1,6 +1,7 @@
 /* Fondo y alineación centrada */
 body {
   padding: 70px;
+  min-height: 100vh;
   margin: 0;
   display: flex;
   justify-content: center;
@@ -13,7 +14,7 @@ body {
 
 /* Contenedor del formulario */
 .form-container {
-  width: 60%;
+  width: 80%;
   background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
   border-radius: 10px;
@@ -35,6 +36,7 @@ body {
 
 .data-row {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   margin-bottom: 15px;
 }
@@ -42,7 +44,7 @@ body {
 .data-item {
   display: flex;
   flex-direction: column;
-  width: 48%; /* Asegura que cada columna ocupe un 48% del espacio */
+  width: 48%;
 }
 
 .label-text {
@@ -63,6 +65,10 @@ body {
   min-height: 36px;
   display: flex;
   align-items: center;
+  max-width: 100%; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
 }
 
 /* Contenedor del botón */
@@ -91,4 +97,23 @@ body {
 .btn-agregar:disabled {
   background-color: #b0bec5;
   cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .background-image {
+    padding: 30px;
+  }
+
+  .form-container {
+    width: 100%;
+  }
+
+  .data-row {
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .data-item {
+    width: 100%;
+  }
 }

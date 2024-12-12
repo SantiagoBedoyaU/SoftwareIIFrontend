@@ -1,13 +1,15 @@
 <nav class="blue darken-3">
     <div class="nav-wrapper">
-        <a href="#!" class="brand-logo lighten-5-text bold-logo custom-margin">
+        <a href="#!" class="brand-logo lighten-5-text bold-logo custom-margin left">
             <img src="assets/images/logo.jpg" alt="Logo" class="responsive-img logo-img">
             Salud y Vida
         </a>
-        <ul class="right hide-on-med-and-down">
+        <ul class="right">
             <li><a *ngIf="!activesession" href="/security/signin" class="lighten-5-text bold-logo">Iniciar sesión</a>
             </li>
-            <li><a *ngIf="activesession" href="/security/logout" class="lighten-5-text bold-logo">Cerrar sesión</a></li>
+            <li class="hide-on-small-only">
+                <a *ngIf="activesession" href="/security/logout" class="lighten-5-text bold-logo">Cerrar sesión</a>
+            </li>
             <li>
                 <a *ngIf="activesession" (click)="openSidenav()" href="javascript:void(0)">
                     <i class="material-icons lighten-5-text">menu</i>
@@ -28,6 +30,11 @@
             <a href="#name"><span class="black-text name">{{ user?.first_name}} {{ user?.last_name }}</span></a>
             <a href="#email"><span class="black-text email">{{ user?.email }}</span></a>
         </div>
+    </li>
+    <li>
+        <a class="hide-on-med-and-up" *ngIf="activesession" href="/security/logout">
+            <i class="material-icons">exit_to_app</i> Cerrar sesión
+        </a>
     </li>
     <li *ngFor="let item of menuItems">
         <a [routerLink]="item.route">
